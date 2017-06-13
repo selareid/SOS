@@ -42,8 +42,8 @@ module.exports = {
         run: function () {
             for (let roomName in Game.rooms) {
                 let room = Game.rooms[roomName];
-                if (!room || !room.controller || !room.controller.my) continue;
-
+                if (!room || !room.controller || !room.controller.my || room.find(FIND_MY_SPAWNS).length < 1) continue;
+                
                 if (!Memory.p['room:' + roomName]) {
                     _.forEach(room.find(FIND_MY_CREEPS, (c) => {
                         c.suicide();
