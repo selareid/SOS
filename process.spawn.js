@@ -45,7 +45,7 @@ function canAfford (room, cost) {
     if (energy >= cost) return 1;
     else {
         var energyCapacity = room.energyCapacityAvailable;
-        var energyAvailable = _.sum(room.find(FIND_DROPPED_ENERGY), '.amount');
+        var energyAvailable = _.sum(room.find(FIND_DROPPED_RESOURCES, {filter: (r) => r.resourceType == RESOURCE_ENERGY}), '.amount');
         var boxedEnrg = _.sum(room.find(FIND_STRUCTURES, {filter: (s) => (s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_TERMINAL)
         && s.store.energy > 0}), '.store.energy');
 
