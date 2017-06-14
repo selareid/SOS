@@ -35,6 +35,6 @@ module.exports.loop = function () {
         kernel.run();
 
         if (Memory.stats) Memory.stats.cpu.getUsed = Game.cpu.getUsed();
-        console.logTickSummary()
+        console.logTickSummary(Game.cpu.getUsed)
     });
 };

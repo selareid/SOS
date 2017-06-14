@@ -44,8 +44,8 @@ module.exports = () => {
         console.log(timeString + 'Tick Started');
     };
 
-    console.logTickSummary = function () {
-        console.log(timeString + 'Tick Ended ' + 'CPU: ' + Game.cpu.getUsed().toFixed(3) + ' Creeps: ' + _.size(Game.creeps));
+    console.logTickSummary = function (used = Game.cpu.getUsed()) {
+        console.log(timeString + 'Tick Ended ' + 'CPU: ' + used.toFixed(3) + ' Creeps: ' + _.size(Game.creeps));
     };
 
     console.roomLog = function (room, message) {
