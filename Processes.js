@@ -57,7 +57,7 @@ module.exports = {
     buildFromQueue: {
         run: function () {
             if (!Memory.cs) Memory.cs = [];
-            if (_.size(Game.constructionSites) >= 30) return;
+//             if (_.size(Game.constructionSites) >= 30) return;
 
             var nextThing = Memory.cs[0];
             if (!nextThing) return;
