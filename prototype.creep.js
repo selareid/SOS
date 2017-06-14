@@ -53,13 +53,13 @@ Creep.prototype.getConsumerEnergy = function (Memory, room = this.room, creep = 
 };
 
 Creep.prototype.getCarrierResources = function (Memory, room = this.room, creep = this) {
-    var droppedResources = room.find(FIND_DROPPED_RESOURCES, {filter: (r) => r.amount > 50});
+    var droppedResources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) => r.amount > 50});
 
     if (droppedResources && droppedResources[0]) {
        pickFromDroppedEnergy(creep, droppedResources[0]);
     }
     else {
-        var containers = room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_CONTAINER &&  _.sum(s.store) > 50});
+        var containers = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_CONTAINER &&  _.sum(s.store) > 50});
         
         if (containers && containers[0]) {
             pickFromContainer(creep, containers[0], Object.keys(containers[0].store)[0]);
