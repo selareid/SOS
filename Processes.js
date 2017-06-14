@@ -79,7 +79,7 @@ module.exports = {
                     break;
                 case -7:
                     var roomPos = new RoomPosition(x, y, room.name);
-                    if (roomPos.lookFor(LOOK_CONTRUCTION_SITES)[0] || _.filter(roomPos.lookFor(LOOK_STRUCTURES), (s) => s.structureType == struct || OBSTACLE_OBJECT_TYPES.includes(s.structureType))[0]
+                    if (roomPos.lookFor(LOOK_CONSTRUCTION_SITES)[0] || _.filter(roomPos.lookFor(LOOK_STRUCTURES), (s) => s.structureType == struct || OBSTACLE_OBJECT_TYPES.includes(s.structureType))[0]
                         || _.filter(roomPos.lookFor(LOOK_TERRAIN), (t) => t.type == 'wall')[0]) {
                         console.roomLog(room, 'Spliced constructions site ' + ' at ' + x + ' ' + y + ' ' + room.name + ' due to already built' + ' ' + struct)
                         Memory.cs.splice(0, 1);
