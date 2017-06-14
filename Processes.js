@@ -48,6 +48,8 @@ module.exports = {
                 tick: Game.time,
                 cpu: Game.cpu,
                 gcl: Game.gcl,
+                constructionSites: _.size(Game.constructionSites),
+                tokens: Game.resources.token,
 
                 memory: {
                     used: RawMemory.get().length
