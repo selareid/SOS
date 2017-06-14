@@ -53,26 +53,23 @@ Creep.prototype.getConsumerEnergy = function (Memory, room = this.room, creep = 
 };
 
 Creep.prototype.getCarrierResources = function (Memory, room = this.room, creep = this) {
-    if (!Memory.drl) Memory.drl = _.sortBy(room.find(FIND_DROPPED_RESOURCES), (r) => r.amount);
-    if (!Memory.cl) Memory.cl = _.sortBy(room.find(FIND_STRUCTURES, {filter: (s) => s.store && s.structureType == STRUCTURE_CONTAINER &&  _.sum(s.store) > 0}), (c) => _.sum(c.store));
+    var droppedResources = room.find(FIND_DROPPED_RESOURCES, {filter: (r) => r.amount > 50});
 
-    if (Memory.drl && Memory.drl[0]) {
-        if (Game.getObjectById(Memory.drl[0]) && Game.getObjectById(Memory.drl[0]).amount > 60) {
-            pickFromDroppedEnergy(creep, Game.getObjectById(Memory.drl[0]));
-        }
-        else Memory.drl.splice(0, 1);
+    if (droppedResources && droppedResources[0]) {
+       pickFromDroppedEnergy(creep, droppedResources);
     }
-    else if (Memory.cl && Game.getObjectById(Memory.cl[0])) {
-        if (_.sum(Game.getObjectById(Memory.cl[0]).store) > 0) {
-            pickFromContainer(creep, Game.getObjectById(Memory.cl[0]));
-        }
-        Memory.cl.splice(0, 1);
+    else {
+        var containers = room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_CONTAINER &&  _.sum(s.store) > 50});
+        
+        if (containers && containers[0]) {
+            pickFromContainer(creep, containers[0], Object.keys(containers[0].store)[0]);
+    }
     }
 };
 
-function pickFromDroppedEnergy(creep, droppedEnergy) {
-    if (creep.pickup(droppedEnergy, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(droppedEnergy, {
+function pickFromDroppedEnergy(creep, droppedResource) {
+    if (creep.pickup(droppedResource, droppedResource.resourceType) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(droppedResource, {
             visualizePathStyle: {
                 fill: 'transparent',
                 stroke: '#f46464',
@@ -84,8 +81,8 @@ function pickFromDroppedEnergy(creep, droppedEnergy) {
     }
 }
 
-function pickFromContainer(creep, container) {
-    if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+function pickFromContainer(creep, container, resourceType = RESOURCE_ENERGY) {
+    if (creep.withdraw(container, resourceType) == ERR_NOT_IN_RANGE) {
         creep.moveTo(container, {
             visualizePathStyle: {
                 fill: 'transparent',
