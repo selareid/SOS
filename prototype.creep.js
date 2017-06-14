@@ -56,7 +56,7 @@ Creep.prototype.getCarrierResources = function (Memory, room = this.room, creep 
     var droppedResources = room.find(FIND_DROPPED_RESOURCES, {filter: (r) => r.amount > 50});
 
     if (droppedResources && droppedResources[0]) {
-       pickFromDroppedEnergy(creep, droppedResources);
+       pickFromDroppedEnergy(creep, droppedResources[0]);
     }
     else {
         var containers = room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_CONTAINER &&  _.sum(s.store) > 50});
@@ -68,7 +68,7 @@ Creep.prototype.getCarrierResources = function (Memory, room = this.room, creep 
 };
 
 function pickFromDroppedEnergy(creep, droppedResource) {
-    if (creep.pickup(droppedResource, droppedResource.resourceType) == ERR_NOT_IN_RANGE) {
+    if (creep.pickup(droppedResource) == ERR_NOT_IN_RANGE) {
         creep.moveTo(droppedResource, {
             visualizePathStyle: {
                 fill: 'transparent',
