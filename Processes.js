@@ -27,6 +27,9 @@ module.exports = {
     init: {
         run: function () {
 
+            if (!global.Mem.a) global.Mem.a = [];
+            if (!global.Mem.s) global.Mem.s = [];
+
             global.Mem.creeps = {};
             global.Mem.p = {};
             global.Mem.SB = false;
@@ -85,7 +88,7 @@ module.exports = {
                         var roomPos = new RoomPosition(x, y, room.name);
                         if (roomPos.lookFor(LOOK_CONSTRUCTION_SITES)[0] || _.filter(roomPos.lookFor(LOOK_STRUCTURES), (s) => s.structureType == struct || OBSTACLE_OBJECT_TYPES.includes(s.structureType))[0]
                             || _.filter(roomPos.lookFor(LOOK_TERRAIN), (t) => t.type == 'wall')[0]) {
-                            console.roomLog(room, 'Spliced constructions site ' + ' at ' + x + ' ' + y + ' ' + room.name + ' due to already built' + ' ' + struct)
+                            console.roomLog(room, 'Spliced constructions site ' + ' at ' + x + ' ' + y + ' ' + room.name + ' due to already built' + ' ' + struct);
                             Memory.cs.splice(0, 1);
                         }
                         else console.errorLog('Error creating constructions site ' + rsl + ' at ' + x + ' ' + y + ' ' + room.name + ' ' + struct);
@@ -129,6 +132,8 @@ module.exports = {
             if (!Memory.spawnQueue) Memory.spawnQueue = {};
 
             if (Game.time % 3 == 0) {
+                if (room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.Mem.a.includes(c.owner.username)}) && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doTowers').length < 1) spawnNewProcess('doTowers', Memory.rmN);
+
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doHarvest').length < 1) spawnNewProcess('doHarvest', Memory.rmN);
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'takeCare').length < 1) spawnNewProcess('takeCare', Memory.rmN);
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'fillSpawn').length < 1) spawnNewProcess('fillSpawn', Memory.rmN);
@@ -187,6 +192,44 @@ module.exports = {
             var name = spawn.createCreep(nextToSpawn.body.body, nextToSpawn.name, {p: nextToSpawn.proc});
 
             if (Game.creeps[name]) console.logSpawn(room, name + ' ' + nextToSpawn.proc);
+        }
+    },
+
+    doTowers: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            var room = Game.rooms[Memory.rmN];
+            if (!room || room.find(FIND_HOSTILE_CREEPS).length < 1) return 'end';
+
+            var randomHash = Memory.RH;
+
+            if (!randomHash || !global[randomHash]) {
+                Memory.RH = makeid;
+                global[Memory.RH] = {};
+                randomHash = Memory.RH;
+            }
+
+            if (global[randomHash] && (!global[randomHash].t || !Memory.lt || Game.time-Memory.lt > 101)) {
+                global[randomHash].t = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER});
+                Memory.lt = Game.time;
+            }
+
+
+            var towers = global[randomHash] && global[randomHash].t ? global[randomHash].t : room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER});
+            if (towers.length < 1) return 'end';
+
+            var baddies = room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.Mem.a.includes(c.owner.username)});
+            if (baddies.length < 1) return 'end';
+
+            StructureTower.prototype.killIdiot = function (idiot) {
+                if (!idiot || this.energy == 0) return;
+                this.attack(idiot);
+            };
+
+            _.forEach(towers, (tower) => {
+                tower.killIdiot(tower.pos.findClosestByRange(baddies));
+            });
         }
     },
 

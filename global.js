@@ -17,6 +17,7 @@ module.exports = () => {
         switch (process) {
             case 'checkRooms': return 11;
             case 'checkCreeps': return 10;
+            case 'doTowers': return 15;
             case 'doHarvest': return 4;
             case 'fillSpawn': return 4;
             case 'praiseRC': return 3;
@@ -32,4 +33,14 @@ module.exports = () => {
         global.Mem.p[tag] = new Process(processType, roomName, object);
     };
 
+    makeid = function ()
+    {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for( var i=0; i < 5; i++ )
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
+    }
 };
