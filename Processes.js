@@ -593,7 +593,7 @@ module.exports = {
                         creep.getCarrierResources(Memory);
                     }
                     else if (room.storage) {
-                        if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, creep.carry[Object.keys(creep.carry)[0]]);
+                        if (creep.pos.isNearTo(room.storage.pos)) creep.transfer(room.storage, Object.keys(creep.carry)[0]);
                         else creep.moveTo(room.storage);
                     }
 
