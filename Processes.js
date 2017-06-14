@@ -491,8 +491,11 @@ module.exports = {
 
             var flag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
             if (!room.storage || !flag) return;
-            if (!flag.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_LINK})[0]) return this.placeStrucs(room, flag);
-            if (Game.time % 1001 == 0) this.placeStrucs(room, flag);
+            if (!flag.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_LINK})[0]) {
+                if (Game.time % 99 == 0) return this.placeStrucs(room, flag);
+                else return;
+            }
+            if (Game.time % 18000 == 0) this.placeStrucs(room, flag);
 
             if (creeps.length > 0) {
                 //creep loop
