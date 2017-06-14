@@ -54,7 +54,7 @@ Creep.prototype.getConsumerEnergy = function (Memory, room = this.room, creep = 
 
 Creep.prototype.getCarrierResources = function (Memory, room = this.room, creep = this) {
     if (!Memory.drl) Memory.drl = _.sortBy(room.find(FIND_DROPPED_RESOURCES), (r) => r.amount);
-    if (!Memory.cl) Memory.cl = _.sortBy(room.find(FIND_STRUCTURES, {filter: (s) => s.store && s.structureType == STRUCTURE_CONTAINER &&  _.sum(c.store) > 0}), (c) => _.sum(c.store));
+    if (!Memory.cl) Memory.cl = _.sortBy(room.find(FIND_STRUCTURES, {filter: (s) => s.store && s.structureType == STRUCTURE_CONTAINER &&  _.sum(s.store) > 0}), (c) => _.sum(c.store));
 
     if (Memory.drl && Memory.drl[0]) {
         if (Game.getObjectById(Memory.drl[0]) && Game.getObjectById(Memory.drl[0]).amount > 60) {
