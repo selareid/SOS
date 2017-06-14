@@ -619,7 +619,7 @@ module.exports = {
         },
 
         getNumberOfCarriers: function (room) {
-            return 1;
+            return room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < 2 ? 2 : 1;
         },
 
         placeStorage: function (room) {
