@@ -57,39 +57,47 @@ module.exports = {
     buildFromQueue: {
         run: function () {
             if (!Memory.cs) Memory.cs = [];
-//             if (_.size(Game.constructionSites) >= 30) return;
+            
+            if (_.size(Game.constructionSites) >= 50) return;
+            
+            var cnt = 0;
+            
+                do {
+                var nextThing = Memory.cs[0];
+                if (!nextThing) return;
 
-            var nextThing = Memory.cs[0];
-            if (!nextThing) return;
+                var splitThing = nextThing.split(',');
 
-            var splitThing = nextThing.split(',');
+                var room = Game.rooms[splitThing[0]];
+                var x = Number.parseInt(splitThing[1]);
+                var y = Number.parseInt(splitThing[2]);
+                var struct = splitThing[3];
 
-            var room = Game.rooms[splitThing[0]];
-            var x = Number.parseInt(splitThing[1]);
-            var y = Number.parseInt(splitThing[2]);
-            var struct = splitThing[3];
+                if (isUndefinedOrNull(room) || isUndefinedOrNull(x) || isUndefinedOrNull(y) || isUndefinedOrNull(struct)) return Memory.cs.splice(0, 1);
 
-            if (isUndefinedOrNull(room) || isUndefinedOrNull(x) || isUndefinedOrNull(y) || isUndefinedOrNull(struct)) return Memory.cs.splice(0, 1);
-
-            var rsl = room.createConstructionSite(x, y, struct);
-            switch (rsl) {
-                case 0:
-                    Memory.cs.splice(0, 1);
-                    console.roomLog(room, 'Created Construction Site At ' + x + ' ' + y + ' ' + struct);
-                    break;
-                case -7:
-                    var roomPos = new RoomPosition(x, y, room.name);
-                    if (roomPos.lookFor(LOOK_CONSTRUCTION_SITES)[0] || _.filter(roomPos.lookFor(LOOK_STRUCTURES), (s) => s.structureType == struct || OBSTACLE_OBJECT_TYPES.includes(s.structureType))[0]
-                        || _.filter(roomPos.lookFor(LOOK_TERRAIN), (t) => t.type == 'wall')[0]) {
-                        console.roomLog(room, 'Spliced constructions site ' + ' at ' + x + ' ' + y + ' ' + room.name + ' due to already built' + ' ' + struct)
+                var rsl = room.createConstructionSite(x, y, struct);
+                switch (rsl) {
+                    case 0:
                         Memory.cs.splice(0, 1);
-                    }
-                    else console.errorLog('Error creating constructions site ' + rsl + ' at ' + x + ' ' + y + ' ' + room.name + ' ' + struct);
-                    break;
-                default:
-                    console.errorLog('Error creating constructions site ' + rsl + ' at ' + x + ' ' + y + ' ' + room.name);
-                    Memory.cs.splice(0, 1);
+                        console.roomLog(room, 'Created Construction Site At ' + x + ' ' + y + ' ' + struct);
+                        break;
+                    case -7:
+                        var roomPos = new RoomPosition(x, y, room.name);
+                        if (roomPos.lookFor(LOOK_CONSTRUCTION_SITES)[0] || _.filter(roomPos.lookFor(LOOK_STRUCTURES), (s) => s.structureType == struct || OBSTACLE_OBJECT_TYPES.includes(s.structureType))[0]
+                            || _.filter(roomPos.lookFor(LOOK_TERRAIN), (t) => t.type == 'wall')[0]) {
+                            console.roomLog(room, 'Spliced constructions site ' + ' at ' + x + ' ' + y + ' ' + room.name + ' due to already built' + ' ' + struct)
+                            Memory.cs.splice(0, 1);
+                        }
+                        else console.errorLog('Error creating constructions site ' + rsl + ' at ' + x + ' ' + y + ' ' + room.name + ' ' + struct);
+                        break;
+                    default:
+                        console.errorLog('Error creating constructions site ' + rsl + ' at ' + x + ' ' + y + ' ' + room.name);
+                        Memory.cs.splice(0, 1);
+                }
+                    
+                    cnt++;
             }
+            while (rsl == -7 || cnt >= 10);
         }
     },
 
