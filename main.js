@@ -10,6 +10,10 @@ console.log("[" + "<p style=\"display:inline; color: #ededed\">RESET</p>" + "] "
 profiler.enable();
 module.exports.loop = function () {
     profiler.wrap(function() {
+        var token = Game.market.getAllOrders(order => order.resourceType == SUBSCRIPTION_TOKEN &&
+    order.type == ORDER_SELL && order.price <= Game.market.credits)[0];
+        if (token) Game.market.deal(token.id, 1);
+        
         if (!console.logTickStart) require('prototype.console')();
         if (!isUndefinedOrNull) require('global')();
 
