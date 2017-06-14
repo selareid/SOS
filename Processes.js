@@ -125,6 +125,7 @@ module.exports = {
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'takeCare').length < 1) spawnNewProcess('takeCare', Memory.rmN);
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'fillSpawn').length < 1) spawnNewProcess('fillSpawn', Memory.rmN);
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'fillExt').length < 1) spawnNewProcess('fillExt', Memory.rmN);
+                if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'strgDistr').length < 1) spawnNewProcess('strgDistr', Memory.rmN);
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'buildRoads').length < 1) spawnNewProcess('buildRoads', Memory.rmN);
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'praiseRC').length < 1) spawnNewProcess('praiseRC', Memory.rmN);
 
