@@ -259,7 +259,7 @@ module.exports = {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
-            if (!Memory.l || Game.time-Number.parseInt(Memory.l) >= 1001) Memory.l = Game.time;
+            if (!Memory.l || Game.time-Number.parseInt(Memory.l) >= 18000) Memory.l = Game.time;
             else return;
 
             var room = Game.rooms[Memory.rmN];
