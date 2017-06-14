@@ -553,6 +553,8 @@ module.exports = {
                     if (!strucPos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == struc.s})[0]) global.Mem.cs.push(room.name + ',' + strucPos.x + ',' + strucPos.y + ',' + struc.s);
                 }
             }
+
+            _.filter(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_ROAD}, (s) => s.destroy());
         },
 
         linkToStorage: function (room, creep) {
