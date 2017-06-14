@@ -42,21 +42,23 @@ module.exports = {
         }
     },
 
-    doStats: function () {
-        Memory.stats = {
-            tick: Game.time,
-            cpu: Game.cpu,
-            gcl: Game.gcl,
+    doStats: {
+        run: function () {
+            Memory.stats = {
+                tick: Game.time,
+                cpu: Game.cpu,
+                gcl: Game.gcl,
 
-            memory: {
-                used: RawMemory.get().length
-            },
+                memory: {
+                    used: RawMemory.get().length
+                },
 
-            market: {
-                credits: Game.market.credits,
-                num_orders: Game.market.orders ? Object.keys(Game.market.orders).length : 0,
+                market: {
+                    credits: Game.market.credits,
+                    num_orders: Game.market.orders ? Object.keys(Game.market.orders).length : 0,
+                }
+
             }
-
         }
     },
 
