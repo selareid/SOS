@@ -58,5 +58,7 @@ module.exports = () => {
 
     console.notify = function (message) {
         console.log(timeString + message);
+
+        if (Memory.notify) Memory.notify.push(message);
     };
 };

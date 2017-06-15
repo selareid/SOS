@@ -31,6 +31,7 @@ module.exports = {
             if (!global.Mem.a) global.Mem.a = [];
             if (!global.Mem.s) global.Mem.s = [];
 
+            global.Mem.notify = [];
             global.Mem.creeps = {};
             global.Mem.p = {};
             global.Mem.SB = false;
@@ -64,6 +65,15 @@ module.exports = {
             }
         }
     },
+    
+    doNotify: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            if (!global.Mem.notify) global.Mem.notify = [];
+
+            if (!Memory.lt || Game.time-Memory.lt > 1001) {
+
 
     checkRooms: {
         run: function () {
@@ -447,7 +457,6 @@ module.exports = {
             }
 
             if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
-                global[randomHash].l = game.getObjectById(srcId).pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: (s) => s.structureType == STRUCTURE_LINK})[0].id;
                 Memory.lt = Game.time;
             }
 
