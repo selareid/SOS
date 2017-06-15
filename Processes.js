@@ -14,9 +14,10 @@ function getCreep(name, process) {
     return creep ? creep : undefined;
 }
 
-var bodyChart = {
+const bodyChart = {
     doHarvest: [[WORK, WORK, MOVE], [CARRY], 3],
     praiseRC: [[WORK, CARRY, MOVE], []],
+    strgDistr: [[CARRY, CARRY, MOVE], []],
     fillSpawn: [[CARRY, CARRY, MOVE], [], 6],
     fillExt: [[CARRY, CARRY, MOVE], []],
     iRmHaul: [[CARRY, CARRY, MOVE], []],
@@ -436,7 +437,10 @@ module.exports = {
 
         dropEnergy: function (Memory, creep, creep_it_it) {
             var srcId = Memory.crps[creep_it_it].split(':')[1];
-            var containers = creep.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER});
+
+            var link = Game.getObjectById(srcId) ? Game.getObjectById(srcId).pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: (s) => s.structureType == STRUCTURE_LINK})[0]
+                : creep.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: (s) => s.structureType == STRUCTURE_LINK})[0];
+
             var container = Game.getObjectById(srcId)
                 ? Game.getObjectById(srcId).pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.energy < s.storeCapacity})[0]
                 : creep.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.energy < s.storeCapacity})[0];
@@ -631,7 +635,21 @@ module.exports = {
             }
             else {
                 //if carry is empty
-                var linkWithEnergy = creep.pos.findInRange(global[room.name].links, 1, {filter: (s) => s.energy > 0})[0];
+
+                var randomHash = Memory.RH;
+
+                if (!randomHash || !global[randomHash]) {
+                    Memory.RH = makeid;
+                    global[Memory.RH] = {};
+                    randomHash = Memory.RH;
+                }
+
+                if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time-Memory.lt > 101)) {
+                    global[randomHash].l = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_LINK})[0].id;
+                    Memory.lt = Game.time;
+                }
+
+                var linkWithEnergy = Game.getObjectById(global[randomHash].l) && Game.getObjectById(global[randomHash].l).energy > 0 ? Game.getObjectById(global[randomHash].l) : undefined;
                 if (linkWithEnergy) {
                     creep.memory.w = true;
                     creep.withdraw(linkWithEnergy, RESOURCE_ENERGY);
