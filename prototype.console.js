@@ -55,4 +55,8 @@ module.exports = () => {
     console.logSpawn = function (room, creepName) {
         console.log(timeString + roomLink(room) + spawnString + creepName);
     };
+
+    console.notify = function (message) {
+        console.log(timeString + message);
+    };
 };

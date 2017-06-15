@@ -438,25 +438,75 @@ module.exports = {
         dropEnergy: function (Memory, creep, creep_it_it) {
             var srcId = Memory.crps[creep_it_it].split(':')[1];
 
-            var link = Game.getObjectById(srcId) ? Game.getObjectById(srcId).pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: (s) => s.structureType == STRUCTURE_LINK})[0]
-                : creep.pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: (s) => s.structureType == STRUCTURE_LINK})[0];
+            var randomHash = Memory.RH;
 
-            var container = Game.getObjectById(srcId)
-                ? Game.getObjectById(srcId).pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.energy < s.storeCapacity})[0]
-                : creep.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.energy < s.storeCapacity})[0];
+            if (!randomHash || !global[randomHash]) {
+                Memory.RH = makeid;
+                global[Memory.RH] = {};
+                randomHash = Memory.RH;
+            }
 
-            if (container) {
-                if (creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(container);
+            if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
+                global[randomHash].l = game.getObjectById(srcId).pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: (s) => s.structureType == STRUCTURE_LINK})[0].id;
+                Memory.lt = Game.time;
+            }
+
+            var link = Game.getObjectById(global[randomHash].l) ? Game.getObjectById(global[randomHash].l) : undefined;
+
+            if (link) {
+                if (creep.transfer(link, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(link);
                 }
             }
             else {
-                creep.drop(RESOURCE_ENERGY);
+                var container = Game.getObjectById(srcId)
+                    ? Game.getObjectById(srcId).pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.energy < s.storeCapacity})[0]
+                    : creep.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.energy < s.storeCapacity})[0];
 
-                var src = Game.getObjectById(srcId);
-                if (src && creep.pos.isNearTo(src) && creep.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER}).length < 1
-                    && creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1).length < 1) global.Mem.cs.push(creep.room.name + ',' + creep.pos.x + ',' + creep.pos.y + ',' + STRUCTURE_CONTAINER);
+                if (container) {
+                    if (creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(container);
+                    }
+                }
+                else {
+                    creep.drop(RESOURCE_ENERGY);
+
+                    if (creep.room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < CONTROLLER_STRUCTURES.link[creep.room.controller.level]) {
+                        if (!Game.getObjectById(srcId).pos.findInRange(FIND_CONSTRUCTION_SITES, 2)[0]) {
+                            this.placeLink(Game.getObjectById(srcId), creep);
+                        }
+                    }
+                    else {
+                        var src = Game.getObjectById(srcId);
+                        if (src && creep.pos.isNearTo(src) && creep.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER}).length < 1
+                            && creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1).length < 1) global.Mem.cs.push(creep.room.name + ',' + creep.pos.x + ',' + creep.pos.y + ',' + STRUCTURE_CONTAINER);
+                    }
+                }
             }
+        },
+
+        placeLink: function (source, creep) {
+            const opRP = {
+                [TOP]: {d: BOTTOM, x: 0, y: 1},
+                [BOTTOM]: {d: TOP, x: 0, y: -1},
+                [LEFT]: {d: RIGHT, x: 1, y: 0},
+                [RIGHT]: {d: LEFT, x: -1, y: 0},
+                [TOP_LEFT]: {d: BOTTOM_RIGHT, x: 1, y: 1},
+                [TOP_RIGHT]: {d: BOTTOM_LEFT, x: -1, y: 1},
+                [BOTTOM_RIGHT]: {d: TOP_LEFT, x: -1, y: -1},
+                [BOTTOM_LEFT]: {d: TOP_RIGHT, x: 1, y: -1}
+            };
+
+            var opDirTS = opRP[creep.pos.getDirectionTo(source.pos)];
+            var blocked = false;
+
+            _.forEach(new RoomPosition(opDirTS.x, opDirTS.y, creep.room.name).lookFor(LOOK_STRUCTURES), (s) => {
+                if (s.structureType != STRUCTURE_SPAWN) s.destroy();
+                else blocked = true;
+            });
+
+            if (!blocked) global.Mem.cs.push(creep.room.name + ',' + opDirTS.x + ',' + opDirTS.y + ',' + STRUCTURE_LINK);
+            else console.notify("doHarvest's placeLink found itself blocked Source is: " + source.id + ' in Room: ' + source.room);
         }
     },
 
