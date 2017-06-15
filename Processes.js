@@ -73,7 +73,19 @@ module.exports = {
             if (!global.Mem.notify) global.Mem.notify = [];
 
             if (!Memory.lt || Game.time-Memory.lt > 1001) {
+                var message = 'Brand new Notification: \n';
 
+                _.forEach(global.Mem.notify, (mess) => {
+                    message = message + '\n' + mess;
+                });
+
+                Game.notify(message);
+
+                global.Mem.notify = [];
+                Memory.lt = Game.time;
+            }
+        }
+    },
 
     checkRooms: {
         run: function () {
@@ -457,6 +469,7 @@ module.exports = {
             }
 
             if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
+                global[randomHash].l = Game.getObjectById(srcId).pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: (s) => s.structureType == STRUCTURE_LINK})[0] ? Game.getObjectById(srcId).pos.findInRange(FIND_MY_STRUCTURES, 2, {filter: (s) => s.structureType == STRUCTURE_LINK})[0].id : undefined;
                 Memory.lt = Game.time;
             }
 
