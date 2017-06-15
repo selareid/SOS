@@ -51,7 +51,8 @@ function canAfford (room, cost) {
 
         energyAvailable = energyAvailable ? boxedEnrg ? energyAvailable+boxedEnrg : energyAvailable : boxedEnrg ? boxedEnrg : 0;
 
-        if (cost > energyCapacity || ((room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.p && c.memory.p == 'fillExt'}).length < 1
+        if (cost > energyCapacity || 
+            (((room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.p && c.memory.p == 'doHarvest'}).length < 1 && room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.p && c.memory.p == 'fillExt'}).length < 1)
             || room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.p && c.memory.p == 'fillSpawn'}).length < 1) && cost > 300))  return 3;
         return 2;
     }
