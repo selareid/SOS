@@ -527,7 +527,7 @@ module.exports = {
                 else blocked = true;
             });
 
-            if (!blocked) global.Mem.cs.push(creep.room.name + ',' + opDirTS.x + ',' + opDirTS.y + ',' + STRUCTURE_LINK);
+            if (!blocked) global.Mem.cs.push(creep.room.name + ',' + creep.pos.x+opDirTS.x + ',' + creep.pos.y+opDirTS.y + ',' + STRUCTURE_LINK);
             else console.notify("doHarvest's placeLink found itself blocked Source is: " + source.id + ' in Room: ' + source.room);
         }
     },
