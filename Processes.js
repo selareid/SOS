@@ -522,7 +522,7 @@ module.exports = {
             var opDirTS = opRP[creep.pos.getDirectionTo(source.pos)];
             var blocked = false;
 
-            _.forEach(new RoomPosition(opDirTS.x, opDirTS.y, creep.room.name).lookFor(LOOK_STRUCTURES), (s) => {
+            _.forEach(new RoomPosition(creep.pos.x+opDirTS.x, creep.pos.y+opDirTS.y, creep.room.name).lookFor(LOOK_STRUCTURES), (s) => {
                 if (s.structureType != STRUCTURE_SPAWN) s.destroy();
                 else blocked = true;
             });
