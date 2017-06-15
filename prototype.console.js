@@ -19,6 +19,7 @@ module.exports = () => {
 
     errorString = "[" + "<p style=\"display:inline; color: #ed4543\">ERROR</p>" + "] ";
     kernelString = "[" + "<p style=\"display:inline; color: rgba(228, 231, 17, 0.81)\">KERNEL</p>" + "] ";
+    processString = "[" + "<p style=\"display:inline; color: rgba(110, 231, 95, 0.81)\">PROCESS</p>" + "] ";
 
     timeString = "[" + "<p style=\"display:inline; color: #abd7ed\">" + Game.time + "</p>" + "] ";
     spawnString = "[" + "<p style=\"display:inline; color: #71ed7c\">SPAWN</p>" + "] ";
@@ -40,6 +41,11 @@ module.exports = () => {
     console.kernelError = function (errorMessage) {
         console.log(timeString + kernelString + errorString + errorMessage);
         if (Memory.notify) Memory.notify.push(timeString + kernelString + errorString + errorMessage);
+    };
+
+    console.processError = function (errorMessage) {
+        console.log(timeString + processString + errorString + errorMessage);
+        if (Memory.notify) Memory.notify.push(timeString + processString + errorString + errorMessage);
     };
 
     console.logTickStart = function () {

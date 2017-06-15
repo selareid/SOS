@@ -25,10 +25,12 @@ module.exports = {
                     if (rsl == 'end') delete Memory.p[process_it];
 
                     process.prio = getPrio(process.pN);
+
+                    global.processesRun++;
                 }
             }
             catch (err) {
-                console.kernelError(err);
+                console.processError(err);
                 if (err.stack) console.kernelError(err.stack);
             }
         }

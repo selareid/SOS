@@ -10,18 +10,15 @@ console.log("[" + "<p style=\"display:inline; color: #ededed\">RESET</p>" + "] "
 profiler.enable();
 module.exports.loop = function () {
     profiler.wrap(function() {
+        //Buy that token if it appears
         var token = Game.market.getAllOrders(order => order.resourceType == SUBSCRIPTION_TOKEN &&
-    order.type == ORDER_SELL && order.price <= Game.market.credits)[0];
+        order.type == ORDER_SELL && order.price <= Game.market.credits)[0];
         if (token) Game.market.deal(token.id, 1);
-        
+
         if (!console.logTickStart) require('prototype.console')();
         if (!isUndefinedOrNull) require('global')();
 
         console.logTickStart();
-
-        var token = Game.market.getAllOrders(order => order.resourceType == SUBSCRIPTION_TOKEN &&
-        order.type == ORDER_SELL && order.price <= Game.market.credits)[0];
-        if (token) Game.market.deal(token.id, 1);
 
         global.Mem = Memory;
         global.processesRun = 0;
@@ -35,8 +32,13 @@ module.exports.loop = function () {
             console.errorLog(err);
         }
 
-
-        kernel.run();
+        try {
+            kernel.run();
+        }
+        catch (err) {
+            console.kernelError(err);
+            if (err.stack) console.kernelError(err.stack);
+        }
 
         if (Memory.stats) Memory.stats.cpu.getUsed = Game.cpu.getUsed();
         console.logTickSummary(Game.cpu.getUsed)
