@@ -415,7 +415,7 @@ module.exports = {
                     }
 
                     creep.say('doHarvest');
-
+                    
                     if (room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.p && c.memory.p != 'doHarvest'}).length >= 1) {
                         if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it);
                         this.harvest(Memory, room, creep_it_it);
