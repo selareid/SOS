@@ -764,7 +764,7 @@ module.exports = {
 
                 var randomHash = Memory.RH;
 
-                if (!randomHash || !global[randomHash] || Game.time-Memory.lt > 101) {
+                if (!randomHash || !global[randomHash] || Game.time-Memory.lt > 101 || (global[randomHash].l && global[randomHash].l.pos.roomName != creep.pos.roomName)) {
                     randomHash = getRandomHash();
                     global[randomHash] = {};
                     Memory.RH = randomHash;
