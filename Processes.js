@@ -76,27 +76,6 @@ module.exports = {
             }
         }
     },
-    
-    doNotify: {
-        run: function (Memory_it) {
-            var Memory = global.Mem.p[Memory_it];
-
-            if (!global.Mem.notify) global.Mem.notify = [];
-
-            if (!Memory.lt || Game.time-Memory.lt > 1001) {
-                var message = 'Brand new Notification: \n';
-
-                _.forEach(global.Mem.notify, (mess) => {
-                    message = message + '\n' + mess;
-                });
-
-                Game.notify(message);
-
-                global.Mem.notify = [];
-                Memory.lt = Game.time;
-            }
-        }
-    },
 
     checkRooms: {
         run: function () {

@@ -20,13 +20,19 @@ module.exports = {
                 else if (!process.pN || Processes[process.pN.split(':')[0]]) {
                     if (!process.pN) process.pN = process_it.split(':')[0];
 
-                    let rsl = Processes[process.pN.split(':')[0]].run(process_it);
+                    if (Processes[process.pN.split(':')[0]]) {
+                        let rsl = Processes[process.pN.split(':')[0]].run(process_it);
 
-                    if (rsl == 'end') delete Memory.p[process_it];
+                        if (rsl == 'end') delete Memory.p[process_it];
 
-                    process.prio = getPrio(process.pN);
+                        process.prio = getPrio(process.pN);
 
-                    global.processesRun++;
+                        global.processesRun++;
+                    }
+                    else {
+                        console.notify('Removed process ' + process_it + ' due to not existing in Processes');
+                        delete Memory.p[process_it];
+                    }
                 }
             }
             catch (err) {
