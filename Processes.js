@@ -192,6 +192,7 @@ module.exports = {
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'buildRoads').length < 1) spawnNewProcess('buildRoads', Memory.rmN);
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'praiseRC').length < 1) spawnNewProcess('praiseRC', Memory.rmN);
 
+                if (room.controller.level >= 5 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doLinks').length < 1) spawnNewProcess('doLinks', Memory.rmN);
                 if (room.controller.level >= 4 && room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0] && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'iRmHaul').length < 1) spawnNewProcess('iRmHaul', Memory.rmN);
             }
 
@@ -392,6 +393,47 @@ module.exports = {
 
 
             return costs;
+        }
+    },
+    
+    doLinks: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            var room = Game.rooms[Memory.rmN];
+            if (!room) return 'end';
+
+            var storageFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
+            if (storageFlag) return;
+
+            var randomHash = Memory.RH;
+
+            if (!randomHash || !global[randomHash]) {
+                Memory.RH = makeid;
+                global[Memory.RH] = {};
+                randomHash = Memory.RH;
+            }
+
+            if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
+                global[randomHash].l = room.find(FIND_MY_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_LINK});
+                global[randomHash].sl = storageFlag.pos.findInRange(global[randomHash].l, 1)[0] ? storageFlag.pos.findInRange(global[randomHash].l, 2)[0].id : undefined;
+                Memory.lt = Game.time;
+            }
+
+            var links = _.filter(global[randomHash].l, (s) => s.id != global[randomHash].sl.id);
+            var storageLink = global[randomHash].sl;
+
+            if (!storageLink) return;
+
+            var energySent = storageLink.energy;
+
+            _.forEach(links, (link) => {
+                if (link.energy > 0) {
+                    if (energySent < storageLink.energyCapacity && storageLink.energy < storageLink.energyCapacity) {
+                        link.transfer(storageLink);
+                    }
+                }
+            });
         }
     },
 
