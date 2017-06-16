@@ -97,7 +97,10 @@ module.exports = {
         run: function () {
             if (!Memory.cs) Memory.cs = [];
             
-            if (_.size(Game.constructionSites) >= 50) return;
+            if (_.size(Game.constructionSites) >= 50) {
+                if (Memory.cs.length > 500) Memory.cs.length = 500;
+                return;
+            }
             
             var cnt = 0;
             
