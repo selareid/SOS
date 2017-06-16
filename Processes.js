@@ -140,6 +140,7 @@ module.exports = {
                         else {
                             console.errorLog('Error creating constructions site ' + rsl + ' at ' + x + ' ' + y + ' ' + room.name + ' ' + struct);
                         if (roomPos.lookFor(LOOK_CREEPS).length > 0) roomPos.lookFor(LOOK_CREEPS)[0].suicide();
+                        if (_.filter(roomPos.lookFor(LOOK_STRUCTURES), (s) => !OBSTACLE_OBJECT_TYPES.includes(s.structureType))[0]) _.filter(roomPos.lookFor(LOOK_STRUCTURES), (s) => !OBSTACLE_OBJECT_TYPES.includes(s.structureType))[0].destroy();
                         }
                             break;
                     default:
