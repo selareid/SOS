@@ -689,8 +689,16 @@ module.exports = {
                     }
 
                     if (!creep.pos.isEqualTo(flag.pos)) {
-                        if (!flag.pos.findInRange(FIND_MY_CREEPS, 1)[0]) creep.moveTo(flag, {range: 0});
-                        else creep.moveTo(flag, {range: 2});
+                        if (!flag.pos.findInRange(FIND_MY_CREEPS, 0)[0]) creep.moveTo(flag, {range: 0});
+                        else {
+                            creep.moveTo(flag, {range: 1});
+
+                            if (creep.pos.isNearTo(flag.pos)) {
+                                var rootOfAllEvil = flag.pos.findInRange(FIND_MY_CREEPS, 0)[0];
+                                rootOfAllEvil.move(rootOfAllEvil.pos.getDirectionTo(creep.pos));
+                                creep.move(creep.pos.getDirectionTo(rootOfAllEvil));
+                            }
+                        }
                     }
                     else { // do stuff
 
