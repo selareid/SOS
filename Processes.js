@@ -137,8 +137,11 @@ module.exports = {
                             console.roomLog(room, 'Spliced constructions site ' + ' at ' + x + ' ' + y + ' ' + room.name + ' due to already built' + ' ' + struct);
                             Memory.cs.splice(0, 1);
                         }
-                        else console.errorLog('Error creating constructions site ' + rsl + ' at ' + x + ' ' + y + ' ' + room.name + ' ' + struct);
-                        break;
+                        else {
+                            console.errorLog('Error creating constructions site ' + rsl + ' at ' + x + ' ' + y + ' ' + room.name + ' ' + struct);
+                        if (roomPos.lookFor(LOOK_CREEPS).length > 0) roomPos.lookFor(LOOK_CREEPS)[0].suicide();
+                        }
+                            break;
                     default:
                         console.errorLog('Error creating constructions site ' + rsl + ' at ' + x + ' ' + y + ' ' + room.name);
                         Memory.cs.splice(0, 1);
