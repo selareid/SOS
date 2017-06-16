@@ -701,12 +701,9 @@ module.exports = {
                     }
                     else { // do stuff
 
-                        if (creep.memory.w == true && _.sum(creep.carry) == 0) {
-                            creep.memory.w = false;
-                        }
-                        else if (creep.memory.w == false && _.sum(creep.carry) == creep.carryCapacity) {
-                            creep.memory.w = true;
-                        }
+                        if (creep.memory.w == true && _.sum(creep.carry) == 0) creep.memory.w = false;
+                        else if (creep.memory.w == false && _.sum(creep.carry) == creep.carryCapacity) creep.memory.w = true;
+                        else if (isUndefinedOrNull(creep.memory.w)) creep.memory.w = false;
 
                         if (creep.memory.w == true) {
                             switch (creep.memory.doing) {
@@ -756,18 +753,19 @@ module.exports = {
 
                 var randomHash = Memory.RH;
 
-                if (!randomHash || !global[randomHash]) {
-                    Memory.RH = makeid;
+                if (!randomHash || !global[randomHash] || Game.time-Memory.lt > 101) {
+                    Memory.RH = makeid();
                     global[Memory.RH] = {};
                     randomHash = Memory.RH;
                 }
 
-                if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time-Memory.lt > 101)) {
-                    global[randomHash].l = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_LINK})[0].id;
+                if (global[randomHash] && (!global[randomHash].l || !Memory.lt)) {
+                    global[randomHash].l = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_LINK})[0];
                     Memory.lt = Game.time;
                 }
 
-                var linkWithEnergy = Game.getObjectById(global[randomHash].l) && Game.getObjectById(global[randomHash].l).energy > 0 ? Game.getObjectById(global[randomHash].l) : undefined;
+                var linkWithEnergy = global[randomHash].l && global[randomHash].l.energy > 0 ? global[randomHash].l : undefined;
+
                 if (linkWithEnergy) {
                     creep.memory.w = true;
                     creep.withdraw(linkWithEnergy, RESOURCE_ENERGY);
