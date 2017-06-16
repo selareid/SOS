@@ -919,19 +919,19 @@ module.exports = {
                         else creep.repair(structureToRepair);
                     }
                     else {
-                        var structureToBuild = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
-                        if (structureToBuild) {
-                            if (creep.pos.getRangeTo(structureToBuild) > 3) creep.moveTo(structureToBuild, {
-                                reusePath: 7,
-                                range: 3
-                            });
-                            else creep.build(structureToBuild);
+                        var towerToRefill = this.getTowerToRefill(Memory, room);
+                        if (towerToRefill) {
+                            if (!creep.pos.isNearTo(towerToRefill)) creep.transfer(towerToRefill, RESOURCE_ENERGY);
+                            else creep.moveTo(towerToRefill, {reusePath: 7, range: 3});
                         }
                         else {
-                            var towerToRefill = this.getTowerToRefill(Memory, room);
-                            if (towerToRefill) {
-                                if (!creep.pos.isNearTo(towerToRefill)) creep.transfer(towerToRefill, RESOURCE_ENERGY);
-                                else creep.moveTo(towerToRefill, {reusePath: 7, range: 3});
+                            var structureToBuild = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
+                            if (structureToBuild) {
+                                if (creep.pos.getRangeTo(structureToBuild) > 3) creep.moveTo(structureToBuild, {
+                                    reusePath: 7,
+                                    range: 3
+                                });
+                                else creep.build(structureToBuild);
                             }
                             else {
                                 var defenseToRepair = this.findDefence(Memory, room, creep);
