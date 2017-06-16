@@ -697,6 +697,9 @@ module.exports = {
 
                         if (creep.memory.w == true) {
                             switch (creep.memory.doing) {
+                                case 'tower':
+                                    this.fillTower(room, creep);
+                                    break;
                                 case 'link':
                                     this.linkToStorage(room, creep);
                                     break;
@@ -706,7 +709,8 @@ module.exports = {
                             }
                         }
                         else {
-                            if (this.linkToStorage(room, creep) == OK) creep.memory.doing = 'link';
+                            if (this.fillTower(room, creep) == OK) creep.memory.doing = 'tower';
+                            else if (this.linkToStorage(room, creep) == OK) creep.memory.doing = 'link';
                             else if (room.storage.store.energy < 50000 && room.terminal && room.terminal.store.energy > 100) creep.withdraw(room.terminal, RESOURCE_ENERGY);
                         }
                     }
@@ -763,7 +767,36 @@ module.exports = {
                 }
                 else return 'no structure'
             }
-        }
+        },
+        
+        fillTower: function (room, creep) {
+            var randomHash = Memory.RH;
+
+            if (!randomHash || !global[randomHash] || Game.time-Memory.lt > 101 || (global[randomHash].t && global[randomHash].t.pos.roomName != creep.pos.roomName)) {
+                randomHash = getRandomHash();
+                global[randomHash] = {};
+                Memory.RH = randomHash;
+            }
+
+            if (global[randomHash] && (!global[randomHash].t || !Memory.lt)) {
+                global[randomHash].t = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_TOWER})[0];
+                Memory.lt = Game.time;
+            }
+
+            var tower = global[randomHash].t && global[randomHash].t.energy < global[randomHash].t.energyCapacity ? global[randomHash].t : undefined;
+            if (!tower) return 'no structure';
+
+            if (creep.memory.w == true) {
+                //if carry is full
+                creep.transfer(tower, RESOURCE_ENERGY);
+            }
+            else {
+                //if carry is empty
+                creep.memory.w = true;
+                creep.withdraw(room.storage, RESOURCE_ENERGY);
+                return OK;
+            }
+        },
     },
 
     iRmHaul: {
@@ -919,19 +952,19 @@ module.exports = {
                         else creep.repair(structureToRepair);
                     }
                     else {
-                        var towerToRefill = this.getTowerToRefill(Memory, room);
-                        if (towerToRefill) {
-                            if (!creep.pos.isNearTo(towerToRefill)) creep.transfer(towerToRefill, RESOURCE_ENERGY);
-                            else creep.moveTo(towerToRefill, {reusePath: 7, range: 3});
+                        var structureToBuild = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
+                        if (structureToBuild) {
+                            if (creep.pos.getRangeTo(structureToBuild) > 3) creep.moveTo(structureToBuild, {
+                                reusePath: 7,
+                                range: 3
+                            });
+                            else creep.build(structureToBuild);
                         }
                         else {
-                            var structureToBuild = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
-                            if (structureToBuild) {
-                                if (creep.pos.getRangeTo(structureToBuild) > 3) creep.moveTo(structureToBuild, {
-                                    reusePath: 7,
-                                    range: 3
-                                });
-                                else creep.build(structureToBuild);
+                            var towerToRefill = this.getTowerToRefill(Memory, room);
+                            if (towerToRefill) {
+                                if (!creep.pos.isNearTo(towerToRefill)) creep.transfer(towerToRefill, RESOURCE_ENERGY);
+                                else creep.moveTo(towerToRefill, {reusePath: 7, range: 3});
                             }
                             else {
                                 var defenseToRepair = this.findDefence(Memory, room, creep);
