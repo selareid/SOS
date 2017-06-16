@@ -787,13 +787,14 @@ module.exports = {
             }
 
             var tower = global[randomHash].t && global[randomHash].t.energy < global[randomHash].t.energyCapacity ? global[randomHash].t : undefined;
-            if (!tower) creep.memory.w = false; return 'no structure';
+            if (!tower) {
+                creep.memory.w = false;
+                return 'no structure';
+            }
 
             if (creep.memory.w == true) {
                 //if carry is full
                 creep.transfer(tower, RESOURCE_ENERGY);
-
-                if (tower.energy >= tower.energyCapacity) creep.memory.w = false;
             }
             else {
                 //if carry is empty
