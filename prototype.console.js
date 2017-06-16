@@ -35,17 +35,17 @@ module.exports = () => {
 
     console.errorLog = function (errorMessage) {
         console.log(timeString + errorString + errorMessage);
-        if (Memory.notify) Memory.notify.push(timeString + errorString + errorMessage);
+//         if (Memory.notify) Memory.notify.push(timeString + errorString + errorMessage);
     };
 
     console.kernelError = function (errorMessage) {
         console.log(timeString + kernelString + errorString + errorMessage);
-        if (Memory.notify) Memory.notify.push(timeString + kernelString + errorString + errorMessage);
+//         if (Memory.notify) Memory.notify.push(timeString + kernelString + errorString + errorMessage);
     };
 
     console.processError = function (errorMessage) {
         console.log(timeString + processString + errorString + errorMessage);
-        if (Memory.notify) Memory.notify.push(timeString + processString + errorString + errorMessage);
+//         if (Memory.notify) Memory.notify.push(timeString + processString + errorString + errorMessage);
     };
 
     console.logTickStart = function () {
@@ -66,6 +66,6 @@ module.exports = () => {
 
     console.notify = function (message) {
         console.log(timeString + message);
-        if (Memory.notify) Memory.notify.push(timeString + message);
+//         if (Memory.notify) Memory.notify.push(timeString + message);
     };
 };
