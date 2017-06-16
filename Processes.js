@@ -256,9 +256,13 @@ module.exports = {
             var randomHash = Memory.RH;
 
             if (!randomHash || !global[randomHash]) {
-                Memory.RH = makeid;
+                do {
+                    randomHash = makeid();
+                }
+                while (global[randomHash]);
+
                 global[Memory.RH] = {};
-                randomHash = Memory.RH;
+                Memory.RH = randomHash;
             }
 
             if (global[randomHash] && (!global[randomHash].t || !Memory.lt || Game.time-Memory.lt > 101)) {
@@ -409,9 +413,13 @@ module.exports = {
             var randomHash = Memory.RH;
 
             if (!randomHash || !global[randomHash]) {
-                Memory.RH = makeid;
+                do {
+                    randomHash = makeid();
+                }
+                while (global[randomHash]);
+
                 global[Memory.RH] = {};
-                randomHash = Memory.RH;
+                Memory.RH = randomHash;
             }
 
             if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
@@ -509,9 +517,13 @@ module.exports = {
             var randomHash = Memory.RH;
 
             if (!randomHash || !global[randomHash]) {
-                Memory.RH = makeid;
+                do {
+                    randomHash = makeid();
+                }
+                while (global[randomHash]);
+
                 global[Memory.RH] = {};
-                randomHash = Memory.RH;
+                Memory.RH = randomHash;
             }
 
             if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
@@ -754,9 +766,13 @@ module.exports = {
                 var randomHash = Memory.RH;
 
                 if (!randomHash || !global[randomHash] || Game.time-Memory.lt > 101) {
-                    Memory.RH = makeid();
+                    do {
+                        randomHash = makeid();
+                    }
+                    while (global[randomHash]);
+
                     global[Memory.RH] = {};
-                    randomHash = Memory.RH;
+                    Memory.RH = randomHash;
                 }
 
                 if (global[randomHash] && (!global[randomHash].l || !Memory.lt)) {
