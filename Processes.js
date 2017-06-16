@@ -789,6 +789,8 @@ module.exports = {
             if (creep.memory.w == true) {
                 //if carry is full
                 creep.transfer(tower, RESOURCE_ENERGY);
+
+                if (tower.energy >= tower.energyCapacity) creep.memory.w = false;
             }
             else {
                 //if carry is empty
