@@ -24,6 +24,17 @@ const bodyChart = {
     takeCare: [[WORK, CARRY, MOVE], []]
 };
 
+function getRandomHash() {
+    var randomHash;
+
+    do {
+        randomHash = makeid();
+    }
+    while (global[randomHash]);
+
+    return randomHash;
+}
+
 module.exports = {
     init: {
         run: function () {
@@ -256,12 +267,8 @@ module.exports = {
             var randomHash = Memory.RH;
 
             if (!randomHash || !global[randomHash]) {
-                do {
-                    randomHash = makeid();
-                }
-                while (global[randomHash]);
-
-                global[Memory.RH] = {};
+                randomHash = getRandomHash();
+                global[randomHash] = {};
                 Memory.RH = randomHash;
             }
 
@@ -413,12 +420,8 @@ module.exports = {
             var randomHash = Memory.RH;
 
             if (!randomHash || !global[randomHash]) {
-                do {
-                    randomHash = makeid();
-                }
-                while (global[randomHash]);
-
-                global[Memory.RH] = {};
+                randomHash = getRandomHash();
+                global[randomHash] = {};
                 Memory.RH = randomHash;
             }
 
@@ -517,12 +520,8 @@ module.exports = {
             var randomHash = Memory.RH;
 
             if (!randomHash || !global[randomHash]) {
-                do {
-                    randomHash = makeid();
-                }
-                while (global[randomHash]);
-
-                global[Memory.RH] = {};
+                randomHash = getRandomHash();
+                global[randomHash] = {};
                 Memory.RH = randomHash;
             }
 
@@ -766,12 +765,8 @@ module.exports = {
                 var randomHash = Memory.RH;
 
                 if (!randomHash || !global[randomHash] || Game.time-Memory.lt > 101) {
-                    do {
-                        randomHash = makeid();
-                    }
-                    while (global[randomHash]);
-
-                    global[Memory.RH] = {};
+                    randomHash = getRandomHash();
+                    global[randomHash] = {};
                     Memory.RH = randomHash;
                 }
 
