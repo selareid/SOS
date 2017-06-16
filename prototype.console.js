@@ -46,11 +46,11 @@ module.exports = () => {
     };
 
     console.logTickStart = function () {
-        console.log(timeString + 'Tick Started');
+        var used = typeof Game.cpu.getUsed == 'function' ? Game.cpu.getUsed() : Game.cpu.getUsed;
+        console.log(timeString + 'Tick Started ' + 'CPU: ' + used.toFixed(3));
     };
 
     console.logTickSummary = function () {
-        
         var used = typeof Game.cpu.getUsed == 'function' ? Game.cpu.getUsed() : Game.cpu.getUsed;
         console.log(timeString + 'Tick Ended ' + 'CPU: ' + used.toFixed(3) + ' Creeps: ' + _.size(Game.creeps));
     };

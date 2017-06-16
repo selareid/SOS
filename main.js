@@ -41,6 +41,6 @@ module.exports.loop = function () {
         }
 
         if (Memory.stats) Memory.stats.cpu.getUsed = Game.cpu.getUsed();
-        console.logTickSummary(Game.cpu.getUsed)
+        console.logTickSummary()
     });
 };
