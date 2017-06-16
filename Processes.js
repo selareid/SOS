@@ -884,7 +884,7 @@ module.exports = {
                     else if (creep.carry.energy == creep.carryCapacity) Memory.w = 0;
 
                     if (Memory.w == 1) {
-                        creep.getConsumerEnergy(Memory, room);
+                        this.getEnergy(Memory, room, creep);
                     }
                     else {
                         if (creep.pos.getRangeTo(room.controller) > 3) creep.moveTo(room.controller);
@@ -916,6 +916,38 @@ module.exports = {
                         return Math.floor(((storage.store.energy + terminalEnergy) - 20000) / 20000) > 1 ? Math.floor(((storage.store.energy + terminalEnergy) - 20000) / 20000) : 1;
                     }
                     else return 1;
+            }
+        },
+
+        getEnergy: function (Memory, room, creep) {
+            var randomHash = Memory.RH;
+
+            if (!randomHash || !global[randomHash]) {
+                randomHash = getRandomHash();
+                global[randomHash] = {};
+                Memory.RH = randomHash;
+            }
+
+            if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
+                global[randomHash].l = room.controller.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => s.structureType == STRUCTURE_LINK})[0];
+                Memory.lt = Game.time;
+            }
+
+            var link = global[randomHash].l;
+
+            if (link) {
+
+            }
+            else {
+                creep.getConsumerEnergy(Memory, room);
+
+                if (Game.time % 11 == 0 && room.controller.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < 1
+                    && CONTROLLER_STRUCTURES[STRUCTURE_LINK][room.controller.level] > room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}).length) {
+                    var path = room.storage.pos.findPathTo(room.controller.pos, {range: 3});
+
+                    var linkPos = new RoomPosition(path[path.length-1].x, path[path.length-1].y, room.name);
+                    if (linkPos) global.Mem.cs.push(room.name + ',' + (linkPos.x) + ',' + (linkPos.y) + ',' + STRUCTURE_LINK);
+                }
             }
         }
     },
