@@ -404,7 +404,7 @@ module.exports = {
             if (!room) return 'end';
 
             var storageFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
-            if (storageFlag) return;
+            if (!storageFlag) return;
 
             var randomHash = Memory.RH;
 
