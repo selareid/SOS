@@ -380,7 +380,7 @@ module.exports = {
             });
             
             
-            if (link && storageLink.energy > 0 && (!room.storage || room.storage.store.energy > 1000)) {
+            if (link && storageLink.energy >= storageLink.energyCapacity && (!room.storage || room.storage.store.energy > 1000)) {
                 storageLink.transferEnergy(link);
             }
         }
