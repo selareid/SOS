@@ -679,7 +679,7 @@ module.exports = {
                             }
                         }
                         else {
-                            if (this.fillTower(room, creep) == OK) creep.memory.doing = 'tower';
+                            if (this.fillTower(Memory, room, creep) == OK) creep.memory.doing = 'tower';
                             else if (this.linkToStorage(room, creep) == OK) creep.memory.doing = 'link';
                             else if (room.storage.store.energy < 50000 && room.terminal && room.terminal.store.energy > 100) creep.withdraw(room.terminal, RESOURCE_ENERGY);
                         }
@@ -740,7 +740,7 @@ module.exports = {
             }
         },
         
-        fillTower: function (room, creep) {
+        fillTower: function (Memory, room, creep) {
             var randomHash = Memory.RH;
 
             if (!randomHash || !global[randomHash] || Game.time-Memory.lt > 101 || (global[randomHash].t && global[randomHash].t.pos.roomName != creep.pos.roomName)) {
