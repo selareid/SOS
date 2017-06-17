@@ -955,14 +955,14 @@ module.exports = {
 
             var link = global[randomHash].l;
 
-            if (link && link.energy > 0 && (room.storage && creep.pos.getClosestByRange([link, room.storage]) == link)) {
+            if (link && link.energy > 0 && (room.storage && creep.pos.findClosestByRange([link, room.storage]) == link)) {
                 if (creep.pos.isNearTo(link.pos)) creep.withdraw(link, RESOURCE_ENERGY);
                 else creep.moveTo(link);
             }
             else {
                 creep.getConsumerEnergy(Memory, room);
 
-                if (Game.time % 11 == 0 && room.controller.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < 1
+                if (Game.time % 11 == 0 && room.controller.pos.findInRange(FIND_MY_CONSTRUCTION_SITES).length < 1 && room.controller.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < 1
                     && CONTROLLER_STRUCTURES[STRUCTURE_LINK][room.controller.level] > room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}).length) {
                     var path = room.storage.pos.findPathTo(room.controller.pos, {range: 3});
 
