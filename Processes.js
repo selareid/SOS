@@ -357,7 +357,7 @@ module.exports = {
             if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
                 global[randomHash].l = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK});
                 global[randomHash].sl = storageFlag.pos.findInRange(global[randomHash].l, 1)[0] ? storageFlag.pos.findInRange(global[randomHash].l, 1)[0] : undefined;
-                global[randomHash].srcL = room.find(global[randomHash].l, (s) => s.findInRange(FIND_SOURCES, 3)[0]);
+                global[randomHash].srcL = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK && s.pos.findInRange(FIND_SOURCES, 3)[0]});
                 Memory.lt = Game.time;
             }
 
@@ -717,23 +717,28 @@ module.exports = {
 
                 var randomHash = Memory.RH;
 
-                if (!randomHash || !global[randomHash] || Game.time-Memory.lt > 101 || (global[randomHash].l && global[randomHash].l.pos.roomName != creep.pos.roomName)) {
+                if (!randomHash || !global[randomHash]) {
                     randomHash = getRandomHash();
                     global[randomHash] = {};
                     Memory.RH = randomHash;
                 }
 
-                if (global[randomHash] && (!global[randomHash].l || !Memory.lt)) {
-                    global[randomHash].l = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_LINK})[0];
+                if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
+                    global[randomHash].l = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK});
+                    global[randomHash].sl = creep.pos.findInRange(global[randomHash].l, 1)[0] ? creep.pos.findInRange(global[randomHash].l, 1)[0] : undefined;
                     Memory.lt = Game.time;
                 }
 
-                var linkWithEnergy = global[randomHash].l && global[randomHash].l.energy > 0 ? global[randomHash].l : undefined;
+                var storageLink = global[randomHash].sl;
 
-                if (linkWithEnergy) {
-                    creep.memory.w = true;
-                    creep.withdraw(linkWithEnergy, RESOURCE_ENERGY);
-                    return OK;
+                if (storageLink && storageLink.energy > 0) {
+                    var link = _.filter(global[randomHash].l, (s) => s.energy < 50 && s.id != storageLink.id && !s.pos.findInRange(FIND_SOURCES, 3)[0])[0];
+                    
+                    if (room.storage.energy <= 1000 || !link) {
+                        creep.memory.w = true;
+                        creep.withdraw(storageLink, RESOURCE_ENERGY);
+                        return OK;
+                    }
                 }
                 else return 'no structure'
             }
