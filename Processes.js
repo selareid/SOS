@@ -357,30 +357,29 @@ module.exports = {
             if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
                 global[randomHash].l = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK});
                 global[randomHash].sl = storageFlag.pos.findInRange(global[randomHash].l, 1)[0] ? storageFlag.pos.findInRange(global[randomHash].l, 1)[0] : undefined;
-                global[randomHash].cl = room.controller.pos.findInRange(global[randomHash].l, 3)[0] ? room.controller.pos.findInRange(global[randomHash].l, 3)[0] : undefined;
+                global[randomHash].srcL = room.find(global[randomHash].l, (s) => s.findInRange(FIND_SOURCES, 3)[0]);
                 Memory.lt = Game.time;
             }
 
-            var links = _.filter(global[randomHash].l, (s) => s.id != global[randomHash].sl.id && (!global[randomHash].cl || s.id != global[randomHash].cl.id));
             var storageLink = global[randomHash].sl;
-            var controllerLink = global[randomHash].cl;
+            var sourceLinks = global[randomHash].srcL;
+            var link = _.filter(global[randomHash].l, (s) => s.energy < 50 && s.id != storageLink.id && !sourceLinks.includes(s))[0];
 
             if (!storageLink) return global[randomHash].l = undefined;
 
             var energySent = storageLink.energy;
 
-            _.forEach(links, (link) => {
-                if (link.energy > 0) {
+            _.forEach(sourceLinks, (l) => {
+                if (l.energy > 0) {
                     if (energySent < storageLink.energyCapacity && storageLink.energy < storageLink.energyCapacity) {
-                        link.transferEnergy(storageLink);
+                        l.transferEnergy(storageLink);
                     }
                 }
             });
             
             
-            if (controllerLink && storageLink.energy > 0 && controllerLink.energy < controllerLink.energyCapacity && 
-                (!room.storage || room.storage.store.energy > 1000)) {
-                storageLink.transferEnergy(controllerLink);
+            if (link && storageLink.energy > 0 && (!room.storage || room.storage.store.energy > 1000)) {
+                storageLink.transferEnergy(link);
             }
         }
     },
