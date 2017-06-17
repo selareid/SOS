@@ -361,7 +361,7 @@ module.exports = {
                 Memory.lt = Game.time;
             }
 
-            var links = _.filter(global[randomHash].l, (s) => s.id != global[randomHash].sl.id && (global[randomHash].cl && s.id != global[randomHash].cl.id));
+            var links = _.filter(global[randomHash].l, (s) => s.id != global[randomHash].sl.id && (!global[randomHash].cl || s.id != global[randomHash].cl.id));
             var storageLink = global[randomHash].sl;
             var controllerLink = global[randomHash].cl;
 
