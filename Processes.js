@@ -409,12 +409,14 @@ module.exports = {
 
             if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
                 global[randomHash].l = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK});
-                global[randomHash].sl = storageFlag.pos.findInRange(global[randomHash].l, 1)[0] ? storageFlag.pos.findInRange(global[randomHash].l, 2)[0] : undefined;
+                global[randomHash].sl = storageFlag.pos.findInRange(global[randomHash].l, 1)[0] ? storageFlag.pos.findInRange(global[randomHash].l, 1)[0] : undefined;
+                global[randomHash].cl = room.controller.pos.findInRange(global[randomHash].l, 3)[0] ? room.controller.pos.findInRange(global[randomHash].l, 3)[0] : undefined;
                 Memory.lt = Game.time;
             }
 
-            var links = _.filter(global[randomHash].l, (s) => s.id != global[randomHash].sl.id);
+            var links = _.filter(global[randomHash].l, (s) => s.id != global[randomHash].sl.id && s.id != global[randomHash].cl.id);
             var storageLink = global[randomHash].sl;
+            var controllerLink = global[randomHash].cl;
 
             if (!storageLink) return;
 
@@ -427,6 +429,12 @@ module.exports = {
                     }
                 }
             });
+            
+            
+            if (controllerLink && storageLink.energy > 0 && controllerLink.energy < controllerLink.energyCapacity && 
+                (!room.storage || room.storage.store.energy > 1000)) {
+                storageLink.transferEnergy(controllerLink);
+            }
         }
     },
 
