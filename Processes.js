@@ -893,7 +893,7 @@ module.exports = {
                     creep.say('praiseRC');
 
                     if (creep.carry.energy == 0) creep.memory.w = 1;
-                    else if (creep.carry.energy == creep.carryCapacity) creep.memor.w = 0;
+                    else if (creep.carry.energy == creep.carryCapacity) creep.memory.w = 0;
 
                     if (creep.memory.w == 1) {
                         this.getEnergy(Memory, room, creep);
