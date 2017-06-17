@@ -119,7 +119,7 @@ module.exports = {
 
             if (!Memory.spawnQueue) Memory.spawnQueue = {};
 
-            if (Game.time % 3 == 0) {
+            if (Game.time % 11 == 0) {
                 if (room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.Mem.a.includes(c.owner.username)}) && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doTowers').length < 1) spawnNewProcess('doTowers', Memory.rmN);
 
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doHarvest').length < 1) spawnNewProcess('doHarvest', Memory.rmN);
@@ -131,7 +131,7 @@ module.exports = {
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'praiseRC').length < 1) spawnNewProcess('praiseRC', Memory.rmN);
 
                 if (room.controller.level >= 5 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doLinks').length < 1) spawnNewProcess('doLinks', Memory.rmN);
-                if (room.controller.level >= 4 && room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0] && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'iRmHaul').length < 1) spawnNewProcess('iRmHaul', Memory.rmN);
+                if (room.controller.level >= 4 && room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < 3 && room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0] && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'iRmHaul').length < 1) spawnNewProcess('iRmHaul', Memory.rmN);
             }
 
             if (Game.time % 11 == 0 && room.controller.level >= 4 && !room.storage && !room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0] && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'placeStorage').length < 1) spawnNewProcess('placeStorage', Memory.rmN);
@@ -788,7 +788,6 @@ module.exports = {
             if (!room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0]) return;
 
             if (!room.storage) return this.placeStorage(room);
-
             if (creeps.length > 0) {
                 //creep loop
                 for (let creep_it_it in creeps) {
@@ -815,12 +814,18 @@ module.exports = {
                 }
             }
 
+
             //get more creeps
-            if (creeps.length < this.getNumberOfCarriers(room)) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'iRmHaul'));
+            if (Game.time % 3 == 0) {
+                var numberOfCreepsNeeded = this.getNumberOfCarriers(room);
+                if (creeps.length < numberOfCreepsNeeded) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'iRmHaul'));
+                else if (creeps.length == 0 && numberOfCreepsNeeded == 0) return 'end';
+            }
         },
 
         getNumberOfCarriers: function (room) {
-            return room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < 2 ? 2 : 1;
+            var links = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}).length;
+            return links >= 3 ? 0 : (links >= 2 ? 1 : 2);
         },
 
         placeStorage: function (room) {
