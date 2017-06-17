@@ -948,7 +948,7 @@ module.exports = {
             var link = global[randomHash].l;
 
             if (link) {
-
+                creep.getConsumerEnergy(Memory, room);
             }
             else {
                 creep.getConsumerEnergy(Memory, room);
