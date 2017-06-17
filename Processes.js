@@ -997,11 +997,11 @@ module.exports = {
             var structure = Memory.str ? Game.getObjectById(Memory.str) : undefined;
 
             if (!structure || structure.hits >= structure.hitsMax || (structure.structureType == STRUCTURE_RAMPART && structure.hits > (structure.hitsMax * 0.001))) {
-                structure = creep.pos.findClosestByRange(room.find(FIND_STRUCTURES, {
+                structure = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                     filter: (s) => (s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART
                     && s.hits < (s.hitsMax * 0.5) || (s.structureType == STRUCTURE_RAMPART && s.hits < (s.hitsMax * 0.001)))
                     && (s.structureType != STRUCTURE_CONTAINER || !s.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => s.structureType == STRUCTURE_LINK})[0])
-                }));
+                });
             }
 
             if (structure) Memory.str = structure.id;
