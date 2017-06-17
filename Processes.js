@@ -667,7 +667,7 @@ module.exports = {
                         if (creep.memory.w == true) {
                             switch (creep.memory.doing) {
                                 case 'tower':
-                                    this.fillTower(room, creep);
+                                    this.fillTower(Memory, room, creep);
                                     break;
                                 case 'link':
                                     this.linkToStorage(Memory, room, creep);
