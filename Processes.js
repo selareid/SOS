@@ -365,7 +365,7 @@ module.exports = {
             var storageLink = global[randomHash].sl;
             var controllerLink = global[randomHash].cl;
 
-            if (!storageLink) return;
+            if (!storageLink) return global[randomHash].l = undefined;
 
             var energySent = storageLink.energy;
 
