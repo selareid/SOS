@@ -671,7 +671,7 @@ module.exports = {
                                     this.fillTower(room, creep);
                                     break;
                                 case 'link':
-                                    this.linkToStorage(room, creep);
+                                    this.linkToStorage(Memory, room, creep);
                                     break;
                                 default:
                                     console.errorLog('creep.memory.doing is undefined', creep, room);
