@@ -955,8 +955,9 @@ module.exports = {
 
             var link = global[randomHash].l;
 
-            if (link) {
-                creep.getConsumerEnergy(Memory, room);
+            if (link && link.energy > 0) {
+                if (creep.pos.isNearTo(link.pos)) creep.withdraw(link, RESOURCE_ENERGY);
+                else creep.moveTo(link);
             }
             else {
                 creep.getConsumerEnergy(Memory, room);
