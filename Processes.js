@@ -372,7 +372,7 @@ module.exports = {
             var energySent = storageLink.energy;
 
             _.forEach(sourceLinks, (l) => {
-                if (l.energy > 0) {
+                if (l.energy >= l.energyCapacity) {
                     if (energySent < storageLink.energyCapacity && storageLink.energy < storageLink.energyCapacity) {
                         l.transferEnergy(storageLink);
                     }
