@@ -143,7 +143,9 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             while (!creepMem.name || Game.creeps[creepMem.name]) creepMem.name = (Game.time % 1000) + '' + Math.round(Math.random() * 1000);
-            creepMem.body = processSpawn.run(Game.rooms[Memory.rmN], _.cloneDeep(bodyChart[process][0]), _.cloneDeep(bodyChart[process][1]), bodyChart[process][2]);
+            creepMem.body = processSpawn.run(Game.rooms[Memory.rmN], _.cloneDeep(bodyChart[process][0]), _.cloneDeep(bodyChart[process][1]),
+                (process == 'praiseRC' && Game.rooms[Memory.rmN] && Game.rooms[Memory.rmN].controller.level >= 8 ? 15 : bodyChart[process][2]));
+            
             creepMem.proc = process;
 
             if (!Memory.spawnQueue[creepMem.name]) {
