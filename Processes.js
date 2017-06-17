@@ -49,7 +49,6 @@ module.exports = {
             global.Mem.init = true;
 
             spawnNewProcess('doStats');
-            spawnNewProcess('buildFromQueue');
             spawnNewProcess('checkRooms');
             spawnNewProcess('checkCreeps');
         }
@@ -90,60 +89,6 @@ module.exports = {
                     Memory.p['room:' + roomName] = new Process('room', roomName);
                 }
             }
-        }
-    },
-
-    buildFromQueue: {
-        run: function () {
-            if (!Memory.cs) Memory.cs = [];
-            
-            if (_.size(Game.constructionSites) >= 50) {
-                if (Memory.cs.length > 500) Memory.cs.length = 500;
-                return;
-            }
-            
-            var cnt = 0;
-            
-                do {
-                var nextThing = Memory.cs[0];
-                if (!nextThing) return;
-
-                var splitThing = nextThing.split(',');
-
-                var room = Game.rooms[splitThing[0]];
-                var x = Number.parseInt(splitThing[1]);
-                var y = Number.parseInt(splitThing[2]);
-                var struct = splitThing[3];
-
-                if (isUndefinedOrNull(room) || isUndefinedOrNull(x) || isUndefinedOrNull(y) || isUndefinedOrNull(struct)) return Memory.cs.splice(0, 1);
-
-                var rsl = room.createConstructionSite(x, y, struct);
-                switch (rsl) {
-                    case 0:
-                        Memory.cs.splice(0, 1);
-                        console.roomLog(room, 'Created Construction Site At ' + x + ' ' + y + ' ' + struct);
-                        break;
-                    case -7:
-                        var roomPos = new RoomPosition(x, y, room.name);
-                        if (roomPos.lookFor(LOOK_CONSTRUCTION_SITES)[0] || _.filter(roomPos.lookFor(LOOK_STRUCTURES), (s) => s.structureType == struct || OBSTACLE_OBJECT_TYPES.includes(s.structureType))[0]
-                            || _.filter(roomPos.lookFor(LOOK_TERRAIN), (t) => t.type == 'wall')[0]) {
-                            console.roomLog(room, 'Spliced constructions site ' + ' at ' + x + ' ' + y + ' ' + room.name + ' due to already built' + ' ' + struct);
-                            Memory.cs.splice(0, 1);
-                        }
-                        else {
-                            console.errorLog('Error creating constructions site ' + rsl + ' at ' + x + ' ' + y + ' ' + room.name + ' ' + struct);
-                        if (roomPos.lookFor(LOOK_CREEPS).length > 0) roomPos.lookFor(LOOK_CREEPS)[0].suicide();
-                        if (_.filter(roomPos.lookFor(LOOK_STRUCTURES), (s) => !OBSTACLE_OBJECT_TYPES.includes(s.structureType))[0]) _.filter(roomPos.lookFor(LOOK_STRUCTURES), (s) => !OBSTACLE_OBJECT_TYPES.includes(s.structureType))[0].destroy();
-                        }
-                            break;
-                    default:
-                        console.errorLog('Error creating constructions site ' + rsl + ' at ' + x + ' ' + y + ' ' + room.name);
-                        Memory.cs.splice(0, 1);
-                }
-                    
-                    cnt++;
-            }
-            while (rsl == -7 || cnt >= 10);
         }
     },
 
@@ -359,7 +304,9 @@ module.exports = {
             var costMatrix = this.getCostMatrix(room.name, storageFlag, spawnFlag);
 
             _.forEach(storageFlag.pos.findPathTo(spawnFlag, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
-                if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) global.Mem.cs.push(room.name + ',' + pathData.x + ',' + pathData.y + ',' + STRUCTURE_ROAD);
+                 if (_.size(Game.constructionSites) < 100) {
+                     if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
+                 }
             });
         },
         
@@ -540,6 +487,8 @@ module.exports = {
                 else {
                     creep.drop(RESOURCE_ENERGY);
 
+                    if (!_.size(Game.constructionSites) < 100) return;
+
                     if (creep.room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < CONTROLLER_STRUCTURES.link[creep.room.controller.level]) {
                         if (!Game.getObjectById(srcId).pos.findInRange(FIND_CONSTRUCTION_SITES, 2)[0]) {
                             this.placeLink(Game.getObjectById(srcId), creep);
@@ -548,13 +497,15 @@ module.exports = {
                     else {
                         var src = Game.getObjectById(srcId);
                         if (src && creep.pos.isNearTo(src) && creep.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER}).length < 1
-                            && creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1).length < 1) global.Mem.cs.push(creep.room.name + ',' + creep.pos.x + ',' + creep.pos.y + ',' + STRUCTURE_CONTAINER);
+                            && creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1).length < 1) room.createConstructionSite(creep.pos.x, creep.pos.y, STRUCTURE_CONTAINER)
                     }
                 }
             }
         },
 
         placeLink: function (source, creep) {
+            if (!_.size(Game.constructionSites) < 100) return;
+
             const opRP = {
                 [TOP]: {d: BOTTOM, x: 0, y: 1},
                 [BOTTOM]: {d: TOP, x: 0, y: -1},
@@ -574,7 +525,7 @@ module.exports = {
                 else blocked = true;
             });
 
-            if (!blocked) global.Mem.cs.push(creep.room.name + ',' + Number.parseInt(creep.pos.x+opDirTS.x) + ',' + Number.parseInt(creep.pos.y+opDirTS.y) + ',' + STRUCTURE_LINK);
+            if (!blocked) creep.room.createConstructionSite(creep.pos.x+opDirTS.x, creep.pos.y+opDirTS.y, STRUCTURE_LINK);
             else console.notify("doHarvest's placeLink found itself blocked Source is: " + source.id + ' in Room: ' + source.room);
         }
     },
@@ -621,14 +572,14 @@ module.exports = {
         spawns: [{"x": 1, "y": 0}, {"x": -1, "y": 0}, {"x": 0, "y": -1}],
 
         placeSpawn: function (room) {
-            if (CONTROLLER_STRUCTURES.spawn[room.controller.level] > room.find(FIND_MY_SPAWNS).length) {
+            if (!_.size(Game.constructionSites) < 100 && CONTROLLER_STRUCTURES.spawn[room.controller.level] > room.find(FIND_MY_SPAWNS).length) {
                 var flag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'fillSpawn'})[0];
                 var cnt = room.find(FIND_MY_SPAWNS).length;
 
                 for (let pos_it of this.spawns) {
                     let pos = new RoomPosition(flag.pos.x + pos_it.x, flag.pos.y + pos_it.y, room.name);
                     if (!pos.findInRange(FIND_MY_SPAWNS, 0)[0] && !pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 0)[0]) {
-                        global.Mem.cs.push(room.name + ',' + pos.x + ',' + pos.y + ',' + STRUCTURE_SPAWN);
+                        room.createConstructionSite(pos.x, pos.y, STRUCTURE_SPAWN);
 
                         cnt++;
                         if (cnt >= CONTROLLER_STRUCTURES.spawn[room.controller.level]) break;
@@ -745,10 +696,11 @@ module.exports = {
 
         placeStrucs: function (room, flag) {
             for (let struc of this.structs) {
-                if (CONTROLLER_STRUCTURES[struc.s][room.controller.level] > room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == struc.s}).length) {
+                if (!_.size(Game.constructionSites) < 100
+                    && CONTROLLER_STRUCTURES[struc.s][room.controller.level] > room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == struc.s}).length) {
                     let strucPos = new RoomPosition(flag.pos.x + struc.x, flag.pos.y + struc.y, room.name);
 
-                    if (!strucPos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == struc.s})[0]) global.Mem.cs.push(room.name + ',' + strucPos.x + ',' + strucPos.y + ',' + struc.s);
+                    if (!strucPos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == struc.s})[0]) room.createConstructionSite(strucPos.x, strucPos.y, struc.s);
                 }
             }
 
@@ -868,13 +820,13 @@ module.exports = {
         },
 
         placeStorage: function (room) {
-            if (room.storage) return;
+            if (room.storage || !_.size(Game.constructionSites) < 100) return;
             if (Game.time % 11 == 0) {
 
                 var distrFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
                 if (!distrFlag || distrFlag.pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 1)[0]) return;
 
-                global.Mem.cs.push(room.name + ',' + (distrFlag.pos.x + 1) + ',' + (distrFlag.pos.y) + ',' + STRUCTURE_STORAGE);
+                room.createConstructionSite((distrFlag.pos.x + 1), (distrFlag.pos.y), STRUCTURE_STORAGE);
             }
         }
     },
@@ -962,12 +914,12 @@ module.exports = {
             else {
                 creep.getConsumerEnergy(Memory, room);
 
-                if (Game.time % 11 == 0 && room.controller.pos.findInRange(FIND_MY_CONSTRUCTION_SITES).length < 1 && room.controller.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < 1
+                if (_.size(Game.constructionSites) < 100 && Game.time % 11 == 0 && room.controller.pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 3).length < 1 && room.controller.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < 1
                     && CONTROLLER_STRUCTURES[STRUCTURE_LINK][room.controller.level] > room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}).length) {
                     var path = room.storage.pos.findPathTo(room.controller.pos, {range: 3});
 
                     var linkPos = new RoomPosition(path[path.length-1].x, path[path.length-1].y, room.name);
-                    if (linkPos) global.Mem.cs.push(room.name + ',' + (linkPos.x) + ',' + (linkPos.y) + ',' + STRUCTURE_LINK);
+                    if (linkPos) room.createConstructionSite(linkPos, STRUCTURE_LINK);
                 }
             }
         }
