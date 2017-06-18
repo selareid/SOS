@@ -769,7 +769,7 @@ module.exports = {
                 //if carry is full
                 creep.transfer(tower, RESOURCE_ENERGY);
             }
-            else {
+            else if (room.storage.store.energy >= tower.energyCapacity-tower.energy) {
                 //if carry is empty
                 creep.memory.w = true;
                 creep.withdraw(room.storage, RESOURCE_ENERGY);
