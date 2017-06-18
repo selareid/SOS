@@ -46,13 +46,11 @@ module.exports = () => {
     };
 
     console.logTickStart = function () {
-        var used = typeof Game.cpu.getUsed == 'function' ? Game.cpu.getUsed() : Game.cpu.getUsed;
-        console.log(timeString + 'Tick Started ' + 'CPU: ' + used.toFixed(3));
+        console.log(timeString + 'Tick Started ' + 'CPU: ' + Game.cpu.getUsed().toFixed(3));
     };
 
     console.logTickSummary = function () {
-        var used = typeof Game.cpu.getUsed == 'function' ? Game.cpu.getUsed() : Game.cpu.getUsed;
-        console.log(timeString + 'Tick Ended ' + 'CPU: ' + used.toFixed(3) + ' Creeps: ' + _.size(Game.creeps));
+        console.log(timeString + 'Tick Ended ' + 'CPU: ' + Game.cpu.getUsed().toFixed(3) + ' Creeps: ' + _.size(Game.creeps));
     };
 
     console.roomLog = function (room, message) {

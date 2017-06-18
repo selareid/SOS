@@ -40,7 +40,7 @@ module.exports.loop = function () {
             if (err.stack) console.kernelError(err.stack);
         }
 
-        if (Memory.stats) Memory.stats.cpu.getUsed = Game.cpu.getUsed();
+        if (Memory.stats) Memory.stats.cpu.getUsed = _.clone(Game.cpu.getUsed());
         console.logTickSummary()
     });
 };
