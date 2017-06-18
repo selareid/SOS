@@ -1,11 +1,24 @@
 Creep.prototype.getConsumerEnergy = function (Memory, room = this.room, creep = this) {
     var storage = room.storage;
-    var droppedEnergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) => r.amount > 20 && r.resourceType == RESOURCE_ENERGY});
-    var container = function () {
-        return creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => s.store && s.structureType == STRUCTURE_CONTAINER && s.store.energy > 0});
-    }();
 
-    if (!storage) {
+    if (storage && storage.store[RESOURCE_ENERGY] > creep.carryCapacity) {
+        if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(storage, {
+                visualizePathStyle: {
+                    fill: 'transparent',
+                    stroke: '#f46464',
+                    lineStyle: 'dashed',
+                    strokeWidth: .2,
+                    opacity: .5
+                }
+            });
+        }
+    }
+    else {
+        var droppedEnergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) => r.amount > 20 && r.resourceType == RESOURCE_ENERGY});
+        var container = function () {
+            return creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (s) => s.store && s.structureType == STRUCTURE_CONTAINER && s.store.energy > 0});
+        }();
 
         if (!droppedEnergy) droppedEnergy = {};
 
@@ -22,32 +35,6 @@ Creep.prototype.getConsumerEnergy = function (Memory, room = this.room, creep = 
         }
         else {
             pickFromDroppedEnergy(creep, droppedEnergy)
-        }
-    }
-    else {
-
-        if (storage.store[RESOURCE_ENERGY] > 50) {
-            if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(storage, {
-                    visualizePathStyle: {
-                        fill: 'transparent',
-                        stroke: '#f46464',
-                        lineStyle: 'dashed',
-                        strokeWidth: .2,
-                        opacity: .5
-                    }
-                });
-            }
-        }
-        else {
-            if (container) {
-                pickFromContainer(creep, container)
-            }
-            else {
-                if (droppedEnergy) {
-                    pickFromDroppedEnergy(creep, droppedEnergy)
-                }
-            }
         }
     }
 };
