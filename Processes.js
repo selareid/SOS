@@ -489,8 +489,6 @@ module.exports = {
                 else {
                     creep.drop(RESOURCE_ENERGY);
                 }
-                
-                if (!_.size(Game.constructionSites) < 100) return;
 
                 if (creep.room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < CONTROLLER_STRUCTURES.link[creep.room.controller.level]) {
                     if (!Game.getObjectById(srcId).pos.findInRange(FIND_CONSTRUCTION_SITES, 2)[0]) {
@@ -499,7 +497,7 @@ module.exports = {
                 }
                 else {
                     var src = Game.getObjectById(srcId);
-                    if (src && creep.pos.isNearTo(src) && creep.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER}).length < 1
+                    if (!_.size(Game.constructionSites) < 100 && src && creep.pos.isNearTo(src) && creep.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER}).length < 1
                         && creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1).length < 1) room.createConstructionSite(creep.pos.x, creep.pos.y, STRUCTURE_CONTAINER)
                 }
             }
