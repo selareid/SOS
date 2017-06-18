@@ -58,7 +58,7 @@ module.exports = {
         run: function () {
             Memory.stats = {
                 tick: Game.time,
-                cpu: Game.cpu,
+                cpu: _.cloneDeep(Game.cpu),
                 gcl: Game.gcl,
                 constructionSites: _.size(Game.constructionSites),
                 tokens: Game.resources.token,
