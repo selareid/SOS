@@ -735,7 +735,7 @@ module.exports = {
                 if (storageLink && storageLink.energy > 0) {
                     var link = _.filter(global[randomHash].l, (s) => s.energy < 50 && s.id != storageLink.id && !s.pos.findInRange(FIND_SOURCES, 3)[0])[0];
                     
-                    if (room.storage.energy <= 1000 || !link) {
+                    if (room.storage.store.energy <= 1000 || !link) {
                         creep.memory.w = true;
                         creep.withdraw(storageLink, RESOURCE_ENERGY);
                         return OK;
