@@ -340,7 +340,7 @@ module.exports = {
     
     doLinks: {
         run: function (Memory_it) {
-            if (!Game.time % 2 == 0) return;
+            if (Game.time % 2 == 0) return;
 
             var Memory = global.Mem.p[Memory_it];
 
