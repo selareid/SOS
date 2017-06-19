@@ -360,7 +360,7 @@ module.exports = {
             }
 
             if (!global[room.name].links) global[room.name].links = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK});
-            if (!global[room.name].sourcelinks) global[room.name].sourcelinks = _.filter(global[room.name].links, {filter: (s) => s.pos.findInRange(FIND_SOURCES, 3)[0]});
+            if (!global[room.name].sourcelinks) global[room.name].sourcelinks = _.filter(global[room.name].links, (s) => s.pos.findInRange(FIND_SOURCES, 3)[0]);
 
             if (global[randomHash] && (!global[randomHash].sl || !Memory.lt || Game.time - Memory.lt > 101)) {
                 global[randomHash].sl = storageFlag.pos.findInRange(global[room.name].links, 1)[0] ? storageFlag.pos.findInRange(global[room.name].links, 1)[0] : undefined;
@@ -376,11 +376,7 @@ module.exports = {
             var energySent = storageLink.energy;
 
             _.forEach(sourceLinks, (l) => {
-                if (l.cooldown == 0 && l.energy >= l.energyCapacity) {
-                    if (energySent < storageLink.energyCapacity && storageLink.energy < storageLink.energyCapacity) {
-                        l.transferEnergy(storageLink);
-                    }
-                }
+                if (l.cooldown == 0 && l.energy >= l.energyCapacity && energySent < storageLink.energyCapacity) l.transferEnergy(storageLink);
             });
             
             
