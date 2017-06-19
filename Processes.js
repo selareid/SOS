@@ -509,12 +509,12 @@ module.exports = {
             var opDirTS = opRP[creep.pos.getDirectionTo(source.pos)];
             var blocked = false;
 
-            _.forEach(new RoomPosition(creep.pos.x+opDirTS.x, creep.pos.y+opDirTS.y, creep.room.name).lookFor(LOOK_STRUCTURES), (s) => {
+            _.forEach(creep.room.getPositionAt(creep.pos.x+opDirTS.x, creep.pos.y+opDirTS.y).lookFor(LOOK_STRUCTURES), (s) => {
                 if (s.structureType != STRUCTURE_SPAWN) s.destroy();
                 else blocked = true;
             });
 
-            if (!blocked) creep.room.createConstructionSite(creep.pos.x+opDirTS.x, creep.pos.y+opDirTS.y, STRUCTURE_LINK);
+            if (!blocked) creep.room.createConstructionSite(creep.room.getPositionAt(creep.pos.x+opDirTS.x, creep.pos.y+opDirTS.y), STRUCTURE_LINK);
             else console.notify("doHarvest's placeLink found itself blocked Source is: " + source.id + ' in Room: ' + source.room);
         }
     },
