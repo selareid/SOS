@@ -47,19 +47,19 @@ Creep.prototype.getCarrierResources = function (Memory, room = this.room, creep 
     }
 };
 
-function pickFromDroppedEnergy(creep, droppedResource) {
+function pickFromDroppedEnergy(creep, droppedResource, room=creep.room) {
     if (creep.pickup(droppedResource) == ERR_NOT_IN_RANGE) {
         creep.travelTo(droppedResource, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
     }
 }
 
-function pickFromContainer(creep, container, resourceType = RESOURCE_ENERGY) {
+function pickFromContainer(creep, container, resourceType = RESOURCE_ENERGY, room=creep.room) {
     if (creep.withdraw(container, resourceType) == ERR_NOT_IN_RANGE) {
         creep.travelTo(container, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
     }
 }
 
-function harvestEnergy(creep) {
+function harvestEnergy(creep, room=creep.room) {
     var source = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
 
     if (!source) creep.runInSquares();
