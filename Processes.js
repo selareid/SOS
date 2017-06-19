@@ -457,7 +457,7 @@ module.exports = {
             var srcId = Memory.crps[creep_it_it].split(':')[1];
 
             if (!global[room.name].links) global[room.name].links = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK});
-            if (!global[room.name].sourcelinks) global[room.name].sourcelinks = _.filter(global[room.name].links, {filter: (s) => s.pos.findInRange(FIND_SOURCES, 3)[0]});
+            if (!global[room.name].sourcelinks) global[room.name].sourcelinks = _.filter(global[room.name].links, (s) => s.pos.findInRange(FIND_SOURCES, 3)[0]);
 
             var link = creep.pos.findClosestByRange(global[room.name].sourcelinks);
 
