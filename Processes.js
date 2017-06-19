@@ -15,7 +15,7 @@ function getCreep(name, process) {
 }
 
 const bodyChart = {
-    doHarvest: [[WORK, MOVE], [CARRY], 6],
+    doHarvest: [[WORK, MOVE, CARRY], [CARRY], 5],
     praiseRC: [[WORK, CARRY, MOVE], []],
     strgDistr: [[CARRY, CARRY, MOVE], []],
     fillSpawn: [[CARRY, CARRY, MOVE], [], 6],
