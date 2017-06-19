@@ -919,7 +919,7 @@ module.exports = {
             if (!global[room.name].links) global[room.name].links = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK});
 
             if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
-                global[randomHash].l = room.controller.pos.findInRange(global[room.name].links, 3,)[0];
+                global[randomHash].l = room.controller.pos.findInRange(global[room.name].links, 3)[0];
                 Memory.lt = Game.time;
             }
 
