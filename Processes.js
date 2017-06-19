@@ -632,7 +632,7 @@ module.exports = {
             var flag = global[room.name].distrSquareFlag;
             if (!room.storage || !flag) return;
             if (!global[room.name]) global[room.name] = {};
-            if (!flag.pos.findInRange(global[room.name].links)[0]) {
+            if (!flag.pos.findInRange(global[room.name].links, 1)[0]) {
                 if (Game.time % 99 == 0) return this.placeStrucs(room, flag);
                 else return;
             }
