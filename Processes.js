@@ -378,6 +378,7 @@ module.exports = {
             _.forEach(sourceLinks, (l) => {
                 if (l.cooldown == 0 && l.energy >= l.energyCapacity && energySent < storageLink.energyCapacity) {
                     l.transferEnergy(storageLink);
+                    energySent =+ l.energy;
                 }
             });
             
