@@ -94,7 +94,7 @@ module.exports = {
 
     checkCreeps: {
         run: function () {
-            if (Game.time % 3 != 0) return;
+            if (Game.time % 7 != 0) return;
 
             _.forEach(Game.creeps, (creep) => {
                 if (!creep.memory.p || !creep.memory.l || Game.time - creep.memory.l > 4) {
@@ -339,8 +339,6 @@ module.exports = {
     
     doLinks: {
         run: function (Memory_it) {
-            if (Game.time % 2 == 0) return;
-
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
@@ -530,7 +528,7 @@ module.exports = {
             var flag = global[room.name].fillSpawnFlag;
 
             if (!flag) return this.placeFlag(room);
-            if (Game.time % 98 == 0) this.placeSpawn(room);
+            if (Game.time % 17280 == 0) this.placeSpawn(room);
 
             if (creep) {
                 creep.say('fillSpawn');
@@ -627,10 +625,10 @@ module.exports = {
             if (!room.storage || !flag) return;
             if (!global[room.name]) global[room.name] = {};
             if (!flag.pos.findInRange(global[room.name].links, 1)[0]) {
-                if (Game.time % 99 == 0) return this.placeStrucs(room, flag);
+                if (Game.time % 101 == 0) return this.placeStrucs(room, flag);
                 else return;
             }
-            if (Game.time % 18000 == 0) this.placeStrucs(room, flag);
+            if (Game.time % 120960 == 0) this.placeStrucs(room, flag);
 
             if (creeps.length > 0) {
                 //creep loop
@@ -928,7 +926,7 @@ module.exports = {
             else {
                 creep.getConsumerEnergy(Memory, room);
 
-                if (_.size(Game.constructionSites) < 100 && Game.time % 11 == 0 && room.controller.pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 3).length < 1 && room.controller.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < 1
+                if (_.size(Game.constructionSites) < 100 && Game.time % 101 == 0 && room.controller.pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 3).length < 1 && room.controller.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < 1
                     && CONTROLLER_STRUCTURES[STRUCTURE_LINK][room.controller.level] > room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}).length) {
                     var path = room.storage.pos.findPathTo(room.controller.pos, {range: 3});
 
