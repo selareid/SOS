@@ -653,9 +653,11 @@ module.exports = {
                             creep.travelTo(flag, {range: 1, obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
 
                             if (creep.pos.isNearTo(flag.pos)) {
-                                var rootOfAllEvil = flag.pos.findInRange(FIND_MY_CREEPS, 0)[0];
-                                rootOfAllEvil.move(rootOfAllEvil.pos.getDirectionTo(creep.pos));
-                                creep.move(creep.pos.getDirectionTo(rootOfAllEvil));
+                                var rootOfAllEvil = flag.pos.findInRange(FIND_MY_CREEPS, 0, {filter: (c) => c.memory.p != 'strgDistr'})[0];
+                                if (rootOfAllEvil) {
+                                    rootOfAllEvil.move(rootOfAllEvil.pos.getDirectionTo(creep.pos));
+                                    creep.move(creep.pos.getDirectionTo(rootOfAllEvil));
+                                }
                             }
                         }
                     }
@@ -688,7 +690,7 @@ module.exports = {
             }
 
             //get more creeps
-            if (creeps.length < 1) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'strgDistr'));
+            if (creeps.length < 1 || creeps[0].ticksToLive < 150) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'strgDistr'));
         },
 
         structs: [{x: 1, y: 1, s: STRUCTURE_TOWER}, {x: 1, y: 0, s: STRUCTURE_STORAGE}, {x: 1, y: -1, s: STRUCTURE_TERMINAL}, {x: 0, y: -1, s: STRUCTURE_NUKER}, {x: -1, y: -1, s: STRUCTURE_POWER_SPAWN},
