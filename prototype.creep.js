@@ -3,15 +3,7 @@ Creep.prototype.getConsumerEnergy = function (Memory, room = this.room, creep = 
 
     if (storage && storage.store[RESOURCE_ENERGY] > creep.carryCapacity) {
         if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(storage, {
-                visualizePathStyle: {
-                    fill: 'transparent',
-                    stroke: '#f46464',
-                    lineStyle: 'dashed',
-                    strokeWidth: .2,
-                    opacity: .5
-                }
-            });
+            creep.travelTo(storage, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
         }
     }
     else {
@@ -57,29 +49,13 @@ Creep.prototype.getCarrierResources = function (Memory, room = this.room, creep 
 
 function pickFromDroppedEnergy(creep, droppedResource) {
     if (creep.pickup(droppedResource) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(droppedResource, {
-            visualizePathStyle: {
-                fill: 'transparent',
-                stroke: '#f46464',
-                lineStyle: 'dashed',
-                strokeWidth: .2,
-                opacity: .5
-            }
-        });
+        creep.travelTo(droppedResource, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
     }
 }
 
 function pickFromContainer(creep, container, resourceType = RESOURCE_ENERGY) {
     if (creep.withdraw(container, resourceType) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(container, {
-            visualizePathStyle: {
-                fill: 'transparent',
-                stroke: '#f46464',
-                lineStyle: 'dashed',
-                strokeWidth: .2,
-                opacity: .5
-            }
-        });
+        creep.travelTo(container, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
     }
 }
 
@@ -89,7 +65,7 @@ function harvestEnergy(creep) {
     if (!source) creep.runInSquares();
 
     if (creep.pos.isNearTo(source)) creep.harvest(source);
-    else creep.moveTo(source);
+    else creep.travelTo(source, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
 }
 
 Creep.prototype.runInSquares =
