@@ -35,14 +35,17 @@ module.exports = () => {
 
     console.errorLog = function (errorMessage) {
         console.log(timeString + errorString + errorMessage);
+        Game.notify(timeString + errorString + errorMessage);
     };
 
     console.kernelError = function (errorMessage) {
         console.log(timeString + kernelString + errorString + errorMessage);
+        Game.notify(timeString + kernelString + errorString + errorMessage);
     };
 
     console.processError = function (errorMessage) {
         console.log(timeString + processString + errorString + errorMessage);
+        Game.notify(timeString + processString + errorString + errorMessage);
     };
 
     console.logTickStart = function () {
