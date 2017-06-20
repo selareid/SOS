@@ -137,7 +137,7 @@ module.exports = {
                 if (room.controller.level >= 5 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doLinks').length < 1) spawnNewProcess('doLinks', Memory.rmN);
 
                 if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
-                if (!global[room.name].links) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
+                if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
                 if (room.controller.level >= 4 && global[room.name].links.length < 3 && global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'iRmHaul').length < 1) spawnNewProcess('iRmHaul', Memory.rmN);
             }
 
@@ -201,7 +201,7 @@ module.exports = {
             if (!room || room.find(FIND_HOSTILE_CREEPS).length < 1) return 'end';
             if (!global[room.name]) global[room.name] = {};
 
-            if (!global[room.name].towers) global[room.name].towers = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}), (t) => {return t.id});
+            if (!global[room.name].towers || !global[room.name].towers[0]) global[room.name].towers = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}), (t) => {return t.id});
 
             var towers = global[room.name].towers;
             if (towers.length < 1) return 'end';
@@ -358,8 +358,8 @@ module.exports = {
                 Memory.RH = randomHash;
             }
 
-            if (!global[room.name].links) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
-            if (!global[room.name].sourcelinks) global[room.name].sourcelinks = _.map(_.filter(global[room.name].links, (s) => {if (Game.getObjectById(s)) {return Game.getObjectById(s).pos.findInRange(FIND_SOURCES, 3)[0]}}), (l) => {return l.id});
+            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
+            if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.map(_.filter(global[room.name].links, (s) => {if (Game.getObjectById(s)) {return Game.getObjectById(s).pos.findInRange(FIND_SOURCES, 3)[0]}}), (l) => {return l.id});
 
             var links = _.map(global[room.name].links, (l) => {return Game.getObjectById(l)});
 
@@ -457,8 +457,8 @@ module.exports = {
         dropEnergy: function (Memory, creep, creep_it_it, room = creep.room) {
             var srcId = Memory.crps[creep_it_it].split(':')[1];
 
-            if (!global[room.name].links) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
-            if (!global[room.name].sourcelinks) global[room.name].sourcelinks = _.map(_.filter(global[room.name].links, (s) => {return Game.getObjectById(s) && Game.getObjectById(s).pos.findInRange(FIND_SOURCES, 3)[0];}), (l) => {return l.id});
+            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
+            if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.map(_.filter(global[room.name].links, (s) => {return Game.getObjectById(s) && Game.getObjectById(s).pos.findInRange(FIND_SOURCES, 3)[0];}), (l) => {return l.id});
 
             var link = creep.pos.findClosestByRange(_.map(global[room.name].sourcelinks, (s) => {return Game.getObjectById(s)}));
 
@@ -624,7 +624,7 @@ module.exports = {
             if (!creeps) return Memory.crps = [];
 
             if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
-            if (!global[room.name].links) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
+            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
 
             var flag = global[room.name].distrSquareFlag;
             if (!room.storage || !flag) return;
@@ -724,7 +724,7 @@ module.exports = {
                     Memory.RH = randomHash;
                 }
 
-                if (!global[room.name].links) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
+                if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
 
                 var links = _.map(global[room.name].links, (s) => {return Game.getObjectById(s)});
 
@@ -757,7 +757,7 @@ module.exports = {
                 Memory.RH = randomHash;
             }
 
-            if (!global[room.name].towers) global[room.name].towers = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}), (t) => {return t.id});
+            if (!global[room.name].towers || !global[room.name].towers[0]) global[room.name].towers = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}), (t) => {return t.id});
 
             if (global[randomHash] && (!global[randomHash].t || !Memory.lt)) {
                 global[randomHash].t = creep.pos.findInRange(_.map(global[room.name].towers, (t) => {return Game.getObjectById(t)}), 1)[0];
@@ -917,7 +917,7 @@ module.exports = {
                 Memory.RH = randomHash;
             }
 
-            if (!global[room.name].links) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (s) => {s.id});
+            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (s) => {s.id});
 
             if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
                 global[randomHash].l = room.controller.pos.findInRange(_.map(global[room.name].links, (s) => {return Game.getObjectById(s)}), 3)[0];
