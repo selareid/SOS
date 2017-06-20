@@ -984,8 +984,8 @@ module.exports = {
                         else {
                             var towerToRefill = this.getTowerToRefill(Memory, room);
                             if (towerToRefill) {
-                                if (!creep.pos.isNearTo(towerToRefill)) creep.transfer(towerToRefill, RESOURCE_ENERGY);
-                                else creep.travelTo(towerToRefill, {range: 3, obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                                if (creep.pos.isNearTo(towerToRefill)) creep.transfer(towerToRefill, RESOURCE_ENERGY);
+                                else creep.travelTo(towerToRefill, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
                             }
                             else {
                                 var defenseToRepair = this.findDefence(Memory, room, creep);
