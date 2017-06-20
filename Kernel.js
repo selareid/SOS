@@ -37,7 +37,7 @@ module.exports = {
             }
             catch (err) {
                 console.processError(err);
-                if (err.stack) console.kernelError(err.stack);
+                if (err.stack) console.processError(err.stack);
             }
         }
 
