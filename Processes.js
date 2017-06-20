@@ -367,7 +367,7 @@ module.exports = {
                 Memory.lt = Game.time;
             }
 
-            var storageLink = game.getObjectById(global[randomHash].sl);
+            var storageLink = Game.getObjectById(global[randomHash].sl);
             var sourceLinks = global[room.name].sourcelinks;
             var link = _.filter(global[room.name].links, (s) => s.energy < 50 && s.id != storageLink.id && !sourceLinks.includes(s.id))[0];
 
