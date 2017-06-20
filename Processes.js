@@ -873,7 +873,7 @@ module.exports = {
                     else if (creep.carry.energy == creep.carryCapacity) creep.memory.w = 0;
 
                     if (creep.memory.w == 1) {
-                        this.getEnergy(Memory, room, creep);
+                        this.getEnergy(Memory, creep);
                     }
                     else {
                         if (creep.pos.getRangeTo(room.controller) > 3) creep.travelTo(room.controller, {range: 3, obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
@@ -908,7 +908,7 @@ module.exports = {
             }
         },
 
-        getEnergy: function (Memory, room, creep) {
+        getEnergy: function (Memory, creep, room = creep.name) {
             var randomHash = Memory.RH;
 
             if (!randomHash || !global[randomHash]) {
