@@ -359,10 +359,11 @@ module.exports = {
             }
 
             if (!global[room.name].links) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return [l.id]});
-            if (!global[room.name].sourcelinks) global[room.name].sourcelinks = _.map(_.filter(_.map(global[room.name].links, (l) => {return [Game.getObjectById(l)]}), (s) => s.pos.findInRange(FIND_SOURCES, 3)[0]), (l) => {return [l.id]});
+            if (!global[room.name].sourcelinks) global[room.name].sourcelinks = _.map(_.filter(global[room.name].links, (s) => {if (Game.getObjectById(s)) {return Game.getObjectById(s).pos.findInRange(FIND_SOURCES, 3)[0]}}), (l) => {return [l.id]});
 
             if (global[randomHash] && (!global[randomHash].sl || !Memory.lt || Game.time - Memory.lt > 101)) {
-                global[randomHash].sl = storageFlag.pos.findInRange(global[room.name].links, 1)[0] ? storageFlag.pos.findInRange(global[room.name].links, 1)[0].id : undefined;
+                global[randomHash].sl = storageFlag.pos.findInRange(_.map(global[room.name].links, (l) => {return [Game.getObjectById(l)]}), 1)[0]
+                    ? storageFlag.pos.findInRange(_.map(global[room.name].links, (l) => {return [Game.getObjectById(l)]}), 1)[0].id : undefined;
                 Memory.lt = Game.time;
             }
 
