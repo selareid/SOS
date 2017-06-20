@@ -458,7 +458,7 @@ module.exports = {
             var srcId = Memory.crps[creep_it_it].split(':')[1];
 
             if (!global[room.name].links) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return [l.id]});
-            if (!global[room.name].sourcelinks) global[room.name].sourcelinks = _.map(_.filter(global[room.name].links, (s) => s && s.pos.findInRange(FIND_SOURCES, 3)[0]), (l) => {return [l.id]});
+            if (!global[room.name].sourcelinks) global[room.name].sourcelinks = _.map(_.filter(global[room.name].links, (s) => {return Game.getObjectById(s) && Game.getObjectById(s).pos.findInRange(FIND_SOURCES, 3)[0];}), (l) => {return [l.id]});
 
             var link = creep.pos.findClosestByRange(_.map(global[room.name].sourcelinks, (s) => {return [Game.getObjectById(s)]}));
 
