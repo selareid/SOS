@@ -908,7 +908,7 @@ module.exports = {
             }
         },
 
-        getEnergy: function (Memory, creep, room = creep.name) {
+        getEnergy: function (Memory, creep, room = creep.room) {
             var randomHash = Memory.RH;
 
             if (!randomHash || !global[randomHash]) {
