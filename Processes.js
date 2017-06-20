@@ -729,11 +729,11 @@ module.exports = {
                 var links = _.map(global[room.name].links, (s) => {return Game.getObjectById(s)});
 
                 if (global[randomHash] && (!global[randomHash].sl || !Memory.lt || Game.time - Memory.lt > 101)) {
-                    global[randomHash].sl = creep.pos.findInRange(links, 1)[0] ? creep.pos.findInRange(global[room.name].links, 1)[0] : undefined;
+                    global[randomHash].sl = creep.pos.findInRange(links, 1)[0] ? creep.pos.findInRange(links, 1)[0].id : undefined;
                     Memory.lt = Game.time;
                 }
 
-                var storageLink = global[randomHash].sl;
+                var storageLink = Game.getObjectById(global[randomHash].sl);
 
                 if (storageLink && storageLink.energy > 0) {
                     var link = _.filter(links, (s) => s.energy < 50 && s.id != storageLink.id && !s.pos.findInRange(FIND_SOURCES, 3)[0])[0];
