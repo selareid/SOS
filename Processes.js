@@ -1040,7 +1040,7 @@ module.exports = {
         },
 
         getTowerToRefill: function (Memory, room) {
-            var towers = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.energy && s.energy < s.energyCapacity && s.structureType == STRUCTURE_TOWER});
+            var towers = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < s.energyCapacity});
 
             if (!towers.length > 0) return undefined;
 
