@@ -894,6 +894,28 @@ module.exports = {
             _.filter(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_ROAD}, (s) => s.destroy());
         },
 
+        pickupInRange: function (Memory, room, creep) {
+            if (creep.memory.w == true) {
+                //if carry is full
+                var storage = room.storage;
+                creep.transfer(storage, creep.carry[Object.keys(creep.carry)[0]]);
+            }
+            else {
+                //if carry is empty
+
+                if (creep.pos.findInRange(FIND_DROPPED_RESOURCES, 1).length > 0) {
+                    var droppedResource = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 1)[0];
+
+                    if (droppedResource) {
+                        creep.memory.w = true;
+                        creep.pickup(droppedResource);
+                        return OK;
+                    }
+                }
+                else return 'no resource'
+            }
+        },
+
         linkToStorage: function (Memory, room, creep) {
             if (creep.memory.w == true) {
                 //if carry is full
