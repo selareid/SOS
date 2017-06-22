@@ -857,6 +857,9 @@ module.exports = {
                                 case 'tower':
                                     this.fillTower(Memory, room, creep);
                                     break;
+                                case 'pickupInRange':
+                                    this.pickupInRange(Memory, room, creep);
+                                    break;
                                 case 'link':
                                     this.linkToStorage(Memory, room, creep);
                                     break;
@@ -867,6 +870,7 @@ module.exports = {
                         }
                         else {
                             if (this.fillTower(Memory, room, creep) == OK) creep.memory.doing = 'tower';
+                            else if (this.pickupInRange(Memory, room, creep) == OK) creep.memory.doing = 'pickupInRange';
                             else if (this.linkToStorage(Memory, room, creep) == OK) creep.memory.doing = 'link';
                             else if (room.storage.store.energy < 50000 && room.terminal && room.terminal.store.energy > 100) creep.withdraw(room.terminal, RESOURCE_ENERGY);
                         }
