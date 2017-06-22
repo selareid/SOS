@@ -434,8 +434,8 @@ module.exports = {
                     creep.say('APP');
 
                     if (!creep.memory.t || this[creep.memory.t](Memory, creep, room) === 'end') {
-                        creep.memory.t = undefined;
                         creep.memory.t = Memory.tasks[0] ? Memory.tasks[0] : 'default';
+                        if (Memory.tasks[0]) Memory.tasks.splice(0, 1);
                     }
                 }
             }
