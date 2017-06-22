@@ -503,8 +503,8 @@ module.exports = {
 
             if (w == true) {
                 if (room.find(FIND_CONSTRUCTION_SITES).length > 0) {
-                    if (creep.pos.isNearTo(creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES)[0])) creep.repair(creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES)[0]);
-                    else creep.travelTo(creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES)[0], {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                    if (creep.pos.isNearTo(creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES))) creep.repair(creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES));
+                    else creep.travelTo(creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES), {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
                 }
                 else creep.drop(RESOURCE_ENERGY)
             }
