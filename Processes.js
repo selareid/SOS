@@ -478,7 +478,7 @@ module.exports = {
             }
 
             //get more creeps
-            if (creeps.length < Math.floor(Memory.tasks.length/2)) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'APP'));
+            if (Game.time % 3 == 0 && creeps.length < (room.find(FIND_MINERALS)[0] && room.find(FIND_MINERALS)[0].mineralAmount > 10000 ? 2 : 1)) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'APP'));
         },
 
         switch: function (creep) {
