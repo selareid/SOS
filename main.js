@@ -16,9 +16,9 @@ module.exports.loop = function () {
         console.logTickStart();
         
         //Buy that token if it appears
-        var token = Game.market.getAllOrders(order => order.resourceType == SUBSCRIPTION_TOKEN &&
-        order.type == ORDER_SELL && order.price <= Game.market.credits)[0];
-        if (token) Game.market.deal(token.id, 1);
+        // var token = Game.market.getAllOrders(order => order.resourceType == SUBSCRIPTION_TOKEN &&
+        // order.type == ORDER_SELL && order.price <= Game.market.credits)[0];
+        // if (token) Game.market.deal(token.id, 1);
 
         global.Mem = Memory;
         global.processesRun = 0;
