@@ -13,31 +13,32 @@ module.exports = {
         for (let process_it in processes) {
             let process = processes[process_it];
 
-            try {
-                Object.setPrototypeOf(process, Process);
 
-                if ((Memory.SB == true && Game.cpu.limit - Game.cpu.getUsed() < 3) || Game.cpu.getUsed() > Game.cpu.limit * 2 || Game.cpu.bucket < 2000) process.prio++;
-                else if (!process.pN || Processes[process.pN.split(':')[0]]) {
-                    if (!process.pN) process.pN = process_it.split(':')[0];
+            Object.setPrototypeOf(process, Process);
 
-                    if (Processes[process.pN.split(':')[0]]) {
-                        let rsl = Processes[process.pN.split(':')[0]].run(process_it);
+            if ((Memory.SB == true && Game.cpu.limit - Game.cpu.getUsed() < 3) || Game.cpu.getUsed() > Game.cpu.limit * 2 || Game.cpu.bucket < 2000) process.prio++;
+            else if (!process.pN || Processes[process.pN.split(':')[0]]) {
+                if (!process.pN) process.pN = process_it.split(':')[0];
 
-                        if (rsl == 'end') delete Memory.p[process_it];
-
-                        process.prio = getPrio(process.pN);
-
-                        global.processesRun++;
+                if (Processes[process.pN.split(':')[0]]) {
+                    try {
+                        var rsl = Processes[process.pN.split(':')[0]].run(process_it);
                     }
-                    else {
-                        console.notify('Removed process ' + process_it + ' due to not existing in Processes');
-                        delete Memory.p[process_it];
+                    catch (err) {
+                        console.processError(err);
+                        if (err.stack) console.processError(err.stack);
                     }
+
+                    if (rsl == 'end') delete Memory.p[process_it];
+
+                    process.prio = getPrio(process.pN);
+
+                    global.processesRun++;
                 }
-            }
-            catch (err) {
-                console.processError(err);
-                if (err.stack) console.processError(err.stack);
+                else {
+                    console.notify('Removed process ' + process_it + ' due to not existing in Processes');
+                    delete Memory.p[process_it];
+                }
             }
         }
 
