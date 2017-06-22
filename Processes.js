@@ -576,7 +576,7 @@ module.exports = {
             var w = this.switch(creep);
 
             if (w == true) {
-                if (creep.pos.isNearTo(room.storage)) creep.transfer(Object.keys(creep.carry)[0]);
+                if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
                 else creep.travelTo(room.storage, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
             }
             else {
