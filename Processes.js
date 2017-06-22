@@ -125,6 +125,8 @@ module.exports = {
             if (Game.time % 3 == 0 && room.find(FIND_HOSTILE_CREEPS).length > 0 && room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.Mem.a.includes(c.owner.username)}).length > 0
                 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doTowers').length < 1) spawnNewProcess('doTowers', Memory.rmN);
 
+            if (Game.time % 503 == 0 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doTowersRepair').length < 1) spawnNewProcess('doTowersRepair', Memory.rmN);
+
             if (Game.time % 11 == 0) {
                 if (room.controller.level > 7 && room.storage) {
                     if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'APP').length < 1) spawnNewProcess('APP', Memory.rmN);
@@ -226,6 +228,34 @@ module.exports = {
         }
     },
 
+    doTowersRepair: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            var room = Game.rooms[Memory.rmN];
+            if (!room || room.find(FIND_HOSTILE_CREEPS).length < 1) return 'end';
+            if (!global[room.name]) global[room.name] = {};
+
+            if (!global[room.name].towers || !global[room.name].towers[0]) global[room.name].towers = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}), (t) => {return t.id});
+
+            var towers = global[room.name].towers;
+            if (towers.length < 1) return 'end';
+
+            var strucs = room.find(FIND_STRUCTURES, {filter: (s) => s.hits < s.hitsMax});
+            if (strucs.length < 1) return 'end';
+
+            StructureTower.prototype.repairIt = function (struc) {
+                if (!struc || this.energy < this.energyCapacity*0.50) return;
+                this.attack(struc);
+            };
+
+            _.forEach(towers, (tower_id) => {
+                var tower = Game.getObjectById(tower_id);
+                tower.repairIt(tower.pos.findClosestByRange(strucs));
+            });
+        }
+    },
+
     placeStorage: {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
@@ -313,6 +343,13 @@ module.exports = {
                  if (_.size(Game.constructionSites) < 100) {
                      if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
                  }
+            });
+
+            var mineral = room.find(FIND_MINERALS)[0];
+            _.forEach(storageFlag.pos.findPathTo(mineral, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
+                if (_.size(Game.constructionSites) < 100) {
+                    if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
+                }
             });
         },
         
