@@ -584,10 +584,12 @@ module.exports = {
                 if (!mineral || mineral.mineralAmount < 1) return 'end';
 
                 if (creep.pos.isNearTo(mineral)) {
-                    if (creep.harvest(mineral) == ERR_NOT_FOUND) {
-                        if (mineral.pos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1) room.createConstructionSite(mineral.pos, STRUCTURE_EXTRACTOR);
+                    if (Game.time % 5 == 0) {
+                        if (creep.harvest(mineral) == ERR_NOT_FOUND) {
+                            if (mineral.pos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1) room.createConstructionSite(mineral.pos, STRUCTURE_EXTRACTOR);
 
-                        creep.memory.t = 'build';
+                            creep.memory.t = 'build';
+                        }
                     }
                 }
                 else creep.travelTo(mineral, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
