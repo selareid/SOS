@@ -902,7 +902,7 @@ module.exports = {
             if (creep.memory.w == true) {
                 //if carry is full
                 var storage = room.storage;
-                creep.transfer(storage, creep.carry[Object.keys(creep.carry)[0]]);
+                creep.transfer(storage, Object.keys(creep.carry)[0]);
             }
             else {
                 //if carry is empty
