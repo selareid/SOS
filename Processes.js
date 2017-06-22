@@ -816,8 +816,11 @@ module.exports = {
             var flag = global[room.name].distrSquareFlag;
             if (!room.storage || !flag) return;
             if (!global[room.name]) global[room.name] = {};
-            if (!flag.pos.findInRange(_.map(global[room.name].links, (s) => {return Game.getObjectById(s)}), 1)[0]) {
-                if (Game.time % 101 == 0) return this.placeStrucs(room, flag);
+            if (!Game.getObjectById(Memory.link)) {
+                var link = flag.pos.findInRange(_.map(global[room.name].links, (s) => {return Game.getObjectById(s)}), 1)[0];
+                Memory.link = link ? link.id : undefined;
+
+                if (!link && Game.time % 101 == 0) return this.placeStrucs(room, flag);
                 else return;
             }
             if (Game.time % 120960 == 0) this.placeStrucs(room, flag);
@@ -928,28 +931,11 @@ module.exports = {
             }
             else {
                 //if carry is empty
-
-                var randomHash = Memory.RH;
-
-                if (!randomHash || !global[randomHash]) {
-                    randomHash = getRandomHash();
-                    global[randomHash] = {};
-                    Memory.RH = randomHash;
-                }
-
-                if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
-
-                var links = _.map(global[room.name].links, (s) => {return Game.getObjectById(s)});
-
-                if (global[randomHash] && (!global[randomHash].sl || !Memory.lt || Game.time - Memory.lt > 101)) {
-                    global[randomHash].sl = creep.pos.findInRange(links, 1)[0] ? creep.pos.findInRange(links, 1)[0].id : undefined;
-                    Memory.lt = Game.time;
-                }
-
-                var storageLink = Game.getObjectById(global[randomHash].sl);
+                var storageLink = Game.getObjectById(Memory.link);
 
                 if (storageLink && storageLink.energy > 0) {
-                    var link = _.filter(links, (s) => s.energy < 50 && s.id != storageLink.id && !s.pos.findInRange(FIND_SOURCES, 3)[0])[0];
+                    if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
+                    var link = _.filter(_.map(global[room.name].links, (s) => {return Game.getObjectById(s)}), (s) => s.energy < 50 && s.id != storageLink.id && !s.pos.findInRange(FIND_SOURCES, 3)[0])[0];
                     
                     if (room.storage.store.energy <= 1000 || !link) {
                         creep.memory.w = true;
@@ -962,22 +948,12 @@ module.exports = {
         },
         
         fillTower: function (Memory, room, creep) {
-            var randomHash = Memory.RH;
-
-            if (!randomHash || !global[randomHash] || Game.time-Memory.lt > 101 || (global[randomHash].t && global[randomHash].t.pos.roomName != creep.pos.roomName)) {
-                randomHash = getRandomHash();
-                global[randomHash] = {};
-                Memory.RH = randomHash;
-            }
 
             if (!global[room.name].towers || !global[room.name].towers[0]) global[room.name].towers = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}), (t) => {return t.id});
 
-            if (global[randomHash] && (!global[randomHash].t || !Memory.lt)) {
-                global[randomHash].t = creep.pos.findInRange(_.map(global[room.name].towers, (t) => {return Game.getObjectById(t)}), 1)[0];
-                Memory.lt = Game.time;
-            }
-
-            var tower = global[randomHash].t && global[randomHash].t.energy < global[randomHash].t.energyCapacity ? global[randomHash].t : undefined;
+            if (!Game.getObjectById(Memory.tower)) Memory.tower = creep.pos.findInRange(_.map(global[room.name].towers, (t) => {return Game.getObjectById(t)}), 1)[0];
+            
+            var tower = Game.getObjectById(Memory.tower) && Game.getObjectById(Memory.tower).energy < Game.getObjectById(Memory.tower).energyCapacity ? Game.getObjectById(Memory.tower) : undefined;
             if (!tower) {
                 creep.memory.w = false;
                 return 'no structure';
