@@ -446,15 +446,15 @@ module.exports = {
 
         switch: function (creep) {
             if (_.sum(creep.carry) == creep.carryCapacity) creep.memory.w = true;
-            else if (creep.carry == 0) creep.memory.w = false;
+            else if (_.sum(creep.carry) == 0) creep.memory.w = false;
 
             return creep.memory.w;
         },
 
         harvestEnergy: function (room, creep) {
-            if (creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE)[0]) {
-                if (creep.pos.isNearTo(creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE)[0])) creep.harvest(creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE)[0]);
-                else creep.moveTo(creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE)[0]);
+            if (creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE)) {
+                if (creep.pos.isNearTo(creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE))) creep.harvest(creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE));
+                else creep.moveTo(creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE));
             }
             else if (room.storage.store[RESOURCE_ENERGY] > 11000) {
                 if (creep.pos.isNearTo(room.storage)) creep.withdraw(room.storage, RESOURCE_ENERGY);
