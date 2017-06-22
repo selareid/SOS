@@ -17,7 +17,7 @@ module.exports = {
             Object.setPrototypeOf(process, Process);
 
             if ((Memory.SB == true && Game.cpu.limit - Game.cpu.getUsed() < 3) || Game.cpu.getUsed() > Game.cpu.limit * 2 || Game.cpu.bucket < 2000) process.prio++;
-            else if (!process.pN || Processes[process.pN.split(':')[0]]) {
+            else {
                 if (!process.pN) process.pN = process_it.split(':')[0];
 
                 if (Processes[process.pN.split(':')[0]]) {
