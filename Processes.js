@@ -446,7 +446,7 @@ module.exports = {
 
         switch: function (creep) {
             if (_.sum(creep.carry) == creep.carryCapacity) creep.memory.w = true;
-            else if (_.sum(creep.carry) == 0) creep.memory.w = false;
+            else if (_.sum(creep.carry) >= creep.carryCapacity-(creep.getActiveBodyparts(WORK)*2)) creep.memory.w = false;
 
             return creep.memory.w;
         },
