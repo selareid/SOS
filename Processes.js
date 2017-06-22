@@ -401,7 +401,7 @@ module.exports = {
             if (!room || !room.storage) return 'end';
             if (!global[room.name]) global[room.name] = {};
             if (!creeps) return Memory.crps = [];
-            if (!Memory.tasks && !Memory.tasks instanceof Array) return Memory.tasks = [];
+            if (Memory.tasks === undefined || Memory.tasks === null) return Memory.tasks = [];
             if (!Memory.ext || Game.time % 15013) return Memory.ext = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION}), (s) => {return s.id})
 
             if (room.controller.ticksToDowngrade <= 2000 && !Memory.tasks.includes('fixController')) Memory.tasks.push('fixController');
