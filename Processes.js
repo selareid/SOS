@@ -454,11 +454,11 @@ module.exports = {
         harvestEnergy: function (room, creep) {
             if (creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE)) {
                 if (creep.pos.isNearTo(creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE))) creep.harvest(creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE));
-                else creep.moveTo(creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE));
+                else creep.travelTo(creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE), {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
             }
             else if (room.storage.store[RESOURCE_ENERGY] > 11000) {
                 if (creep.pos.isNearTo(room.storage)) creep.withdraw(room.storage, RESOURCE_ENERGY);
-                else creep.moveTo(room.storage);
+                else creep.travelTo(room.storage, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
             }
         },
 
@@ -466,7 +466,7 @@ module.exports = {
             var w = this.switch(creep);
 
             if (w == true) {
-                if (creep.pos.getRangeTo(room.controller) > 3) creep.moveTo(room.controller);
+                if (creep.pos.getRangeTo(room.controller) > 3) creep.travelTo(room.controller, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
                 else creep.upgradeController(room.controller);
             }
             else {
@@ -488,7 +488,7 @@ module.exports = {
                 }
                 else {
                     if (creep.pos.isNearTo(room.storage)) creep.transfer(Object.keys(creep.carry)[0]);
-                    else creep.moveTo(room.storage);
+                    else creep.travelTo(room.storage, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
                 }
             }
             else {
@@ -504,7 +504,7 @@ module.exports = {
             if (w == true) {
                 if (room.find(FIND_CONSTRUCTION_SITES).length > 0) {
                     if (creep.pos.isNearTo(creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES)[0])) creep.repair(creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES)[0]);
-                    else creep.moveTo(creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES)[0]);
+                    else creep.travelTo(creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES)[0], {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
                 }
                 else creep.drop(RESOURCE_ENERGY)
             }
@@ -525,7 +525,7 @@ module.exports = {
                 if (!extensionsToFill[0]) creep.drop(RESOURCE_ENERGY);
                 else {
                     if (creep.pos.isNearTo(extensionsToFill[0])) creep.transfer(extensionsToFill[0], RESOURCE_ENERGY);
-                    else creep.moveTo(extensionsToFill[0]);
+                    else creep.travelTo(extensionsToFill[0], {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
                 }
             }
             else {
@@ -540,14 +540,14 @@ module.exports = {
 
             if (w == true) {
                 if (creep.pos.isNearTo(room.storage)) creep.transfer(Object.keys(creep.carry)[0]);
-                else creep.moveTo(room.storage);
+                else creep.travelTo(room.storage, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
             }
             else {
                 var mineral = room.find(FIND_MINERALS)[0];
                 if (!mineral || mineral.mineralAmount < 1) return 'end';
 
                 if (creep.pos.isNearTo(mineral)) creep.harvest(mineral);
-                else creep.moveTo(mineral);
+                else creep.travelTo(mineral, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
             }
         },
 
@@ -563,7 +563,7 @@ module.exports = {
                 }
                 else {
                     if (creep.pos.isNearTo(room.storage)) creep.transfer(Object.keys(creep.carry)[0]);
-                    else creep.moveTo(room.storage);
+                    else creep.travelTo(room.storage, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
                 }
             }
             else {
