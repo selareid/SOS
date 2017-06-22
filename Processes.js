@@ -402,7 +402,7 @@ module.exports = {
             if (!global[room.name]) global[room.name] = {};
             if (!creeps) return Memory.crps = [];
             if (Memory.tasks === undefined || Memory.tasks === null) return Memory.tasks = [];
-            if (!Memory.ext || Game.time % 15013) return Memory.ext = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION}), (s) => {return s.id})
+            if (!Memory.ext || Game.time % 15013 == 0) return Memory.ext = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION}), (s) => {return s.id})
 
             if (room.controller.ticksToDowngrade <= 2000 && !Memory.tasks.includes('fixController')) Memory.tasks.push('fixController');
             if (room.storage.store[RESOURCE_ENERGY] < 10000 && !Memory.tasks.includes('fillStore')) Memory.tasks.push('fillStore');
