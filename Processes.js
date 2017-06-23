@@ -1107,8 +1107,7 @@ module.exports = {
                             break;
                         }
                     }
-
-                    if (room.terminal.store[resourceType] > terminalGoals[resourceType] && room.storage.store[resourceType] && room.storage.store[resourceType] < 5000) {
+                    else if (room.terminal.store[resourceType] > terminalGoals[resourceType] && room.storage.store[resourceType] && room.storage.store[resourceType] < 5000) {
                         resourceToMove = resourceType;
                         break;
                     }
@@ -1138,8 +1137,7 @@ module.exports = {
                             break;
                         }
                     }
-
-                    if (room.storage.store[resourceType] && room.storage.store[resourceType] > 5000) {
+                    else if (room.storage.store[resourceType] && room.storage.store[resourceType] > 5000) {
                         resourceToMove = resourceType;
                         break;
                     }
