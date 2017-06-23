@@ -1025,7 +1025,7 @@ module.exports = {
             if (creep.memory.w == true) {
                 //if carry is full
                 var storage = room.storage;
-                creep.transfer(storage, Object.keys(creep.carry)[0]);
+                creep.transfer(storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
             }
             else {
                 //if carry is empty
