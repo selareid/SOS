@@ -25,6 +25,7 @@ module.exports = () => {
             case 'praiseRC': return 3;
             case 'takeCare': return 3;
             case 'room': return 10;
+            case 'doTerminal': return -1;
             default: return 0;
         }
     };
