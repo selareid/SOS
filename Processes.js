@@ -37,6 +37,8 @@ function getRandomHash() {
 }
 
 module.exports = {
+    //global processes
+
     init: {
         run: function () {
 
@@ -118,6 +120,8 @@ module.exports = {
             });
         }
     },
+
+    //room processes
 
     room: {
         run: function (Memory_it) {
@@ -436,6 +440,8 @@ module.exports = {
             }
         }
     },
+
+    //creep processes
 
     APP: {
         run: function (Memory_it) {
