@@ -1043,7 +1043,7 @@ module.exports = {
 
                 for (let resourceType in room.terminal.store) {
                     if (resourceType == RESOURCE_ENERGY) {
-                        if (room.terminal.store[resourceType] > storageEnergy) {
+                        if (room.terminal.store[resourceType] > storageEnergy && room.storage.store[resourceType] < storageEnergy) {
                             resourceToMove = resourceType;
                             break;
                         }
@@ -1074,7 +1074,7 @@ module.exports = {
 
                 for (let resourceType in room.storage.store) {
                     if (resourceType == RESOURCE_ENERGY) {
-                        if (room.storage.store[resourceType] > storageEnergy) {
+                        if (room.storage.store[resourceType] > storageEnergy && room.terminal.store[resourceType] < storageEnergy) {
                             resourceToMove = resourceType;
                             break;
                         }
