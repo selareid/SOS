@@ -1139,7 +1139,7 @@ module.exports = {
                         }
                     }
 
-                    if ((!room.terminal.store[resourceType] || room.terminal.store[resourceType] < terminalGoals[resourceType]) && room.storage.store[resourceType] && room.storage.store[resourceType] > 5000) {
+                    if (room.storage.store[resourceType] && room.storage.store[resourceType] > 5000) {
                         resourceToMove = resourceType;
                         break;
                     }
