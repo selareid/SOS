@@ -1042,6 +1042,13 @@ module.exports = {
                 var resourceToMove;
 
                 for (let resourceType in room.terminal.store) {
+                    if (resourceType == RESOURCE_ENERGY) {
+                        if (room.terminal.store[resourceType] > storageEnergy) {
+                            resourceToMove = resourceType;
+                            break;
+                        }
+                    }
+
                     if (room.terminal.store[resourceType] > terminalGoals[resourceType] && room.storage.store[resourceType] && room.storage.store[resourceType] < 5000) {
                         resourceToMove = resourceType;
                         break;
@@ -1066,7 +1073,14 @@ module.exports = {
                 var resourceToMove;
 
                 for (let resourceType in room.storage.store) {
-                    if (room.terminal.store[resourceType] < terminalGoals[resourceType] && room.storage.store[resourceType] && room.storage.store[resourceType] > 5000) {
+                    if (resourceType == RESOURCE_ENERGY) {
+                        if (room.storage.store[resourceType] > storageEnergy) {
+                            resourceToMove = resourceType;
+                            break;
+                        }
+                    }
+
+                    if ((!room.terminal.store[resourceType] || room.terminal.store[resourceType] < terminalGoals[resourceType]) && room.storage.store[resourceType] && room.storage.store[resourceType] > 5000) {
                         resourceToMove = resourceType;
                         break;
                     }
