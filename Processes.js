@@ -49,9 +49,17 @@ module.exports = {
             global.Mem.SB = false;
             global.Mem.init = true;
 
+            spawnNewProcess('checkForToken');
             spawnNewProcess('doStats');
             spawnNewProcess('checkRooms');
             spawnNewProcess('checkCreeps');
+        }
+    },
+
+    checkForToken: {
+        run: function () {
+            var token = _.min(Game.market.getAllOrders({resourceType: SUBSCRIPTION_TOKEN, type: ORDER_SELL}), (o) => o.price);
+            if (token && token.price < Game.market.credits) Game.market.deal(token.id, 1);
         }
     },
 
