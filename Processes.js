@@ -142,6 +142,7 @@ module.exports = {
             if (Game.time % 11 == 0) {
                 if (room.controller.level > 7 && room.storage) {
                     if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'APP').length < 1) spawnNewProcess('APP', Memory.rmN);
+                    if (room.terminal && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doTerminal').length < 1) spawnNewProcess('doTerminal', Memory.rmN);
                 }
                 else {
                     if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doHarvest').length < 1) spawnNewProcess('doHarvest', Memory.rmN);
@@ -437,6 +438,59 @@ module.exports = {
             
             if (link && storageLink.energy >= storageLink.energyCapacity-1 && (!room.storage || room.storage.store.energy > 1000)) {
                 storageLink.transferEnergy(link);
+            }
+        }
+    },
+    
+    doTerminal: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            var creeps = Memory.crps ? Memory.crps : undefined;
+            var room = Game.rooms[Memory.rmN];
+            if (!room || !room.terminal) return 'end';
+            if (!global[room.name]) global[room.name] = {};
+            if (!Memory.mineral) Memory.mineral = room.find(FIND_MINERALS)[0] ? room.find(FIND_MINERALS)[0].mineralType : undefined;
+            if (Memory.credits === undefined) Memory.credits = 500;
+
+            if (!Memory.nextRun || Game.time > Memory.nextRun) {
+                Memory.nextRun = Game.time+(54+(Math.round(Math.random()*11)));
+
+                if (room.terminal.store[RESOURCE_ENERGY] < 50000) return;
+
+                if (room.terminal.store[Memory.mineral]) {
+                    var bestSell = _.min(Game.market.getAllOrders({resourceType: Memory.mineral, type: ORDER_SELL}), (o) => o.price);
+
+                    if (!Memory.sellPrice || bestSell.price < Memory.sellPrice) {
+                        var transCost = Game.market.calcTransactionCost(1, room.name, bestSell.roomName);
+
+                        var amountToSend = Math.round((room.terminal.energy / 2) / transCost) > room.terminal.store[Memory.mineral] ? room.terminal.store[Memory.mineral] : Math.round((room.terminal.energy / 2) / transCost);
+
+                        if (amountToSend > 0) {
+                            var rsl = Game.market.deal(bestSell.id, amountToSend, room.name);
+                            console.terminalLog(room, 'Tried to buy ' + bestSell.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestSell.price);
+
+                            if (rsl == OK) Memory.sellPrice = bestSell.price;
+                        }
+                    }
+                }
+
+                if (Memory.credits > 0) {
+                    var bestBuy = _.max(Game.market.getAllOrders({resourceType: Memory.mineral, type: ORDER_BUY}), (o) => o.price);
+
+                    if (!Memory.sellPrice || bestBuy.price > Memory.sellPrice*1.5) {
+                        var transCost = Game.market.calcTransactionCost(1, room.name, bestBuy.roomName);
+
+                        var amountToSend = Math.round((room.terminal.energy / 2) / transCost) > room.terminal.store[Memory.mineral] ? room.terminal.store[Memory.mineral] : Math.round((room.terminal.energy / 2) / transCost);
+
+                        if (amountToSend > 0) {
+                            var rsl = Game.market.deal(bestBuy.id, amountToSend, room.name);
+                            console.terminalLog(room, 'Tried to buy ' + bestBuy.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestBuy.price);
+
+                            if (rsl == OK) Memory.buyPrice = bestBuy.price;
+                        }
+                    }
+                }
             }
         }
     },

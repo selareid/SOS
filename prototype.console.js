@@ -23,6 +23,7 @@ module.exports = () => {
 
     timeString = "[" + "<p style=\"display:inline; color: #abd7ed\">" + Game.time + "</p>" + "] ";
     spawnString = "[" + "<p style=\"display:inline; color: #71ed7c\">SPAWN</p>" + "] ";
+    marketString = "[" + "<p style=\"display:inline; color: #5bc2ed\">MARKET</p>" + "] ";
 
     roomLink = function (room) {
         return "[" + "<p style='display:inline; color: #edea94'>" + objectLinker(room.name) + "</p>" + "] ";
@@ -58,6 +59,10 @@ module.exports = () => {
 
     console.roomLog = function (room, message) {
         console.log(timeString + roomLink(room) + message);
+    };
+
+    console.terminalLog = function (room, message) {
+        console.log(timeString + roomLink(room) + marketString + message);
     };
 
     console.logSpawn = function (room, creepName) {
