@@ -936,7 +936,6 @@ module.exports = {
                             else if (this.linkToStorage(Memory, room, creep) == OK) creep.memory.doing = 'link';
                             else if (this.TTS(Memory, room, creep) == OK) creep.memory.doing = 'TTS';
                             else if (this.STT(Memory, room, creep) == OK) creep.memory.doing = 'STT';
-                            else if (room.storage.store.energy < 50000 && room.terminal && room.terminal.store.energy > 100) creep.withdraw(room.terminal, RESOURCE_ENERGY);
                         }
                     }
                 }
