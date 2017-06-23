@@ -919,6 +919,12 @@ module.exports = {
                                 case 'link':
                                     this.linkToStorage(Memory, room, creep);
                                     break;
+                                case 'TTS':
+                                    this.TTS(Memory, room, creep);
+                                    break;
+                                case 'STT':
+                                    this.STT(Memory, room, creep);
+                                    break;
                                 default:
                                     console.errorLog('creep.memory.doing is undefined', creep, room);
                                     creep.memory.doing = 'link';
@@ -928,6 +934,8 @@ module.exports = {
                             if (this.fillTower(Memory, room, creep) == OK) creep.memory.doing = 'tower';
                             else if (this.pickupInRange(Memory, room, creep) == OK) creep.memory.doing = 'pickupInRange';
                             else if (this.linkToStorage(Memory, room, creep) == OK) creep.memory.doing = 'link';
+                            else if (this.TTS(Memory, room, creep) == OK) creep.memory.doing = 'TTS';
+                            else if (this.STT(Memory, room, creep) == OK) creep.memory.doing = 'STT';
                             else if (room.storage.store.energy < 50000 && room.terminal && room.terminal.store.energy > 100) creep.withdraw(room.terminal, RESOURCE_ENERGY);
                         }
                     }
@@ -1023,6 +1031,54 @@ module.exports = {
                 return OK;
             }
         },
+
+        TTS: function (Memory, room, creep) {
+            if (!room.terminal) return 'no structure';
+
+            if (creep.memory.w == true) {
+                creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
+            }
+            else {
+                var resourceToMove;
+
+                for (let resourceType in room.terminal.store) {
+                    if (room.terminal.store[resourceType] > terminalGoals[resourceType] && room.storage.store[resourceType] && room.storage.store[resourceType] < 5000) {
+                        resourceToMove = resourceType;
+                        break;
+                    }
+                }
+
+                if (resourceToMove) {
+                    creep.memory.w = true;
+                    creep.withdraw(room.terminal, resourceToMove);
+                    return OK;
+                }
+            }
+        },
+
+        STT: function (Memory, room, creep) {
+            if (!room.terminal) return 'no structure';
+
+            if (creep.memory.w == true) {
+                creep.transfer(room.terminal, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
+            }
+            else {
+                var resourceToMove;
+
+                for (let resourceType in room.storage.store) {
+                    if (room.terminal.store[resourceType] < terminalGoals[resourceType] && room.storage.store[resourceType] && room.storage.store[resourceType] > 5000) {
+                        resourceToMove = resourceType;
+                        break;
+                    }
+                }
+
+                if (resourceToMove) {
+                    creep.memory.w = true;
+                    creep.withdraw(room.storage, resourceToMove);
+                    return OK;
+                }
+            }
+        }
     },
 
     iRmHaul: {
