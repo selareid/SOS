@@ -461,14 +461,14 @@ module.exports = {
                 if (room.terminal.store[Memory.mineral]) {
                     var bestSell = _.min(Game.market.getAllOrders({resourceType: Memory.mineral, type: ORDER_SELL}), (o) => o.price);
 
-                    if (!Memory.sellPrice || bestSell.price < Memory.sellPrice) {
+                    if (!Memory.sellPrice || bestSell.price <= Memory.sellPrice) {
                         var transCost = Game.market.calcTransactionCost(1, room.name, bestSell.roomName);
 
                         var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[Memory.mineral] ? room.terminal.store[Memory.mineral] : Math.round((room.terminal.store.energy / 2) / transCost);
 
                         if (amountToSend > 0) {
                             var rsl = Game.market.deal(bestSell.id, amountToSend, room.name);
-                            console.terminalLog(room, 'Tried to buy ' + bestSell.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestSell.price + ' Result ' + rsl);
+                            console.terminalLog(room, 'Tried to sell ' + bestSell.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestSell.price + ' Result ' + rsl);
 
                             if (rsl == OK) {
                                 Memory.sellPrice = bestSell.price;
@@ -481,7 +481,7 @@ module.exports = {
                 if (Memory.credits > 0) {
                     var bestBuy = _.max(Game.market.getAllOrders({resourceType: Memory.mineral, type: ORDER_BUY}), (o) => o.price);
 
-                    if (!Memory.sellPrice || bestBuy.price > Memory.sellPrice*1.5) {
+                    if (!Memory.sellPrice || bestBuy.price >= Memory.sellPrice*1.5) {
                         var transCost = Game.market.calcTransactionCost(1, room.name, bestBuy.roomName);
 
                         var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[Memory.mineral] ? room.terminal.store[Memory.mineral] : Math.round((room.terminal.store.energy / 2) / transCost);
