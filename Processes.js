@@ -468,7 +468,7 @@ module.exports = {
 
                         if (amountToSend > 0) {
                             var rsl = Game.market.deal(bestSell.id, amountToSend, room.name);
-                            console.terminalLog(room, 'Tried to buy ' + bestSell.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestSell.price);
+                            console.terminalLog(room, 'Tried to buy ' + bestSell.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestSell.price + ' Result ' + rsl);
 
                             if (rsl == OK) Memory.sellPrice = bestSell.price;
                         }
@@ -485,7 +485,7 @@ module.exports = {
 
                         if (amountToSend > 0) {
                             var rsl = Game.market.deal(bestBuy.id, amountToSend, room.name);
-                            console.terminalLog(room, 'Tried to buy ' + bestBuy.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestBuy.price);
+                            console.terminalLog(room, 'Tried to buy ' + bestBuy.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestBuy.price + ' Result ' + rsl);
 
                             if (rsl == OK) Memory.buyPrice = bestBuy.price;
                         }
