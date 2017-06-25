@@ -459,7 +459,7 @@ module.exports = {
                 if (room.terminal.store[RESOURCE_ENERGY] < 50000) return;
 
                 if (room.terminal.store[Memory.mineral]) {
-                    var bestSell = _.min(Game.market.getAllOrders({resourceType: Memory.mineral, type: ORDER_SELL}), (o) => o.price);
+                    var bestSell = _.min(Game.market.getAllOrders({resourceType: Memory.mineral, type: ORDER_BUY}), (o) => o.price);
 
                     if (!Memory.sellPrice || bestSell.price <= Memory.sellPrice) {
                         var transCost = Game.market.calcTransactionCost(1, room.name, bestSell.roomName);
@@ -479,7 +479,7 @@ module.exports = {
                 }
 
                 if (Memory.credits > 0) {
-                    var bestBuy = _.max(Game.market.getAllOrders({resourceType: Memory.mineral, type: ORDER_BUY}), (o) => o.price);
+                    var bestBuy = _.max(Game.market.getAllOrders({resourceType: Memory.mineral, type: ORDER_SELL}), (o) => o.price);
 
                     if (!Memory.sellPrice || bestBuy.price >= Memory.sellPrice*1.5) {
                         var transCost = Game.market.calcTransactionCost(1, room.name, bestBuy.roomName);
