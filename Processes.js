@@ -469,12 +469,12 @@ module.exports = {
                 if (room.terminal.store[Memory.mineral]) {
                     var bestSell = _.max(Game.market.getAllOrders({resourceType: Memory.mineral, type: ORDER_BUY}), (o) => o.price);
 
-                    if (!Memory.buyPrice || bestSell.price >= Memory.buyPrice) {
+                    if (!Memory.buyPrice || bestSell.price > Memory.buyPrice) {
                         var transCost = Game.market.calcTransactionCost(1, room.name, bestSell.roomName);
 
                         var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[Memory.mineral] ? room.terminal.store[Memory.mineral] : Math.round((room.terminal.store.energy / 2) / transCost);
 
-                        if (amountToSend > 0 && (!Memory.buyPrice || bestSell.price>Memory.buyPrice)) {
+                        if (amountToSend > 0) {
                             var rsl = Game.market.deal(bestSell.id, amountToSend, room.name);
                             console.terminalLog(room, 'Tried to sell ' + bestSell.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestSell.price + ' Result ' + rsl);
 
@@ -490,13 +490,13 @@ module.exports = {
                 if (Memory.credits > 0) {
                     var bestBuy = _.min(Game.market.getAllOrders({resourceType: Memory.mineral, type: ORDER_SELL}), (o) => o.price);
 
-                    if (!Memory.sellPrice || bestBuy.price <= Memory.sellPrice) {
+                    if (!Memory.sellPrice || bestBuy.price < Memory.sellPrice+0.02) {
                         var transCost = Game.market.calcTransactionCost(1, room.name, bestBuy.roomName);
 
                         var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[Memory.mineral] ? room.terminal.store[Memory.mineral] : Math.round((room.terminal.store.energy / 2) / transCost);
                         if (amountToSend*bestBuy.price > Memory.credits) amountToSend = Math.floor(Memory.credits/bestBuy.price);
                         
-                        if (amountToSend > 0 && (!Memory.buyPrice || bestBuy.price<Memory.sellPrice)) {
+                        if (amountToSend > 0) {
                             var rsl = Game.market.deal(bestBuy.id, amountToSend, room.name);
                             console.terminalLog(room, 'Tried to buy ' + bestBuy.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestBuy.price + ' Result ' + rsl);
 
