@@ -487,7 +487,7 @@ module.exports = {
                         var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[Memory.mineral] ? room.terminal.store[Memory.mineral] : Math.round((room.terminal.store.energy / 2) / transCost);
                         if (amountToSend*bestBuy.price > Memory.credits) amountToSend = Math.floor(Memory.credits/bestBuy.price);
                         
-                        if (amountToSend > 0 && (!Memory.buyPrice || bestSell.price<Memory.sellPrice)) {
+                        if (amountToSend > 0 && (!Memory.buyPrice || bestBuy.price<Memory.sellPrice)) {
                             var rsl = Game.market.deal(bestBuy.id, amountToSend, room.name);
                             console.terminalLog(room, 'Tried to buy ' + bestBuy.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestBuy.price + ' Result ' + rsl);
 
