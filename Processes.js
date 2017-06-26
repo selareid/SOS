@@ -452,7 +452,15 @@ module.exports = {
             if (!global[room.name]) global[room.name] = {};
             if (!Memory.mineral) Memory.mineral = room.find(FIND_MINERALS)[0] ? room.find(FIND_MINERALS)[0].mineralType : undefined;
             if (Memory.credits === undefined) Memory.credits = 500;
-
+            
+            if (Memory.creditChange && _.sum(terminal.store)-Memory.storeChange == Memory.lastSum) {
+                Memory.credits =+ Memory.creditChange;
+            }
+            
+            Memory.creditChange = 0;
+            Memory.storeChange = 0;
+            Memory.lastSum = _.sum(terminal.store);
+            
             if (!Memory.nextRun || Game.time > Memory.nextRun) {
                 Memory.nextRun = Game.time+(54+(Math.round(Math.random()*11)));
 
@@ -472,7 +480,8 @@ module.exports = {
 
                             if (rsl == OK) {
                                 Memory.sellPrice = bestSell.price;
-                                Memory.credits =+ amountToSend*bestSell.price;
+                                Memory.creditChange =+ amountToSend*bestSell.price;
+                                Memory.storeChange =- amountToSend;
                             }
                         }
                     }
@@ -493,7 +502,8 @@ module.exports = {
 
                             if (rsl == OK) {
                                 Memory.buyPrice = bestBuy.price;
-                                Memory.credits =- amountToSend*bestBuy.price;
+                                Memory.creditChange =- amountToSend*bestBuy.price;
+                                Memory.storeChange =+ amountToSend;
                             }
                         }
                     }
