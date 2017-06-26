@@ -1088,8 +1088,11 @@ module.exports = {
 
             if (!global[room.name].towers || !global[room.name].towers[0]) global[room.name].towers = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}), (t) => {return t.id});
 
-            if (!Game.getObjectById(Memory.tower)) Memory.tower = creep.pos.findInRange(_.map(global[room.name].towers, (t) => {return Game.getObjectById(t)}), 1)[0];
-            
+            if (!Game.getObjectById(Memory.tower)) {
+                var fnd = creep.pos.findInRange(_.map(global[room.name].towers, (t) => {return Game.getObjectById(t)}), 1)[0];
+                Memory.tower = fnd ? fnd.id : undefined;
+            }
+                
             var tower = Game.getObjectById(Memory.tower) && Game.getObjectById(Memory.tower).energy < Game.getObjectById(Memory.tower).energyCapacity ? Game.getObjectById(Memory.tower) : undefined;
             if (!tower) {
                 creep.memory.w = false;
