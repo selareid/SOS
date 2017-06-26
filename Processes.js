@@ -453,13 +453,13 @@ module.exports = {
             if (!Memory.mineral) Memory.mineral = room.find(FIND_MINERALS)[0] ? room.find(FIND_MINERALS)[0].mineralType : undefined;
             if (Memory.credits === undefined) Memory.credits = 500;
             
-            if (Memory.creditChange && _.sum(terminal.store)-Memory.storeChange == Memory.lastSum) {
+            if (Memory.creditChange && _.sum(room.terminal.store)-Memory.storeChange == Memory.lastSum) {
                 Memory.credits =+ Memory.creditChange;
             }
             
             Memory.creditChange = 0;
             Memory.storeChange = 0;
-            Memory.lastSum = _.sum(terminal.store);
+            Memory.lastSum = _.sum(room.terminal.store);
             
             if (!Memory.nextRun || Game.time > Memory.nextRun) {
                 Memory.nextRun = Game.time+(54+(Math.round(Math.random()*11)));
