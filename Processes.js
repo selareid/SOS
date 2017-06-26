@@ -454,13 +454,12 @@ module.exports = {
             if (Memory.credits === undefined) Memory.credits = 500;
             
             var currentStore  = _.sum(room.terminal.store);
-            if (Memory.creditChange && (Memory.lastSum + Memory.storeChange) == currentStore) {
+            if (Memory.creditChange && Memory.expectedStore == currentStore) {
                 Memory.credits =+ Memory.creditChange;
             }
             
             Memory.creditChange = 0;
-            Memory.storeChange = 0;
-            Memory.lastSum = currentStore;
+            Memory.expectedStore = _.clone(currentStore);
             
             if (!Memory.nextRun || Game.time > Memory.nextRun) {
                 Memory.nextRun = Game.time+(54+(Math.round(Math.random()*11)));
@@ -482,7 +481,7 @@ module.exports = {
 
                             if (rsl == OK) {
                                 Memory.creditChange =+ amountToSend*bestSell.price;
-                                Memory.storeChange =- amountToSend;
+                                Memory.expectedStore =- amountToSend;
                             }
                         }
                     }
@@ -504,7 +503,7 @@ module.exports = {
                             if (rsl == OK) {
                                 Memory.buyPrice = bestBuy.price;
                                 Memory.creditChange =- amountToSend*bestBuy.price;
-                                Memory.storeChange =+ amountToSend;
+                                Memory.expectedStore =+ amountToSend;
                             }
                         }
                     }
