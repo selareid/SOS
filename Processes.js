@@ -455,10 +455,11 @@ module.exports = {
             
             if (Memory.creditChange && _.sum(room.terminal.store)-Memory.storeChange == Memory.lastSum) {
                 Memory.credits =+ Memory.creditChange;
+                
+                Memory.creditChange = 0;
+                Memory.storeChange = 0;
             }
             
-            Memory.creditChange = 0;
-            Memory.storeChange = 0;
             Memory.lastSum = _.sum(room.terminal.store);
             
             if (!Memory.nextRun || Game.time > Memory.nextRun) {
