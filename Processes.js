@@ -462,7 +462,7 @@ module.exports = {
             Memory.expectedStore = _.clone(currentStore);
 
             if (!Memory.nextRun || Game.time > Memory.nextRun) {
-                Memory.nextRun = Game.time + (54 + (Math.round(Math.random() * 11)));
+                Memory.nextRun = Game.time + (34 + (Math.round(Math.random() * 11)));
 
                 if (room.terminal.store[RESOURCE_ENERGY] < 50000) return;
 
