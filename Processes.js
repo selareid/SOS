@@ -452,15 +452,15 @@ module.exports = {
             if (!global[room.name]) global[room.name] = {};
             if (!Memory.mineral) Memory.mineral = room.find(FIND_MINERALS)[0] ? room.find(FIND_MINERALS)[0].mineralType : undefined;
             if (Memory.credits === undefined) Memory.credits = 500;
-            
-            var currentStore  = _.sum(room.terminal.store);
+
+            var currentStore = _.sum(room.terminal.store);
             if (Memory.creditChange && Memory.expectedStore == currentStore) {
-                Memory.credits =+ Memory.creditChange;
+                Memory.credits = +Memory.creditChange;
             }
-            
+
             Memory.creditChange = 0;
             Memory.expectedStore = _.clone(currentStore);
-            
+
             if (!Memory.nextRun || Game.time > Memory.nextRun) {
                 Memory.nextRun = Game.time + (54 + (Math.round(Math.random() * 11)));
 
@@ -517,7 +517,10 @@ module.exports = {
                 }
 
                 if (room.terminal.store[RESOURCE_ENERGY] >= 70000 && room.storage.store >= 50000) {
-                    var orders = _.filter(Game.market.getAllOrders({resourceType: RESOURCE_ENERGY, type: ORDER_BUY}), (order) => Math.ceil(Game.market.calcTransactionCost(1, room.name, order.roomName) * 1000) <= 1000);
+                    var orders = _.filter(Game.market.getAllOrders({
+                        resourceType: RESOURCE_ENERGY,
+                        type: ORDER_BUY
+                    }), (order) => Math.ceil(Game.market.calcTransactionCost(1, room.name, order.roomName) * 1000) <= 1000);
                     if (orders.length < 1) return;
 
                     var order = _.max(orders, (o) => o.price / Game.market.calcTransactionCost(10, room.name, o.roomName));
@@ -530,6 +533,7 @@ module.exports = {
                     }
                 }
             }
+        }
     },
 
     //creep processes
