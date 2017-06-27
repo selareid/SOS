@@ -454,8 +454,8 @@ module.exports = {
             if (Memory.credits === undefined) Memory.credits = 500;
 
             var currentStore = _.sum(room.terminal.store);
-            if (Memory.expectedStore == currentStore) {
-                Memory.credits = +Memory.creditChange;
+            if (!Memory.expectedStore == currentStore) {
+                Memory.credits =+ Memory.creditChange;
             }
 
             Memory.creditChange = 0;
@@ -483,8 +483,8 @@ module.exports = {
                             console.terminalLog(room, 'Tried to sell ' + bestSell.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestSell.price + ' Result ' + rsl);
 
                             if (rsl == OK) {
-                                Memory.creditChange = +amountToSend * bestSell.price;
-                                Memory.expectedStore = -amountToSend;
+                                Memory.creditChange =+ amountToSend * bestSell.price;
+                                Memory.expectedStore =- amountToSend;
                             }
                         }
                     }
@@ -509,8 +509,8 @@ module.exports = {
 
                             if (rsl == OK) {
                                 Memory.buyPrice = bestBuy.price;
-                                Memory.creditChange = -amountToSend * bestBuy.price;
-                                Memory.expectedStore = +amountToSend;
+                                Memory.creditChange =- amountToSend * bestBuy.price;
+                                Memory.expectedStore =+ amountToSend;
                             }
                         }
                     }
