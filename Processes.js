@@ -490,7 +490,7 @@ module.exports = {
                 if (Memory.credits > 0) {
                     var bestBuy = _.min(Game.market.getAllOrders({resourceType: Memory.mineral, type: ORDER_SELL}), (o) => o.price);
                     
-                    if (!Memory.sellPrice || bestBuy.price < Memory.sellPrice+0.02) {
+                    if (!Memory.sellPrice || bestBuy.price < Memory.sellPrice) {
                         var transCost = Game.market.calcTransactionCost(1, room.name, bestBuy.roomName);
 
                         var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[Memory.mineral] ? room.terminal.store[Memory.mineral] : Math.round((room.terminal.store.energy / 2) / transCost);
