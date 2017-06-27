@@ -470,7 +470,7 @@ module.exports = {
                     var bestSell = _.max(Game.market.getAllOrders({
                         resourceType: Memory.mineral,
                         type: ORDER_BUY
-                    }), (o) => o.price);
+                    }), (o) => {if (o.amount >= 10) return o.price});
                     Memory.sellPrice = bestSell.price;
 
                     if (!Memory.buyPrice || bestSell.price > Memory.buyPrice) {
@@ -495,7 +495,7 @@ module.exports = {
                     var bestBuy = _.min(Game.market.getAllOrders({
                         resourceType: Memory.mineral,
                         type: ORDER_SELL
-                    }), (o) => o.price);
+                    }), (o) => {if (o.amount >= 10) return o.price});
 
                     if (!Memory.sellPrice || bestBuy.price < Memory.sellPrice) {
                         var transCost = Game.market.calcTransactionCost(1, room.name, bestBuy.roomName);
