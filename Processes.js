@@ -454,10 +454,10 @@ module.exports = {
             if (Memory.credits === undefined) Memory.credits = 500;
 
             var currentStore = _.sum(room.terminal.store);
-            if (!Memory.expectedStore == currentStore) {
+            if (Memory.expectedStore != currentStore) {
                 Memory.credits =+ Memory.creditChange;
             }
-
+ 
             Memory.creditChange = 0;
             Memory.expectedStore = _.clone(currentStore);
 
