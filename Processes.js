@@ -540,6 +540,12 @@ module.exports = {
                     var mineral = room.find(FIND_MINERALS)[0];
                     if (mineral && mineral.mineralAmount > 0) Memory.tasks.push('mine');
                 }
+
+                if (Memory.tasks.includes('fillTowers')) {
+                    if (!global[room.name].towers || !global[room.name].towers[0]) global[room.name].towers = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}), (t) => {return t.id});
+
+                    if (room.find(_.map(global[room.name].towers, (t) => {return Game.getObjectById(t)}), {filter: (s) => s.energy < s.energyCapacity}).length > 0) Memory.tasks.push('fillTowers');
+                }
             }
 
 
@@ -593,6 +599,31 @@ module.exports = {
             }
             else {
                 if (room.controller.ticksToDowngrade > room.controller.ticksToDowngrade*0.75) return 'end';
+
+                this.harvestEnergy(room, creep);
+            }
+        },
+
+        fillTowers: function (Memory, creep, room) {
+            var w = this.switch(creep);
+
+
+            if (!global[room.name].towers || !global[room.name].towers[0]) global[room.name].towers = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}), (t) => {return t.id});
+
+            if (!Game.getObjectById(creep.memory.tower) || Game.getObjectById(creep.memory.tower).energy >= Game.getObjectById(creep.memory.tower).energyCapacity) {
+                var towerProposed = creep.pos.findClosestByRange(_.map(global[room.name].towers, (t) => {return Game.getObjectById(t)}), {filter: (s) => s.energy < s.energyCapacity});
+                return creep.memory.tower = towerProposed ? towerProposed.id : undefined;
+            }
+
+            var tower = Game.getObjectById(creep.memory.tower);
+            if (!tower) return 'end';
+
+            if (w == true) {
+                if (creep.pos.isNearTo(tower.pos)) creep.transfer(tower, RESOURCE_ENERGY);
+                else creep.travelTo(tower, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+            }
+            else {
+                if (room.storage.store[RESOURCE_ENERGY] > 10000) return 'end';
 
                 this.harvestEnergy(room, creep);
             }
