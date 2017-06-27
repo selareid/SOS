@@ -477,6 +477,7 @@ module.exports = {
                         var transCost = Game.market.calcTransactionCost(1, room.name, bestSell.roomName);
 
                         var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[Memory.mineral] ? room.terminal.store[Memory.mineral] : Math.round((room.terminal.store.energy / 2) / transCost);
+                        if (amountToSend > bestSell.amount) amountToSend = bestSell.amount;
 
                         if (amountToSend > 0) {
                             var rsl = Game.market.deal(bestSell.id, amountToSend, room.name);
@@ -500,6 +501,7 @@ module.exports = {
                         var transCost = Game.market.calcTransactionCost(1, room.name, bestBuy.roomName);
 
                         var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[Memory.mineral] ? room.terminal.store[Memory.mineral] : Math.round((room.terminal.store.energy / 2) / transCost);
+                        if (amountToSend > bestBuy.amount) amountToSend = bestBuy.amount;
                         if (amountToSend * bestBuy.price > Memory.credits) amountToSend = Math.floor(Memory.credits / bestBuy.price);
                         if (amountToSend > room.terminal.storeCapacity - _.sum(room.terminal.store)) amountToSend = room.terminal.storeCapacity - _.sum(room.terminal.store);
 
