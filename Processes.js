@@ -1191,12 +1191,12 @@ module.exports = {
 
                 for (let resourceType in room.terminal.store) {
                     if (resourceType == RESOURCE_ENERGY) {
-                        if (room.terminal.store[resourceType]+800 > storageEnergy && room.storage.store[resourceType] < storageEnergy) {
+                        if (room.terminal.store[resourceType] > storageEnergy && room.storage.store[resourceType] < storageEnergy) {
                             resourceToMove = resourceType;
                             break;
                         }
                     }
-                    else if (room.terminal.store[resourceType]+800 > terminalGoals[resourceType] && room.storage.store[resourceType] && room.storage.store[resourceType] < 5000) {
+                    else if (room.terminal.store[resourceType] > terminalGoals[resourceType] && room.storage.store[resourceType] && room.storage.store[resourceType] < 5000) {
                         resourceToMove = resourceType;
                         break;
                     }
