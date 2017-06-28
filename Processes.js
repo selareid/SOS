@@ -518,14 +518,8 @@ module.exports = {
                     }
                 }
 
-                if (room.terminal.store[RESOURCE_ENERGY] >= 70000 && room.storage.store >= 50000) {
-                    var orders = _.filter(Game.market.getAllOrders({
-                        resourceType: RESOURCE_ENERGY,
-                        type: ORDER_BUY
-                    }), (order) => Math.ceil(Game.market.calcTransactionCost(1, room.name, order.roomName) * 1000) <= 1000);
-                    if (orders.length < 1) return;
-
-                    var order = _.max(orders, (o) => o.price / Game.market.calcTransactionCost(10, room.name, o.roomName));
+                if (room.terminal.store[RESOURCE_ENERGY] >= 75000 && room.storage.store >= 50000) {
+                    var order = _.max(Game.market.getAllOrders({resourceType: RESOURCE_ENERGY, type: ORDER_BUY}), (o) => o.price / Game.market.calcTransactionCost(10, room.name, o.roomName));
                     if (!order) return;
 
                     var engRsl = Game.market.deal(order.id, (24000 > order.amount ? order.amount : 24000), room.name);
