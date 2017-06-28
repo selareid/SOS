@@ -455,9 +455,9 @@ module.exports = {
 
             var currentStore = _.sum(room.terminal.store);
             if (Memory.expectedStore != currentStore) {
-                Memory.credits =+ Memory.creditChange;
+                Memory.credits +=Memory.creditChange;
             }
- 
+
             Memory.creditChange = 0;
             Memory.expectedStore = _.clone(currentStore);
 
@@ -465,16 +465,18 @@ module.exports = {
                 Memory.nextRun = Game.time + (34 + (Math.round(Math.random() * 11)));
 
                 if (room.terminal.store[RESOURCE_ENERGY] < 50000) return;
-                
+
                 switch (Memory.n) {
                     case 1:
                         Memory.n = 2;
-                        
+
                         if (Memory.credits > 0 && _.sum(room.terminal.store) < room.terminal.storeCapacity) {
                             var bestBuy = _.min(Game.market.getAllOrders({
                                 resourceType: Memory.mineral,
                                 type: ORDER_SELL
-                            }), (o) => {if (o.amount >= 10) return o.price});
+                            }), (o) => {
+                                if (o.amount >= 10) return o.price
+                            });
 
                             if (!Memory.sellPrice || bestBuy.price < Memory.sellPrice) {
                                 var transCost = Game.market.calcTransactionCost(1, room.name, bestBuy.roomName);
@@ -490,17 +492,22 @@ module.exports = {
 
                                     if (rsl == OK) {
                                         Memory.buyPrice = bestBuy.price;
-                                        Memory.creditChange =- amountToSend * bestBuy.price;
-                                        Memory.expectedStore =+ amountToSend;
+                                        Memory.creditChange -=amountToSend * bestBuy.price;
+                                        Memory.expectedStore +=amountToSend;
                                     }
                                 }
                             }
                         }
-                    break;
+                        break;
                     case 2:
-                     Memory.n = 0;
+                        Memory.n = 0;
                         if (room.terminal.store[RESOURCE_ENERGY] >= 75000 && room.storage.store[RESOURCE_ENERGY] >= 50000) {
-                            var order = _.max(Game.market.getAllOrders({resourceType: RESOURCE_ENERGY, type: ORDER_BUY}), (o) => {if (o.amount >= 10) return o.price / Game.market.calcTransactionCost(10, room.name, o.roomName)});
+                            var order = _.max(Game.market.getAllOrders({
+                                resourceType: RESOURCE_ENERGY,
+                                type: ORDER_BUY
+                            }), (o) => {
+                                if (o.amount >= 10) return o.price / Game.market.calcTransactionCost(10, room.name, o.roomName)
+                            });
                             if (!order) return;
 
                             var engRsl = Game.market.deal(order.id, (24000 > order.amount ? order.amount : 24000), room.name);
@@ -509,14 +516,16 @@ module.exports = {
                                 console.terminalLog(room, 'Sold Energy: ' + order.id + '\n Amount: ' + (24000 > order.amount ? order.amount : 24000) + '\n At Price: ' + order.price + '\n To Room: ' + order.roomName + '\n With Result: ' + engRsl);
                             }
                         }
-                       break; 
+                        break;
                     default:
-                    Memory.n = 1;
+                        Memory.n = 1;
                         if (room.terminal.store[Memory.mineral]) {
                             var bestSell = _.max(Game.market.getAllOrders({
                                 resourceType: Memory.mineral,
                                 type: ORDER_BUY
-                            }), (o) => {if (o.amount >= 10) return o.price});
+                            }), (o) => {
+                                if (o.amount >= 10) return o.price
+                            });
                             Memory.sellPrice = bestSell.price;
 
                             if (!Memory.buyPrice || bestSell.price > Memory.buyPrice) {
@@ -530,13 +539,13 @@ module.exports = {
                                     console.terminalLog(room, 'Tried to sell ' + bestSell.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestSell.price + ' Result ' + rsl);
 
                                     if (rsl == OK) {
-                                        Memory.creditChange =+ amountToSend * bestSell.price;
-                                        Memory.expectedStore =- amountToSend;
+                                        Memory.creditChange +=amountToSend * bestSell.price;
+                                        Memory.expectedStore -=amountToSend;
                                     }
                                 }
                             }
                         }
-                   }
+                }
             }
         }
     },
