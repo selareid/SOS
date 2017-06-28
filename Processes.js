@@ -518,7 +518,7 @@ module.exports = {
                     }
                 }
 
-                if (room.terminal.store[RESOURCE_ENERGY] >= 75000 && room.storage.store >= 50000) {
+                if (room.terminal.store[RESOURCE_ENERGY] >= 75000 && room.storage.store[RESOURCE_ENERGY] >= 50000) {
                     var order = _.max(Game.market.getAllOrders({resourceType: RESOURCE_ENERGY, type: ORDER_BUY}), (o) => o.price / Game.market.calcTransactionCost(10, room.name, o.roomName));
                     if (!order) return;
 
