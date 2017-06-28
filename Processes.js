@@ -467,7 +467,7 @@ module.exports = {
                 if (room.terminal.store[RESOURCE_ENERGY] < 50000) return;
                 
                 switch (Memory.n) {
-                        case 1;
+                    case 1:
                         Memory.n = 2;
                         
                         if (Memory.credits > 0 && _.sum(room.terminal.store) < room.terminal.storeCapacity) {
