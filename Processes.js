@@ -140,6 +140,9 @@ module.exports = {
             if (Game.time % 503 == 0 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doTowersRepair').length < 1) spawnNewProcess('doTowersRepair', Memory.rmN);
 
             if (Game.time % 11 == 0) {
+                if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
+                if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
+                
                 if (room.controller.level > 7 && room.storage) {
                     if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'APP').length < 1) spawnNewProcess('APP', Memory.rmN);
                     if (room.terminal && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doTerminal').length < 1) spawnNewProcess('doTerminal', Memory.rmN);
@@ -157,8 +160,6 @@ module.exports = {
 
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'strgDistr').length < 1) spawnNewProcess('strgDistr', Memory.rmN);
                 if (room.controller.level >= 5 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doLinks').length < 1) spawnNewProcess('doLinks', Memory.rmN);
-                if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
-                if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
             }
 
             if (Game.time % 11 == 0 && room.controller.level >= 4 && !room.storage && !global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'placeStorage').length < 1) spawnNewProcess('placeStorage', Memory.rmN);
