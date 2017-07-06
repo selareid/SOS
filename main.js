@@ -41,7 +41,7 @@ module.exports.run = () => {
 if(false) { // hardcoded profiler switch
     const profiler = require('screeps-profiler');
     profiler.enable();
-    module.exports.loop = () => profiler.wrap(( => module.exports.run());
+    module.exports.loop = () => profiler.wrap(() => module.exports.run());
 } else {
     module.exports.loop = module.exports.run;
 }
