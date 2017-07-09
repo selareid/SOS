@@ -831,9 +831,8 @@ module.exports = {
                     }
                     else { // do stuff
 
-                        if (creep.memory.w == true && _.sum(creep.carry) == 0) creep.memory.w = false;
-                        else if (creep.memory.w == false && _.sum(creep.carry) == creep.carryCapacity) creep.memory.w = true;
-                        else if (isUndefinedOrNull(creep.memory.w)) creep.memory.w = false;
+                        if (_.sum(creep.carry) == 0) creep.memory.w = false;
+                        else if (_.sum(creep.carry) == creep.carryCapacity) creep.memory.w = true;
 
                         if (creep.memory.w == true) {
                             switch (creep.memory.doing) {
@@ -965,7 +964,7 @@ module.exports = {
             if (!room.terminal) return 'no structure';
 
             if (creep.memory.w == true) {
-                creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
+                if (creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]) != OK) creep.memory.w = false;
             }
             else {
                 var resourceToMove;
