@@ -98,7 +98,7 @@ module.exports = {
 
                 var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'claim')[0];
 
-                if (!flag.room || !flag.room.controller.my) {
+                if (flag && (!flag.room || !flag.room.controller.my)) {
                     if (_.filter(global.Mem.p, (p) => p.pN == 'claim').length < 1) spawnNewProcess('claim');
                     return 'end';
                 }
