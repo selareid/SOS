@@ -22,7 +22,9 @@ const bodyChart = {
     fillSpawn: [[CARRY, CARRY, MOVE], [], 6],
     fillExt: [[CARRY, CARRY, MOVE], []],
     iRmHaul: [[CARRY, CARRY, MOVE], []],
-    takeCare: [[WORK, CARRY, MOVE], []]
+    takeCare: [[WORK, CARRY, MOVE], []],
+    claim: [[CLAIM, MOVE], []],
+    buildSpawn: [[WORK, MOVE, CARRY], []]
 };
 
 function getRandomHash() {
@@ -55,6 +57,7 @@ module.exports = {
             spawnNewProcess('doStats');
             spawnNewProcess('checkRooms');
             spawnNewProcess('checkCreeps');
+            spawnNewProcess('checkGlobalProcesses');
         }
     },
 
@@ -83,6 +86,22 @@ module.exports = {
                     num_orders: Game.market.orders ? Object.keys(Game.market.orders).length : 0,
                 }
 
+            }
+        }
+    },
+
+    checkGlobalProcesses: {
+        run: function () {
+
+            if (!Memory.nc || Game.time > Memory.nc) {
+                Memory.nc = Game.time + 100 + Math.random()*100;
+
+                var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'claim')[0];
+
+                if (!flag.room || !flag.room.controller.my) {
+                    if (_.filter(global.Mem.p, (p) => p.pN == 'claim').length < 1) spawnNewProcess('claim');
+                    return 'end';
+                }
             }
         }
     },
@@ -118,6 +137,103 @@ module.exports = {
                 }
                 else delete creep.memory.nc;
             });
+        }
+    },
+
+    //global processes (not tied to room)
+
+    claim: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            var flag = Game.flags[Memory.f];
+            if (!flag) {
+                var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'claim')[0];
+                return newFlag ? Memory.f = newFlag.name : 'end';
+            }
+
+            if (flag.room && flag.room.controller.my) {
+                if (_.filter(global.Mem.p, (p) => p.pN == 'buildSpawn').length < 1) spawnNewProcess('buildSpawn');
+                return 'end';
+            }
+
+            var nearestRoom = Game.rooms[Memory.nr];
+            if (!nearestRoom) {
+                var newR = _.min(Game.rooms, (r) => {
+                    return Game.map.getRoomLinearDistance(r.name, flag.pos.roomName);
+                });
+                return Memory.nr = newR ? newR.name : undefined;
+            }
+
+            if (Game.creeps[Memory.crp] || global.Mem.p['room:' + nearestRoom.name].spawnQueue[Memory.crp]) {
+                var creep = Game.creeps[Memory.crp];
+                creep.say('claim');
+
+                if (creep.pos.roomName != flag.pos.roomName) {
+                    creep.travelTo(new RoomPosition(25, 25, flag.pos.roomName), {range: 23, repath: 0.01, maxRooms: 1});
+                }
+                else {
+                    if (creep.pos.isNearTo(creep.room.controller.pos)) creep.claimController(creep.room.controller);
+                    else creep.travelTo(creep.room.controller, {range: 1, repath: 0.01, maxRooms: 1});
+                }
+            }
+            else Memory.crp = module.exports.room.addToSQ('room:' + nearestRoom.name, 'claim');
+        }
+    },
+
+    buildSpawn: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            var flag = Game.flags[Memory.f];
+            if (!flag) {
+                var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'claim')[0];
+                return newFlag ? Memory.f = newFlag.name : 'end';
+            }
+
+            var nearestRoom = Game.rooms[Memory.nr];
+            if (!nearestRoom) {
+                var newR = _.min(Game.rooms, (r) => {
+                    return Game.map.getRoomLinearDistance(r.name, flag.pos.roomName);
+                });
+                return Memory.nr = newR ? newR.name : undefined;
+            }
+
+            if (Game.creeps[Memory.crp] || global.Mem.p['room:' + nearestRoom.name].spawnQueue[Memory.crp]) {
+                var creep = Game.creeps[Memory.crp];
+                creep.say('buildSpawn');
+
+                if (creep.pos.roomName != flag.pos.roomName) {
+                    creep.travelTo(new RoomPosition(25, 25, flag.pos.roomName), {range: 23, repath: 0.01, maxRooms: 1});
+                }
+                else {
+                    if (_.sum(creep.carry) == creep.carryCapacity) creep.memory.w = true;
+                    else if (_.sum(creep.carry) == 0) creep.memory.w = false;
+
+                    if (creep.memory.w == true) {
+                        if (!flag.pos.findInRange(FIND_CONSTRUCTION_SITES, 1)[0]) return this.placeSpawn1(flag.pos);
+
+                        if (creep.pos.isNearTo(flag.pos)) creep.build(flag.pos.findInRange(FIND_CONSTRUCTION_SITES, 1)[0]);
+                        else creep.travelTo(flag, {range: 1, repath: 0.01, maxRooms: 1});
+                    }
+                    else {
+                        var source = flag.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+
+                        if (source) {
+                            if (creep.pos.isNearTo(source.pos)) creep.harvest(source);
+                            else creep.travelTo(source, {range: 1, repath: 0.01, maxRooms: 1});
+                        }
+                    }
+                }
+            }
+            else Memory.crp = module.exports.room.addToSQ('room:' + nearestRoom.name, 'buildSpawn');
+        },
+
+        placeSpawn1: function (flagPos) {
+            if (!_.size(Game.constructionSites) < 100) {
+                let pos = new RoomPosition(flagPos.x + 1, flagPos.y, flagPos.roomName);
+                Game.rooms[flagPos.pos.roomName].createConstructionSite(pos.x, pos.y, STRUCTURE_SPAWN);
+            }
         }
     },
 
