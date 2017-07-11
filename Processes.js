@@ -210,7 +210,7 @@ module.exports = {
                     else if (_.sum(creep.carry) == 0) creep.memory.w = false;
 
                     if (creep.memory.w == true) {
-                        if (creep.room.controller.ticksToDowngrade <= 10000) {
+                        if (creep.room.controller.ticksToDowngrade && creep.room.controller.ticksToDowngrade <= 10000) {
                             if (creep.pos.getRangeTo(creep.room.controller.pos) <= 3) creep.upgradeController(creep.room.controller);
                             else creep.travelTo(creep.room.controller, {range: 3, repath: 0.01, maxRooms: 1});
                         }
