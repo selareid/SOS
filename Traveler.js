@@ -3,6 +3,7 @@
  * Example: var Traveler = require('Traveler.js');
  */
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class Traveler {
     /**
      * move creep to destination
@@ -260,7 +261,7 @@ class Traveler {
                 if (options.obstacles) {
                     matrix = matrix.clone();
                     for (let obstacle of options.obstacles) {
-                        if (!obstacle || obstacle.pos.roomName !== roomName) {
+                        if (obstacle.pos.roomName !== roomName) {
                             continue;
                         }
                         matrix.set(obstacle.pos.x, obstacle.pos.y, 0xff);
@@ -298,6 +299,7 @@ class Traveler {
                     console.log(`TRAVELER: second attempt was ${ret.incomplete ? "not " : ""}successful`);
                     return ret;
                 }
+                // TODO: handle case where a wall or some other obstacle is blocking the exit assumed by findRoute
             }
             else {
             }
@@ -340,7 +342,7 @@ class Traveler {
                     return Number.POSITIVE_INFINITY;
                 }
                 let parsed;
-                if (options.highwayBias) {
+                if (options.preferHighway) {
                     parsed = /^[WE]([0-9]+)[NS]([0-9]+)$/.exec(roomName);
                     let isHighway = (parsed[1] % 10 === 0) || (parsed[2] % 10 === 0);
                     if (isHighway) {
@@ -426,7 +428,7 @@ class Traveler {
         let impassibleStructures = [];
         for (let structure of room.find(FIND_STRUCTURES)) {
             if (structure instanceof StructureRampart) {
-                if (!structure.my) {
+                if (!structure.my && !structure.isPublic) {
                     impassibleStructures.push(structure);
                 }
             }
