@@ -168,7 +168,7 @@ module.exports = {
                 creep.say('claim');
 
                 if (creep.pos.roomName != flag.pos.roomName) {
-                    creep.travelTo(new RoomPosition(25, 25, flag.pos.roomName), {range: 23, repath: 0.01, maxRooms: 1});
+                    creep.travelTo(new RoomPosition(25, 25, flag.pos.roomName), {range: 23, repath: 0.01, maxRooms: 16});
                 }
                 else {
                     if (creep.pos.isNearTo(creep.room.controller.pos)) creep.claimController(creep.room.controller);
@@ -203,7 +203,7 @@ module.exports = {
                 creep.say('buildSpawn');
 
                 if (creep.pos.roomName != flag.pos.roomName) {
-                    creep.travelTo(new RoomPosition(25, 25, flag.pos.roomName), {range: 23, repath: 0.01, maxRooms: 1});
+                    creep.travelTo(new RoomPosition(25, 25, flag.pos.roomName), {range: 23, repath: 0.01, maxRooms: 16});
                 }
                 else {
                     if (_.sum(creep.carry) == creep.carryCapacity) creep.memory.w = true;
