@@ -164,7 +164,7 @@ module.exports = {
 
             if (Game.creeps[Memory.crp] || global.Mem.p['room:' + nearestRoom.name].spawnQueue[Memory.crp]) {
                 if (!Game.creeps[Memory.crp]) return;
-                var creep = Game.creeps[Memory.crp];
+                var creep = getCreep(Memory.crp, 'claim');
                 creep.say('claim');
 
                 if (creep.pos.roomName != flag.pos.roomName) {
@@ -198,7 +198,8 @@ module.exports = {
             }
 
             if (Game.creeps[Memory.crp] || global.Mem.p['room:' + nearestRoom.name].spawnQueue[Memory.crp]) {
-                var creep = Game.creeps[Memory.crp];
+                if (!Game.creeps[Memory.crp]) return;
+                var creep = getCreep(Memory.crp, 'claim');
                 creep.say('buildSpawn');
 
                 if (creep.pos.roomName != flag.pos.roomName) {
