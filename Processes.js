@@ -160,7 +160,7 @@ module.exports = {
             var nearestRoom = Game.rooms[Memory.nr];
             if (!nearestRoom) {
                 var newR = _.min(Game.rooms, (r) => {
-                    return Game.map.getRoomLinearDistance(r.name, flag.pos.roomName);
+                    return r.energyCapacity >= 1650 ? Game.map.getRoomLinearDistance(r.name, flag.pos.roomName) : undefined;
                 });
                 return Memory.nr = newR ? newR.name : undefined;
             }
