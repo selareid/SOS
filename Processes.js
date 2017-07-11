@@ -23,7 +23,7 @@ const bodyChart = {
     fillExt: [[CARRY, CARRY, MOVE], []],
     iRmHaul: [[CARRY, CARRY, MOVE], []],
     takeCare: [[WORK, CARRY, MOVE], []],
-    claim: [[CLAIM, MOVE], []],
+    claim: [[CLAIM, MOVE], [], 1],
     buildSpawn: [[WORK, MOVE, CARRY], []]
 };
 
