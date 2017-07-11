@@ -214,7 +214,7 @@ module.exports = {
                             if (creep.pos.getRangeTo(creep.room.controller.pos) <= 3) creep.upgradeController(creep.room.controller);
                             else creep.travelTo(creep.room.controller, {range: 3, repath: 0.01, maxRooms: 1});
                         }
-                        else if (flag.room.find(FIND_MY_SPAWNS).length > 0) {
+                        else if (flag.room.find(FIND_MY_SPAWNS).length < 1) {
                             if (!flag.pos.findInRange(FIND_CONSTRUCTION_SITES, 1)[0]) return this.placeSpawn1(flag.pos);
 
                             if (creep.pos.isNearTo(flag.pos)) creep.build(flag.pos.findInRange(FIND_CONSTRUCTION_SITES, 1)[0]);
