@@ -244,7 +244,7 @@ module.exports = {
         placeSpawn1: function (flagPos) {
             if (!_.size(Game.constructionSites) < 100) {
                 let pos = new RoomPosition(flagPos.x + 1, flagPos.y, flagPos.roomName);
-                Game.rooms[flagPos.pos.roomName].createConstructionSite(pos.x, pos.y, STRUCTURE_SPAWN);
+                Game.rooms[flagPos.roomName].createConstructionSite(pos.x, pos.y, STRUCTURE_SPAWN);
             }
         }
     },
