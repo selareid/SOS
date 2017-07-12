@@ -969,16 +969,12 @@ module.exports = {
                     }
 
                     if (!creep.pos.isEqualTo(flag.pos)) {
-                        if (!flag.pos.findInRange(FIND_MY_CREEPS, 0)[0]) creep.travelTo(flag, {range: 0, obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
-                        else {
-                            creep.travelTo(flag, {range: 1, obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                        creep.travelTo(flag, {range: 0, obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
 
-                            if (creep.pos.isNearTo(flag.pos)) {
-                                var rootOfAllEvil = flag.pos.findInRange(FIND_MY_CREEPS, 0, {filter: (c) => c.memory.p != 'strgDistr'})[0];
-                                if (rootOfAllEvil) {
-                                    rootOfAllEvil.move(rootOfAllEvil.pos.getDirectionTo(creep.pos));
-                                    creep.move(creep.pos.getDirectionTo(rootOfAllEvil));
-                                }
+                        if (!flag.pos.findInRange(FIND_MY_CREEPS, 1)[0] && creep.pos.getRangeTo(flag.pos) <= 2) {
+                            var rootOfAllEvil = flag.pos.findInRange(FIND_MY_CREEPS, 0, {filter: (c) => c.memory.p != 'strgDistr'})[0];
+                            if (rootOfAllEvil) {
+                                rootOfAllEvil.move(rootOfAllEvil.pos.getDirectionTo(creep.pos));
                             }
                         }
                     }
