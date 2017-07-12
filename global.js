@@ -47,6 +47,10 @@ module.exports = () => {
         return text;
     };
 
+    getObstacles = function (room) {
+        return global[room.name].distrSquareFlag ? [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)) : room.find(FIND_MY_SPAWNS);
+    };
+
     storageEnergy = 50000;
 
     terminalGoals = {
