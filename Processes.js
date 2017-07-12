@@ -355,6 +355,7 @@ module.exports = {
             var name = spawn.createCreep(nextToSpawn.body.body, nextToSpawn.name, {p: nextToSpawn.proc});
 
             if (Game.creeps[name]) console.logSpawn(room, name + ' ' + nextToSpawn.proc);
+            else if (name == -6 || name == -10) nextToSpawn.body = processSpawn.reCalcBody(room.energyAvailable, getBodyChart(room)[nextToSpawn.proc][0], getBodyChart(room)[nextToSpawn.proc][1], getBodyChart(room)[nextToSpawn.proc][2]);
         }
     },
 
