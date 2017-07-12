@@ -771,7 +771,7 @@ module.exports = {
             var source = Game.getObjectById(Memory.crps[creep_it_it].split(':')[1]);
 
             if (source) {
-                if (!creep.pos.isNearTo(source)) creep.travelTo(source, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                if (!creep.pos.isNearTo(source)) creep.travelTo(source, {obstacles: room.find(FIND_MY_SPAWNS), repath: 0.01, maxRooms: 1});
                 else creep.harvest(source)
             }
             else Memory.crps[creep_it_it] = creep.name;
