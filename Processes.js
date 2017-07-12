@@ -94,7 +94,7 @@ module.exports = {
         run: function () {
 
             if (!Memory.nc || Game.time > Memory.nc) {
-                Memory.nc = Game.time + 100 + Math.random()*100;
+                Memory.nc = Game.time + 100 + Math.round(Math.random()*100);
 
                 var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'claim')[0];
 
@@ -471,7 +471,7 @@ module.exports = {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
-            if (!Memory.l || Game.time-Number.parseInt(Memory.l) >= 18000) Memory.l = Game.time;
+            if (!Memory.nr || Game.time > Memory.nr) Memory.nr = Game.time + 10000 + Math.round(Math.random()*57);
             else return;
 
             var room = Game.rooms[Memory.rmN];
@@ -484,18 +484,37 @@ module.exports = {
 
             var costMatrix = this.getCostMatrix(room.name, storageFlag, spawnFlag);
 
-            _.forEach(storageFlag.pos.findPathTo(spawnFlag, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1}), (pathData) => {
-                 if (_.size(Game.constructionSites) < 100) {
-                     if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
-                 }
-            });
+            switch (Memory.nb) {
+                case 1:
+                    _.forEach(room.find(FIND_MY_STRUCTURES), (structure) => {
+                        if (structure.structureType == STRUCTURE_EXTENSION) {
+                            _.forEach(storageFlag.pos.findPathTo(structure, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
+                                if (_.size(Game.constructionSites) < 100) {
+                                    if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
+                                }
+                            });
+                        }
+                    });
+                    break;
+                case 0:
+                    Memory.nb++;
 
-            var mineral = room.find(FIND_MINERALS)[0];
-            _.forEach(storageFlag.pos.findPathTo(mineral, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
-                if (_.size(Game.constructionSites) < 100) {
-                    if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
-                }
-            });
+                    var mineral = room.find(FIND_MINERALS)[0];
+                    _.forEach(storageFlag.pos.findPathTo(mineral, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
+                            if (_.size(Game.constructionSites) < 100) {
+                                if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
+                            }
+                        });
+                    break;
+                default:
+                    Memory.nb = 0;
+
+                    _.forEach(storageFlag.pos.findPathTo(spawnFlag, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1}), (pathData) => {
+                        if (_.size(Game.constructionSites) < 100) {
+                            if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
+                        }
+                    });
+            }
         },
         
         getCostMatrix: function (roomName, storageFlag, spawnFlag) {
