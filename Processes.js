@@ -237,7 +237,10 @@ module.exports = {
             }
             else {
                 if (!flag.room || flag.room.find(FIND_MY_SPAWNS) < 1) Memory.crp = module.exports.room.addToSQ('room:' + nearestRoom.name, 'buildSpawn');
-                else return 'end';
+                else {
+                    flag.remove();
+                    return 'end';
+                 }
             }
         },
 
