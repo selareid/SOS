@@ -539,6 +539,12 @@ module.exports = {
                 costs.set(spawnFlag.pos.x + struc.x, spawnFlag.pos.y + struc.y, 0xff);
             });
 
+            _.forEach(room.find(FIND_SOURCES), (structure) => {
+                _.forEach([{x: 0, y: 0}, {x: 0, y: 1}, {x: 1, y: 0}, {x: 1, y: 1}, {x: -1, y: 0}, {x: 0, y: -1}, {x: -1, y: -1}], (struc) => {
+                    costs.set(structure.pos.x + struc.x, structure.pos.y + struc.y, 0xff);
+                });
+            });
+
 
             return costs;
         }
