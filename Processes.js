@@ -484,7 +484,7 @@ module.exports = {
 
             var costMatrix = this.getCostMatrix(room.name, storageFlag, spawnFlag);
 
-            _.forEach(storageFlag.pos.findPathTo(spawnFlag, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
+            _.forEach(storageFlag.pos.findPathTo(spawnFlag, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1}), (pathData) => {
                  if (_.size(Game.constructionSites) < 100) {
                      if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
                  }
