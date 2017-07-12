@@ -211,18 +211,18 @@ module.exports = {
 
                     if (creep.memory.w == true) {
                         if (creep.room.controller.ticksToDowngrade && creep.room.controller.ticksToDowngrade <= 2500) {
-                            if (creep.pos.getRangeTo(creep.room.controller.pos) <= 3) creep.upgradeController(creep.room.controller);
-                            else creep.travelTo(creep.room.controller, {range: 3, repath: 0.01, maxRooms: 1});
+                            if (creep.pos.getRangeTo(creep.room.controller.pos) < 3) creep.upgradeController(creep.room.controller);
+                            else creep.travelTo(creep.room.controller, {range: 2, repath: 0.01, maxRooms: 1});
                         }
                         else if (flag.room.find(FIND_MY_SPAWNS).length < 1) {
                             if (!flag.pos.findInRange(FIND_CONSTRUCTION_SITES, 1)[0]) return this.placeSpawn1(flag.pos);
 
-                            if (creep.pos.getRangeTo(flag.pos) <= 3) creep.build(flag.pos.findInRange(FIND_CONSTRUCTION_SITES, 1)[0]);
-                            else creep.travelTo(flag, {range: 3, repath: 0.01, maxRooms: 1});
+                            if (creep.pos.getRangeTo(flag.pos) < 3) creep.build(flag.pos.findInRange(FIND_CONSTRUCTION_SITES, 1)[0]);
+                            else creep.travelTo(flag, {range: 2, repath: 0.01, maxRooms: 1});
                         }
                         else {
-                            if (creep.pos.getRangeTo(creep.room.controller.pos) <= 3) creep.upgradeController(creep.room.controller);
-                            else creep.travelTo(creep.room.controller, {range: 3, repath: 0.01, maxRooms: 1});
+                            if (creep.pos.getRangeTo(creep.room.controller.pos) < 3) creep.upgradeController(creep.room.controller);
+                            else creep.travelTo(creep.room.controller, {range: 2, repath: 0.01, maxRooms: 1});
                         }
                     }
                     else {
