@@ -30,7 +30,9 @@ const defaultBodyChart = {
 function getBodyChart(room) {
     var newChart = _.clone(defaultBodyChart);
 
-    if (room.find(FIND_MY_CONSTRUCTION_SITES).length < 1) newChart['takeCare'][2] = 5;
+    if (room) {
+        if (room.find(FIND_MY_CONSTRUCTION_SITES).length < 1) newChart['takeCare'][2] = 5;
+    }
 
     return newChart;
 }
@@ -313,7 +315,7 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             while (!creepMem.name || Game.creeps[creepMem.name]) creepMem.name = (Game.time % 1000) + '' + Math.round(Math.random() * 1000);
-            creepMem.body = processSpawn.run(Game.rooms[Memory.rmN], getBodyChart(room)[process][0], getBodyChart(room)[process][1],
+            creepMem.body = processSpawn.run(Game.rooms[Memory.rmN], getBodyChart()[process][0], getBodyChart()[process][1],
                 (process == 'praiseRC' && Game.rooms[Memory.rmN] && Game.rooms[Memory.rmN].controller.level >= 8 ? 15 : getBodyChart(room)[process][2]));
 
             creepMem.proc = process;
