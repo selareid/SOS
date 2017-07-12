@@ -316,7 +316,7 @@ module.exports = {
 
             while (!creepMem.name || Game.creeps[creepMem.name]) creepMem.name = (Game.time % 1000) + '' + Math.round(Math.random() * 1000);
             creepMem.body = processSpawn.run(Game.rooms[Memory.rmN], getBodyChart(Game.rooms[Memory.rmN])[process][0], getBodyChart(Game.rooms[Memory.rmN])[process][1],
-                (process == 'praiseRC' && Game.rooms[Memory.rmN] && Game.rooms[Memory.rmN].controller.level >= 8 ? 15 : getBodyChart(room)[process][2]));
+                (process == 'praiseRC' && Game.rooms[Memory.rmN] && Game.rooms[Memory.rmN].controller.level >= 8 ? 15 : getBodyChart(Game.rooms[Memory.rmN])[process][2]));
 
             creepMem.proc = process;
 
