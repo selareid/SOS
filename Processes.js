@@ -718,6 +718,7 @@ module.exports = {
             var room = Game.rooms[Memory.rmN];
             if (!room) return 'end';
             if (!global[room.name]) global[room.name] = {};
+            if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
             if (!creeps) return Memory.crps = [];
 
             if (creeps.length > 0) {
@@ -771,7 +772,7 @@ module.exports = {
             var source = Game.getObjectById(Memory.crps[creep_it_it].split(':')[1]);
 
             if (source) {
-                if (!creep.pos.isNearTo(source)) creep.travelTo(source, {obstacles: room.find(FIND_MY_SPAWNS), repath: 0.01, maxRooms: 1});
+                if (!creep.pos.isNearTo(source)) creep.travelTo(source, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
                 else creep.harvest(source)
             }
             else Memory.crps[creep_it_it] = creep.name;
