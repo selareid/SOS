@@ -38,6 +38,10 @@ function getRandomHash() {
     return randomHash;
 }
 
+function getObstacles(room) {
+    return global[room.name].distrSquareFlag ? [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)) : room.find(FIND_MY_SPAWNS);
+}
+
 module.exports = {
     //global processes
 
@@ -741,7 +745,7 @@ module.exports = {
                         if (creep.carry.energy >= creep.carryCapacity) {
                             var sE = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
                             if (creep.pos.isNearTo(sE)) creep.transfer(sE, RESOURCE_ENERGY);
-                            else creep.travelTo(sE, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                            else creep.travelTo(sE, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                         }
                         else this.harvest(Memory, room, creep_it_it);
 
@@ -772,7 +776,7 @@ module.exports = {
             var source = Game.getObjectById(Memory.crps[creep_it_it].split(':')[1]);
 
             if (source) {
-                if (!creep.pos.isNearTo(source)) creep.travelTo(source, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                if (!creep.pos.isNearTo(source)) creep.travelTo(source, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                 else creep.harvest(source)
             }
             else Memory.crps[creep_it_it] = creep.name;
@@ -788,7 +792,7 @@ module.exports = {
 
             if (link && link.pos.getRangeTo(creep.pos) < 3) {
                 if (creep.pos.isNearTo(link.pos)) creep.transfer(link, RESOURCE_ENERGY);
-                 else creep.travelTo(link, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                 else creep.travelTo(link, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
             }
             else {
                 var container = Game.getObjectById(srcId)
@@ -797,7 +801,7 @@ module.exports = {
 
                 if (container) {
                     if (creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.travelTo(container, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                        creep.travelTo(container, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                     }
                 }
                 else {
@@ -868,7 +872,7 @@ module.exports = {
                     creep.getConsumerEnergy(Memory, room);
                 }
                 else {
-                    if (!creep.pos.isEqualTo(flag.pos)) creep.travelTo(flag, {range: 0, obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                    if (!creep.pos.isEqualTo(flag.pos)) creep.travelTo(flag, {range: 0, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                     else if (creep.pos.findInRange(FIND_MY_SPAWNS, 1, {filter: (s) => s.energy < s.energyCapacity})[0]) creep.transfer(creep.pos.findInRange(FIND_MY_SPAWNS, 1, {filter: (s) => s.energy < s.energyCapacity})[0], RESOURCE_ENERGY);
                     else if (creep.carry.energy < creep.carryCapacity) Memory.w = 1;
                 }
@@ -926,7 +930,7 @@ module.exports = {
                     var extension = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_EXTENSION && s.energy < s.energyCapacity});
                     if (extension) {
                         if (creep.pos.isNearTo(extension)) creep.transfer(extension, RESOURCE_ENERGY);
-                        else creep.travelTo(extension, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                        else creep.travelTo(extension, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                     }
                     else if (creep.carry.energy < creep.carryCapacity) Memory.w = 1;
                 }
@@ -973,7 +977,7 @@ module.exports = {
                     }
 
                     if (!creep.pos.isEqualTo(flag.pos)) {
-                        creep.travelTo(flag, {range: 0, obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                        creep.travelTo(flag, {range: 0, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
 
                         if (flag.pos.findInRange(FIND_MY_CREEPS, 1).length > 0 && creep.pos.getRangeTo(flag.pos) <= 3) {
                             var rootOfAllEvil = flag.pos.findInRange(FIND_MY_CREEPS, 1, {filter: (c) => c.memory.p != 'strgDistr'})[0];
@@ -1205,7 +1209,7 @@ module.exports = {
 
                  if (Memory.w == 1) {
                      if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
-                     else creep.travelTo(room.storage, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                     else creep.travelTo(room.storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                  }
                  else if (mineral.mineralAmount > 1 && mineral.pos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1) {
                      if (creep.pos.isNearTo(mineral)) {
@@ -1216,7 +1220,7 @@ module.exports = {
                              }
                          }
                      }
-                     else creep.travelTo(mineral, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                     else creep.travelTo(mineral, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                  }
              }
          }
@@ -1261,7 +1265,7 @@ module.exports = {
                     }
                     else if (room.storage) {
                         if (creep.pos.isNearTo(room.storage.pos)) creep.transfer(room.storage, Object.keys(creep.carry)[0]);
-                        else creep.travelTo(room.storage, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                        else creep.travelTo(room.storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                     }
 
                 }
@@ -1322,7 +1326,7 @@ module.exports = {
                         this.getEnergy(Memory, creep);
                     }
                     else {
-                        if (creep.pos.getRangeTo(room.controller) > 3) creep.travelTo(room.controller, {range: 3, obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                        if (creep.pos.getRangeTo(room.controller) > 3) creep.travelTo(room.controller, {range: 3, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                         else creep.transfer(room.controller, RESOURCE_ENERGY);
                     }
 
@@ -1374,7 +1378,7 @@ module.exports = {
 
             if (link && link.energy > 0 && (room.storage && creep.pos.findClosestByRange([link, room.storage]) == link)) {
                 if (creep.pos.isNearTo(link.pos)) creep.withdraw(link, RESOURCE_ENERGY);
-                else creep.travelTo(link, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                else creep.travelTo(link, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
             }
             else {
                 creep.getConsumerEnergy(Memory, room);
@@ -1418,25 +1422,25 @@ module.exports = {
                 else {
                     var structureToRepair = this.findStructureToRepair(Memory, room, creep);
                     if (structureToRepair) {
-                        if (creep.pos.getRangeTo(structureToRepair) > 3) creep.travelTo(structureToRepair, {range: 3, obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                        if (creep.pos.getRangeTo(structureToRepair) > 3) creep.travelTo(structureToRepair, {range: 3, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                         else creep.repair(structureToRepair);
                     }
                     else {
                         var structureToBuild = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
                         if (structureToBuild) {
-                            if (creep.pos.getRangeTo(structureToBuild) > 3) creep.travelTo(structureToBuild, {range: 3, obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                            if (creep.pos.getRangeTo(structureToBuild) > 3) creep.travelTo(structureToBuild, {range: 3, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                             else creep.build(structureToBuild);
                         }
                         else {
                             var towerToRefill = this.getTowerToRefill(Memory, room);
                             if (towerToRefill) {
                                 if (creep.pos.isNearTo(towerToRefill)) creep.transfer(towerToRefill, RESOURCE_ENERGY);
-                                else creep.travelTo(towerToRefill, {obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                                else creep.travelTo(towerToRefill, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                             }
                             else {
                                 var defenseToRepair = this.findDefence(Memory, room, creep);
                                 if (defenseToRepair) {
-                                    if (creep.pos.getRangeTo(defenseToRepair) > 3) creep.travelTo(defenseToRepair, {range: 3, obstacles: [global[room.name].distrSquareFlag].concat(room.find(FIND_MY_SPAWNS)), repath: 0.01, maxRooms: 1});
+                                    if (creep.pos.getRangeTo(defenseToRepair) > 3) creep.travelTo(defenseToRepair, {range: 3, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                                     else creep.repair(defenseToRepair);
                                 }
                             }
