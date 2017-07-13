@@ -1,7 +1,7 @@
 const Processes = require('Processes');
 
 const lowBucketAmount = 9995;
-const saveBucketLessCPU = 2;
+const saveBucketLessCPU = 2.5;
 
 module.exports = {
     run:  function() {
