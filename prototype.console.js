@@ -57,7 +57,8 @@ module.exports = () => {
         console.log(timeString + 'Tick Ended ' + 'CPU: ' + Game.cpu.getUsed().toFixed(3)
             + '\n' + ' Processes Run: ' + (global.processesRun/global.processesTotal*100).toFixed(3) + '%'
             + '\n' + ' Creeps: ' + _.size(Game.creeps)
-            + '\n'+ ' Processes Skipped: ' + global.processesSkipped);
+            + '\n'+ ' Processes Skipped: ' + global.processesSkipped
+            + '\n'+ ' Bucket: ' + Game.cpu.bucket);
     };
 
     console.roomLog = function (room, message) {
