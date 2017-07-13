@@ -13,6 +13,9 @@ module.exports = {
             return po.prio;
         });
 
+        global.processesTotal = _.size(processes);
+        global.processesRun = 0;
+
         for (let process_it in processes) {
             let process = processes[process_it];
 
@@ -26,6 +29,7 @@ module.exports = {
                 if (Processes[process.pN.split(':')[0]]) {
                     try {
                         var rsl = Processes[process.pN.split(':')[0]].run(process_it);
+                        global.processesRun++;
                     }
                     catch (err) {
                         console.processError(err);
@@ -35,8 +39,6 @@ module.exports = {
                     if (rsl == 'end') delete Memory.p[process_it];
 
                     process.prio = getPrio(process.pN);
-
-                    global.processesRun++;
                 }
                 else {
                     console.notify('Removed process ' + process_it + ' due to not existing in Processes');
