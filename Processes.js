@@ -1473,6 +1473,7 @@ module.exports = {
                                     if (creep.pos.getRangeTo(defenseToRepair) > 3) creep.travelTo(defenseToRepair, {range: 3, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                                     else creep.repair(defenseToRepair);
                                 }
+                                else if (creep.pos.findInRange(FIND_CREEPS, 1).length > 0) creep.runInSquares();
                             }
                         }
                     }
