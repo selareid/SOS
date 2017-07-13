@@ -11,6 +11,10 @@ function getCreep(name, process) {
     if (!creep.memory.p || !creep.memory.p == process) creep.memory.p = process;
     creep.memory.l = Game.time;
 
+    if (creep.room.storage && creep.ticksToLive <= creep.pos.getRangeTo(creep.room.storage)) {
+        spawnNewProcess('deadCreepHandler', creep.room.name, creep.name);
+    }
+
     return creep ? creep : undefined;
 }
 
@@ -139,7 +143,7 @@ module.exports = {
                     else creep.memory.nc++;
 
                     if (creep.memory.nc > 13) {
-                        creep.suicide();
+                        spawnNewProcess('deadCreepHandler', creep.room.name, creep.name);
                     }
                 }
                 else delete creep.memory.nc;
@@ -148,6 +152,26 @@ module.exports = {
     },
 
     //global processes (not tied to room)
+    deadCreepHandler: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            if (Memory.oNCreation) {
+                Memory.creep = _.clone(Memory.oNCreation);
+                delete Memory.oNCreation;
+                return;
+            }
+
+            var creep = Game.creeps[Memory.creep];
+
+            if (!creep || !creep.room.storage || _.sum(creep.room.storage.store) >= creep.room.storage.storeCapacity) return 'end';
+
+            if (_.sum(creep.carry) == 0) return creep.suicide();
+
+            if (creep.pos.isNearTo(creep.room.storage)) creep.transfer(creep.room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
+            else creep.travelTo(creep.room.storage, {range: 1, repath: 0.01, maxRooms: 1});
+        }
+    },
 
     claim: {
         run: function (Memory_it) {

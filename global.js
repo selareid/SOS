@@ -9,7 +9,7 @@ module.exports = () => {
             this.pN = processType;
             this.prio = getPrio(processType);
             this.rmN = roomName;
-            if (object) this.obj = object.id;
+            if (object) this.oNCreation = object;
         }
     };
 
@@ -30,10 +30,10 @@ module.exports = () => {
         }
     };
 
-    spawnNewProcess = function(processType, roomName, object) {
+    spawnNewProcess = function(processType, roomName, oNCreation) {
         var tag = processType + ':' + Game.time % 100 + Math.round(Math.random() * 100);
 
-        global.Mem.p[tag] = new Process(processType, roomName, object);
+        global.Mem.p[tag] = new Process(processType, roomName, oNCreation);
     };
 
     makeid = function ()
