@@ -1,5 +1,8 @@
 const Processes = require('Processes');
 
+const lowBucketAmount = 9995;
+const saveBucketLessCPU = 1;
+
 module.exports = {
     run:  function() {
         if (!Memory.init) return Processes.init.run();
@@ -16,7 +19,7 @@ module.exports = {
 
             Object.setPrototypeOf(process, Process);
 
-            if ((Game.cpu.bucket < 10000 && Game.cpu.limit - Game.cpu.getUsed() < 3) || Game.cpu.getUsed() > Game.cpu.limit * 2 || Game.cpu.bucket < 2000) process.prio++;
+            if ((Game.cpu.bucket < lowBucketAmount && Game.cpu.limit - Game.cpu.getUsed() < saveBucketLessCPU) || Game.cpu.getUsed() > Game.cpu.limit * 2 || Game.cpu.bucket < 2000) process.prio++;
             else {
                 if (!process.pN) process.pN = process_it.split(':')[0];
 
