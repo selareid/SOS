@@ -1,6 +1,3 @@
-require('global')();
-require('prototype.console')();
-
 const Traveler = require('Traveler');
 const profiler = require('screeps-profiler');
 const kernel = require('Kernel');
