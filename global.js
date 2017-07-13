@@ -22,6 +22,7 @@ module.exports = () => {
             case 'doTowers': return 15;
             case 'doHarvest': return 4;
             case 'fillSpawn': return 4;
+            case 'strgDistr': return 4;
             case 'praiseRC': return 3;
             case 'takeCare': return 3;
             case 'room': return 10;
