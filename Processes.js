@@ -191,7 +191,7 @@ module.exports = {
             var nearestRoom = Game.rooms[Memory.nr];
             if (!nearestRoom) {
                 var newR = _.min(Game.rooms, (r) => {
-                    return r.find(FIND_MY_SPAWNS).length > 0 && r.energyCapacity >= 1650 ? Game.map.getRoomLinearDistance(r.name, flag.pos.roomName) : undefined;
+                    return r.find(FIND_MY_SPAWNS).length > 0 && r.energyCapacityAvailable >= 550 ? Game.map.getRoomLinearDistance(r.name, flag.pos.roomName) : undefined;
                 });
                 return Memory.nr = newR ? newR.name : undefined;
             }
