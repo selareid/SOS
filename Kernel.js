@@ -16,7 +16,7 @@ module.exports = {
 
             Object.setPrototypeOf(process, Process);
 
-            if ((Memory.SB == true && Game.cpu.limit - Game.cpu.getUsed() < 3) || Game.cpu.getUsed() > Game.cpu.limit * 2 || Game.cpu.bucket < 2000) process.prio++;
+            if ((Game.cpu.bucket < 10000 && Game.cpu.limit - Game.cpu.getUsed() < 3) || Game.cpu.getUsed() > Game.cpu.limit * 2 || Game.cpu.bucket < 2000) process.prio++;
             else {
                 if (!process.pN) process.pN = process_it.split(':')[0];
 
@@ -41,8 +41,5 @@ module.exports = {
                 }
             }
         }
-
-        if (Memory.SB == false && Game.cpu.bucket <= 2000) Memory.SB = true;
-        else if (Memory.SB == true && Game.cpu.bucket >= 9500) Memory.SB = false;
     }
 };

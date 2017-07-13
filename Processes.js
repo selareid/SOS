@@ -64,7 +64,6 @@ module.exports = {
             global.Mem.notify = [];
             global.Mem.creeps = {};
             global.Mem.p = {};
-            global.Mem.SB = false;
             global.Mem.init = true;
 
             spawnNewProcess('checkForToken');
