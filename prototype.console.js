@@ -55,8 +55,8 @@ module.exports = () => {
 
     console.logTickSummary = function () {
         console.log(timeString + 'Tick Ended ' + 'CPU: ' + Game.cpu.getUsed().toFixed(3)
-            + '\n' + ' Processes Run: ' + (global.processesRun/global.processesTotal*100).toFixed(3)
-            + '\n' + '% Creeps: ' + _.size(Game.creeps)
+            + '\n' + ' Processes Run: ' + (global.processesRun/global.processesTotal*100).toFixed(3) + '%'
+            + '\n' + ' Creeps: ' + _.size(Game.creeps)
             + (global.processesSkipped ? '\n'+ ' Processes Skipped: ' + global.processesSkipped: ''));
     };
 
