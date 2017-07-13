@@ -2,9 +2,8 @@ Creep.prototype.getConsumerEnergy = function (Memory, room = this.room, creep = 
     var storage = room.storage;
 
     if (storage && storage.store[RESOURCE_ENERGY] > creep.carryCapacity) {
-        if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.travelTo(storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
-        }
+        if (creep.pos.isNearTo(storage)) creep.withdraw(storage, RESOURCE_ENERGY);
+        else creep.travelTo(storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
     }
     else {
         var droppedEnergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) => r.amount > 20 && r.resourceType == RESOURCE_ENERGY});
