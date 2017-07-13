@@ -15,6 +15,7 @@ module.exports = {
 
         global.processesTotal = _.size(processes);
         global.processesRun = 0;
+        global.processesSkipped = [];
 
         for (let process_it in processes) {
             let process = processes[process_it];
@@ -22,7 +23,11 @@ module.exports = {
 
             Object.setPrototypeOf(process, Process);
 
-            if ((Game.cpu.bucket < lowBucketAmount && Game.cpu.limit - Game.cpu.getUsed() < saveBucketLessCPU) || Game.cpu.getUsed() > Game.cpu.limit * 2 || Game.cpu.bucket < 2000) process.prio++;
+            if ((Game.cpu.bucket < lowBucketAmount && Game.cpu.limit - Game.cpu.getUsed() < saveBucketLessCPU) || Game.cpu.getUsed() > Game.cpu.limit * 2 || Game.cpu.bucket < 2000) {
+                //skip process
+                process.prio++;
+                global.processesSkipped.push(process.pN);
+            }
             else {
                 if (!process.pN) process.pN = process_it.split(':')[0];
 

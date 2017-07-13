@@ -54,7 +54,8 @@ module.exports = () => {
     };
 
     console.logTickSummary = function () {
-        console.log(timeString + 'Tick Ended ' + 'CPU: ' + Game.cpu.getUsed().toFixed(3) + ' Processes Run: ' + (global.processesRun/global.processesTotal*100).toFixed(3) + '% Creeps: ' + _.size(Game.creeps));
+        console.log(timeString + 'Tick Ended ' + 'CPU: ' + Game.cpu.getUsed().toFixed(3)
+            + ' Processes Run: ' + (global.processesRun/global.processesTotal*100).toFixed(3) + '% Creeps: ' + _.size(Game.creeps) + ' Processes Skipped: ' + global.processesSkipped);
     };
 
     console.roomLog = function (room, message) {
