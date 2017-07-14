@@ -547,10 +547,10 @@ module.exports = {
                 var newPos;
 
                 if (room.getPositionAt(pos.x, pos.y-1).lookFor(LOOK_STRUCTURES).length > 0) {
-                    newPos = new RoomPosition(pos.x+1, pos.y);
+                    newPos = new RoomPosition(pos.x+1, pos.y, room.name);
                 }
                 else if (room.getPositionAt(pos.x-1, pos.y).lookFor(LOOK_STRUCTURES).length > 0) {
-                    newPos = new RoomPosition(pos.x, pos.y+1);
+                    newPos = new RoomPosition(pos.x, pos.y+1, room.name);
                 }
 
                 if (newPos) {
