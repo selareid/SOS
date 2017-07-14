@@ -38,7 +38,7 @@ function getBodyChart(room) {
         if (room.find(FIND_MY_CONSTRUCTION_SITES).length < 1) newChart['takeCare'][2] = 5;
     }
 
-    return newChart;
+    return _.clone(newChart);
 }
 
 function getRandomHash() {
