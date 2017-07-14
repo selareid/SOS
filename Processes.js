@@ -462,7 +462,7 @@ module.exports = {
                     let structs = pos.findInRange(FIND_STRUCTURES, freeRange, {filter: (s) => s.structureType != STRUCTURE_ROAD});
                     if (structs.length > 0) continue;
 
-                    let terrain = _.filter(room.lookForAtArea(LOOK_TERRAIN, y - freeRange, x - freeRange, y + freeRange, x + freeRange, {asArray: true}), (p) => p.type == 'terrain' && p.terrain == 'wall');
+                    let terrain = _.filter(room.lookForAtArea(LOOK_TERRAIN, y - freeRange, x - freeRange, y + freeRange, x + freeRange, true), (p) => p.type == 'terrain' && p.terrain == 'wall');
                     if (terrain.length > 0) continue;
 
                     let goodPos = new RoomPosition(x, y, room.name);
@@ -491,7 +491,7 @@ module.exports = {
                         if (bestPos.s[foo] > toSource[foo]) cnt++;
                     }
 
-                    if (cnt >= 2 || (cnt >= 1 && toController * 0.5 <= bestPos.c)) {
+                    if (cnt >= 2 || (cnt >= 1 && toController <= bestPos.c)) {
                         bestPos = {
                             x: goodPos.x,
                             y: goodPos.y,
