@@ -27,7 +27,7 @@ const defaultBodyChart = {
     fillExt: [[CARRY, CARRY, MOVE], []],
     iRmHaul: [[CARRY, CARRY, MOVE], []],
     takeCare: [[WORK, CARRY, MOVE], []],
-    claim: [[CLAIM, MOVE], [], 1],
+    claim: [[CLAIM, MOVE, MOVE], [], 1],
     buildSpawn: [[WORK, MOVE, CARRY], []]
 };
 
@@ -225,7 +225,7 @@ module.exports = {
             var nearestRoom = Game.rooms[Memory.nr];
             if (!nearestRoom) {
                 var newR = _.min(Game.rooms, (r) => {
-                    return r.find(FIND_MY_SPAWNS).length > 0 ? Game.map.getRoomLinearDistance(r.name, flag.pos.roomName) : 0;
+                    return r.find(FIND_MY_SPAWNS).length > 0 && Game.map.getRoomLinearDistance(r.name, flag.pos.roomName) < 11 ? r.energyAvailable : 0;
                 });
                 return Memory.nr = newR ? newR.name : undefined;
             }
