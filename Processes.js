@@ -38,7 +38,7 @@ function getBodyChart(room) {
         if (room.find(FIND_MY_CONSTRUCTION_SITES).length < 1) newChart['takeCare'][2] = 5;
     }
 
-    return _.clone(newChart);
+    return newChart;
 }
 
 function getRandomHash() {
@@ -338,8 +338,8 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             while (!creepMem.name || Game.creeps[creepMem.name]) creepMem.name = (Game.time % 1000) + '' + Math.round(Math.random() * 1000);
-            creepMem.body = processSpawn.run(Game.rooms[Memory.rmN], getBodyChart(Game.rooms[Memory.rmN])[process][0], getBodyChart(Game.rooms[Memory.rmN])[process][1],
-                (process == 'praiseRC' && Game.rooms[Memory.rmN] && Game.rooms[Memory.rmN].controller.level >= 8 ? 15 : getBodyChart(Game.rooms[Memory.rmN])[process][2]));
+            creepMem.body = processSpawn.run(Game.rooms[Memory.rmN], _.clone(getBodyChart(Game.rooms[Memory.rmN])[process][0]), _.clone(getBodyChart(Game.rooms[Memory.rmN])[process][1]),
+                (process == 'praiseRC' && Game.rooms[Memory.rmN] && Game.rooms[Memory.rmN].controller.level >= 8 ? 15 : _.clone(getBodyChart(Game.rooms[Memory.rmN])[process][2])));
 
             creepMem.proc = process;
 
@@ -371,14 +371,14 @@ module.exports = {
                     //cannot afford yet
                     return;
                 case 3:
-                    nextToSpawn.body = processSpawn.reCalcBody(room.energyAvailable, getBodyChart(room)[nextToSpawn.proc][0], getBodyChart(room)[nextToSpawn.proc][1], getBodyChart(room)[nextToSpawn.proc][2]);
+                    nextToSpawn.body = processSpawn.reCalcBody(room.energyAvailable, _.clone(getBodyChart(room)[nextToSpawn.proc][0]), _.clone(getBodyChart(room)[nextToSpawn.proc][1]), _.clone(getBodyChart(room)[nextToSpawn.proc][2]));
                     break;
             }
 
             var name = spawn.createCreep(nextToSpawn.body.body, nextToSpawn.name, {p: nextToSpawn.proc});
 
             if (Game.creeps[name]) console.logSpawn(room, name + ' ' + nextToSpawn.proc);
-            else if (name == -6 || name == -10) nextToSpawn.body = processSpawn.reCalcBody(room.energyAvailable, getBodyChart(room)[nextToSpawn.proc][0], getBodyChart(room)[nextToSpawn.proc][1], getBodyChart(room)[nextToSpawn.proc][2]);
+            else if (name == -6 || name == -10) nextToSpawn.body = processSpawn.reCalcBody(room.energyAvailable, _.clone(getBodyChart(room)[nextToSpawn.proc][0]), _.clone(getBodyChart(room)[nextToSpawn.proc][1]), _.clone(getBodyChart(room)[nextToSpawn.proc][2]));
         }
     },
 
