@@ -322,6 +322,8 @@ module.exports = {
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'buildRoads').length < 1) spawnNewProcess('buildRoads', Memory.rmN);
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'praiseRC').length < 1) spawnNewProcess('praiseRC', Memory.rmN);
 
+                if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'praiseRC').length < 1) spawnNewProcess('buildExtensions', Memory.rmN);
+
                 if (room.controller.level >= 4 && global[room.name].links.length < 3 && global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'iRmHaul').length < 1) spawnNewProcess('iRmHaul', Memory.rmN);
 
 
@@ -329,7 +331,7 @@ module.exports = {
                 if (room.controller.level >= 5 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doLinks').length < 1) spawnNewProcess('doLinks', Memory.rmN);
             }
 
-            if (Game.time % 11 == 0 && room.controller.level >= 4 && !room.storage && !global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'placeStorage').length < 1) spawnNewProcess('placeStorage', Memory.rmN);
+            if (Game.time % 11 == 0 && room.controller.level >= 2 && !room.storage && !global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'placeStorage').length < 1) spawnNewProcess('placeStorage', Memory.rmN);
 
             this.spawn(Memory_it);
         },
@@ -501,6 +503,65 @@ module.exports = {
             }
 
             room.createFlag(bestPos.x, bestPos.y, 'distrSquare:' + room.name, COLOR_PURPLE, COLOR_BLUE);
+        }
+    },
+    
+    buildExtensions: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            if (!Memory.nr || Game.time > Memory.nr) Memory.nr = Game.time + 17 + Math.round(Math.random()*5);
+            else return;
+
+            var room = Game.rooms[Memory.rmN];
+            if (!room) return 'end';
+            if (!global[room.name]) global[room.name] = {};
+
+            var spawnFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'fillSpawn'})[0];
+            var storageFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
+            if (!spawnFlag || !storageFlag) return;
+
+            if (!Memory.e) return Memory.e = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_EXTENSION}), (e) => {return {x: e.pos.x, y: e.pos.y}});
+            if (room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_EXTENSION}).length >= CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level]) return;
+
+            var pos = new RoomPosition(Memory.e[0].x, Memory.e[0].y, room.name);
+
+            if (!pos) {
+                if (Memory.e[1]) Memory.e.splice(0, 1);
+            }
+            else {
+                var nearestExit = pos.findClosestByRange(FIND_EXIT);
+                if ((nearestExit.x == 49 || nearestExit.y == 49) && pos.getRangeTo(nearestExit) < 4) {
+                    if (Memory.e[1]) Memory.e.splice(0, 1);
+                    return;
+                }
+
+                var terrain = _.filter(room.lookForAtArea(LOOK_TERRAIN, pos.y, pos.x, pos.y + 2, pos.x + 2, true), (p) => p.type == 'terrain' && p.terrain == 'wall');
+                if (terrain.length > 0) {
+                    if (Memory.e[1]) Memory.e.splice(0, 1);
+                    return;
+                }
+
+                var newPos;
+
+                if (room.getPositionAt(pos.x, pos.y-1).lookFor(LOOK_STRUCTURES).length > 0) {
+                    newPos = new RoomPosition(pos.x+1, pos.y);
+                }
+                else if (room.getPositionAt(pos.x-1, pos.y).lookFor(LOOK_STRUCTURES).length > 0) {
+                    newPos = new RoomPosition(pos.x, pos.y+1);
+                }
+
+                if (newPos) {
+                    Memory.e.push({x: newPos.x, y: newPos.y});
+                    Memory.e.push({x: newPos.x-2, y: newPos.y+2});
+
+                    room.createConstructionSite(pos, STRUCTURE_EXTENSION); //Todo console.log
+                }
+                else {
+                    if (Memory.e[1]) Memory.e.splice(0, 1);
+                    return;
+                }
+            }
         }
     },
 

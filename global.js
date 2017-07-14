@@ -27,6 +27,7 @@ module.exports = () => {
             case 'takeCare': return 3;
             case 'room': return 10;
             case 'doTerminal': return -1;
+            case 'buildExtensions': return -1;
             default: return 0;
         }
     };
