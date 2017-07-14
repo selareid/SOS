@@ -517,6 +517,8 @@ module.exports = {
             if (!room) return 'end';
             if (!global[room.name]) global[room.name] = {};
 
+            if (_.size(Game.constructionSites) >= 100) return;
+
             var spawnFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'fillSpawn'})[0];
             var storageFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
             if (!spawnFlag || !storageFlag) return;
