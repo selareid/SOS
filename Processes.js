@@ -1448,6 +1448,8 @@ module.exports = {
                     }
                 }
 
+                if (creep.room.name != room.name) return creep.travelTo(room.getPositionAt(225, 25), {range: 21, obstacles: getObstacles(room), repath: 0.01, maxRooms: 16});
+
                 if (Memory.w == 1) {
                     creep.getConsumerEnergy(Memory, room);
                 }
