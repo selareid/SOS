@@ -161,6 +161,8 @@ module.exports = {
                 return;
             }
 
+            if (Memory.rmN) delete Memory.rmN;
+
             var creep = Game.creeps[Memory.creep];
 
             if (!creep || !creep.room.storage || _.sum(creep.room.storage.store) >= creep.room.storage.storeCapacity) return 'end';
