@@ -303,8 +303,6 @@ module.exports = {
             if (Game.time % 3 == 0 && room.find(FIND_HOSTILE_CREEPS).length > 0 && room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.Mem.a.includes(c.owner.username)}).length > 0
                 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doTowers').length < 1) spawnNewProcess('doTowers', Memory.rmN);
 
-            if (Game.time % 503 == 0 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doTowersRepair').length < 1) spawnNewProcess('doTowersRepair', Memory.rmN);
-
             if (Game.time % 11 == 0) {
                 if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
                 if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {
@@ -408,34 +406,6 @@ module.exports = {
             _.forEach(towers, (tower_id) => {
                 var tower = Game.getObjectById(tower_id);
                 tower.killIdiot(tower.pos.findClosestByRange(baddies));
-            });
-        }
-    },
-
-    doTowersRepair: {
-        run: function (Memory_it) {
-            var Memory = global.Mem.p[Memory_it];
-
-            var room = Game.rooms[Memory.rmN];
-            if (!room || room.find(FIND_HOSTILE_CREEPS).length < 1) return 'end';
-            if (!global[room.name]) global[room.name] = {};
-
-            if (!global[room.name].towers || !global[room.name].towers[0]) global[room.name].towers = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}), (t) => {return t.id});
-
-            var towers = global[room.name].towers;
-            if (towers.length < 1) return 'end';
-
-            var strucs = room.find(FIND_STRUCTURES, {filter: (s) => s.hits < s.hitsMax});
-            if (strucs.length < 1) return 'end';
-
-            StructureTower.prototype.repairIt = function (struc) {
-                if (!struc || this.energy < this.energyCapacity*0.50) return;
-                this.attack(struc);
-            };
-
-            _.forEach(towers, (tower_id) => {
-                var tower = Game.getObjectById(tower_id);
-                tower.repairIt(tower.pos.findClosestByRange(strucs));
             });
         }
     },
