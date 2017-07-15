@@ -23,7 +23,7 @@ module.exports = {
 
             Object.setPrototypeOf(process, Process);
 
-            if (process.pN != 'deadCreepHandler'
+            if (process.pN != 'deadCreepHandler' && process.pN != 'doTowers' && process.pN != 'claim'
                 && ((Game.cpu.bucket < lowBucketAmount && Game.cpu.limit - Game.cpu.getUsed() < saveBucketLessCPU) || Game.cpu.getUsed() > Game.cpu.limit * 2 || Game.cpu.bucket < 2000)) {
                 //skip process
                 process.prio++;
