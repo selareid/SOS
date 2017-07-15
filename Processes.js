@@ -380,7 +380,7 @@ module.exports = {
             var name = spawn.createCreep(nextToSpawn.body.body, nextToSpawn.name, {p: nextToSpawn.proc});
 
             if (Game.creeps[name]) console.logSpawn(room, name + ' ' + nextToSpawn.proc);
-            else if (name == -6 || name == -10) nextToSpawn.body = processSpawn.reCalcBody(room.energyAvailable, _.clone(getBodyChart(room)[nextToSpawn.proc][0]), _.clone(getBodyChart(room)[nextToSpawn.proc][1]), _.clone(getBodyChart(room)[nextToSpawn.proc][2]));
+            else if (name == -6 || name == -10) delete Memory.spawnQueue[nextToSpawn.name];
         }
     },
 
