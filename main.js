@@ -10,6 +10,13 @@ console.log("[" + "<p style=\"display:inline; color: #ededed\">RESET</p>" + "] "
 module.exports.run = () => {
     if (!console.logTickStart) require('prototype.console')();
     if (!isUndefinedOrNull) require('global')();
+    if (!RawMemory.segments[0]) Memory.segmentsToSetActive([0]);
+    if (!global.allies || !global.controllerSigns) {
+        var segment0 = JSON.parse(RawMemory.segments[0]);
+        global.allies = segment0.allies ? segment0.allies : [];
+        global.controllerSigns = segment0.controllerSigns ? segment0.controllerSigns : [];
+    }
+
 
     console.logTickStart();
 
