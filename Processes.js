@@ -354,7 +354,7 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var nextToSpawn = _.sortBy(Memory.spawnQueue, (c) => {
-                return c.proc == 'doHarvest' ? 0 : c.proc == 'fillSpawn' ? 1 : 2;
+                return c.proc == 'doHarvest' ? 0 : c.proc == 'fillSpawn' ? 1 : c.proc == 'claim' ? 2 : 3;
             })[0];
 
             if (!nextToSpawn) return;
