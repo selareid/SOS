@@ -1328,7 +1328,7 @@ module.exports = {
                         this.getEnergy(Memory, creep);
                     }
                     else if (creep.memory.w == 2) {
-                        if (creep.isNearTo(room.controller)) creep.signController(creep.room.controller, global.controllerSigns[Math.round(Game.time % global.controllerSigns.length)]);
+                        if (creep.pos.isNearTo(room.controller)) creep.signController(creep.room.controller, global.controllerSigns[Math.round(Game.time % global.controllerSigns.length)]);
                             else creep.travelTo(room.controller, {range: 0, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                     }
                     else {
