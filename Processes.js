@@ -1318,11 +1318,18 @@ module.exports = {
 
                     creep.say('praiseRC');
 
-                    if (creep.carry.energy == 0) creep.memory.w = 1;
+                    if (creep.carry.energy == 0) {
+                        if (creep.memory.w == 0) creep.memory.w = 1;
+                        else creep.memory.w = 2;
+                    }
                     else if (creep.carry.energy == creep.carryCapacity) creep.memory.w = 0;
 
                     if (creep.memory.w == 1) {
                         this.getEnergy(Memory, creep);
+                    }
+                    else if (creep.memory.w == 2) {
+                        if (creep.isNearTo(room.controller)) creep.signController(creep.room.controller, global.controllerSigns[Math.round(Game.time % global.controllerSigns.length)]);
+                            else creep.moveTo(creep.room.controller);
                     }
                     else {
                         if (creep.pos.getRangeTo(room.controller) > 3) creep.travelTo(room.controller, {range: 3, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
