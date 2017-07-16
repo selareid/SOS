@@ -296,7 +296,7 @@ module.exports = {
 
             if (!global[room.name]) global[room.name] = {};
 
-            if (Game.time % 3 == 0 && room.find(FIND_HOSTILE_CREEPS).length > 0 && room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username)}).length > 0
+            if (Game.time % 3 == 0 && room.find(FIND_HOSTILE_CREEPS).length > 0 && room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())}).length > 0
                 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doTowers').length < 1) spawnNewProcess('doTowers', Memory.rmN);
 
             if (Game.time % 11 == 0) {
@@ -391,7 +391,7 @@ module.exports = {
             var towers = global[room.name].towers;
             if (towers.length < 1) return 'end';
 
-            var baddies = room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username)});
+            var baddies = room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())});
             if (baddies.length < 1) return 'end';
 
             StructureTower.prototype.killIdiot = function (idiot) {
