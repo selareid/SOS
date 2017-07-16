@@ -50,11 +50,11 @@ module.exports = () => {
     };
 
     console.logTickStart = function () {
-        console.log(timeString + 'Tick Started ' + 'CPU: ' + Game.cpu.getUsed().toFixed(3));
+        console.log(timeString + 'Tick Started ' + 'CPU: ' + Math.ceil(Game.cpu.getUsed()));
     };
 
     console.logTickSummary = function () {
-        console.log(timeString + 'Tick Ended ' + 'CPU: ' + Game.cpu.getUsed().toFixed(3)
+        console.log(timeString + 'Tick Ended ' + 'CPU: ' + Math.ceil(Game.cpu.getUsed())
             + '\n' + ' Processes Run: ' + (global.processesRun/global.processesTotal*100).toFixed(3) + '%'
             + '\n' + ' Creeps: ' + _.size(Game.creeps)
             + '\n'+ ' Processes Skipped: ' + global.processesSkipped
