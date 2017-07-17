@@ -1319,8 +1319,8 @@ module.exports = {
                     creep.say('praiseRC');
 
                     if (creep.carry.energy == 0) {
-                        if (creep.memory.w == 0) creep.memory.w = 2;
-                        else if (creep.memory.w == 3) creep.memory.w = 1;
+                        if (creep.memory.w == 0 || creep.memory.w == 2) creep.memory.w = 2;
+                        else creep.memory.w = 1;
                     }
                     else if (creep.carry.energy == creep.carryCapacity) creep.memory.w = 0;
 
@@ -1335,7 +1335,7 @@ module.exports = {
                     }
                     else {
                         if (creep.pos.getRangeTo(room.controller) > 3) creep.travelTo(room.controller, {range: 3, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
-                        else creep.transfer(room.controller, RESOURCE_ENERGY);
+                        else creep.upgradeController(room.controller);
                     }
 
                 }
