@@ -479,7 +479,7 @@ module.exports = {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
-            if (!Memory.nr || Game.time > Memory.nr) Memory.nr = Game.time + 10000 + Math.round(Math.random()*57)
+            if (!Memory.nr || Game.time > Memory.nr) Memory.nr = Game.time + 10000 + Math.round(Math.random()*57);
             else return;
 
             var room = Game.rooms[Memory.rmN];
@@ -537,7 +537,7 @@ module.exports = {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
-            if (!Memory.nr || Game.time > Memory.nr) Memory.nr = Game.time + 10000 + Math.round(Math.random()*57)
+            if (!Memory.nr || Game.time > Memory.nr) Memory.nr = Game.time + 10000 + Math.round(Math.random()*57);
             else return;
 
             var room = Game.rooms[Memory.rmN];
@@ -1329,6 +1329,44 @@ module.exports = {
                 creep.memory.w = true;
                 creep.withdraw(room.storage, RESOURCE_ENERGY);
                 return OK;
+            }
+        },
+
+        fillNuke: function (Memory, room, creep) {
+            var nuke = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_NUKER})[0];
+            if (!nuke) return 'error no nuke';
+
+            if (creep.memory.w == true) {
+                for (let resourceType in creep.carry) {
+                    var result = creep.transfer(nuke, resourceType);
+                    creep.memory.w = true;
+                    if (result != OK) creep.transfer(room.storage, resourceType);
+                }
+            }
+            else {// carry empty
+                var needsGhodium = nuke.ghodium < nuke.ghodiumCapacity;
+                var needsEnergy = nuke.energy < nuke.energyCapacity;
+
+                if (needsGhodium) {
+                    if (!room.storage.store[RESOURCE_GHODIUM]) return 'error no ghodium';
+
+                    var amtTW = nuke.ghodiumCapacity-nuke.ghodium > creep.carryCapacity ? undefined : nuke.ghodiumCapacity-nuke.ghodium;
+                    var result = creep.withdraw(room.storage, RESOURCE_GHODIUM, amtTW);
+                    creep.memory.w = true;
+                    //console.log(result);
+                    if (result == OK) return OK;
+                    else return 'failed';
+                }
+                else if (needsEnergy) {
+                    if (!room.storage.store[RESOURCE_ENERGY] || room.storage.store[RESOURCE_ENERGY] < 10000) return 'error not enough energy';
+
+                    var amtTW = nuke.energyCapacity-nuke.energy > creep.carryCapacity ? undefined : nuke.energyCapacity-nuke.energy;
+                    var result = creep.withdraw(room.storage, RESOURCE_ENERGY, amtTW);
+                    creep.memory.w = true;
+                    //console.log(result);
+                    if (result == OK) return OK;
+                    else return 'failed';
+                }
             }
         },
 
