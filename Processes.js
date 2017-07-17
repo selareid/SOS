@@ -1370,7 +1370,7 @@ module.exports = {
             if (!nuke) return 'error no nuke';
 
             if (creep.memory.w == true) {
-                if (creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]) != OK) creep.memory.w = false;
+                if (creep.transfer(nuke, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]) != OK) creep.memory.w = false;
             }
             else {// carry empty
                 var needsGhodium = nuke.ghodium < nuke.ghodiumCapacity;
