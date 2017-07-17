@@ -12,9 +12,13 @@ module.exports.run = () => {
     if (!isUndefinedOrNull) require('global')();
     if (!RawMemory.segments[0]) Memory.segmentsToSetActive([0]);
     if (!global.allies || !global.controllerSigns) {
-        var segment0 = JSON.parse(RawMemory.segments[0]);
-        global.allies = segment0.allies ? segment0.allies : [];
-        global.controllerSigns = segment0.controllerSigns ? segment0.controllerSigns : [];
+        var segment0;
+        if (!RawMemory.segments[0]) RawMemory.setActiveSegments([0]);
+        else {
+        segment0 = JSON.parse(RawMemory.segments[0]);
+        }
+        global.allies = segment0 && segment0.allies ? segment0.allies : [];
+        global.controllerSigns = segment0 && segment0.controllerSigns ? segment0.controllerSigns : [];
     }
 
 
