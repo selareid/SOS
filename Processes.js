@@ -1376,21 +1376,21 @@ module.exports = {
                 var needsGhodium = nuke.ghodium < nuke.ghodiumCapacity;
                 var needsEnergy = nuke.energy < nuke.energyCapacity;
 
-                if (needsGhodium) {
-                    if (!room.storage.store[RESOURCE_GHODIUM]) return 'error no ghodium';
+                if (needsEnergy) {
+                    if (!room.storage.store[RESOURCE_ENERGY] || room.storage.store[RESOURCE_ENERGY] < 10000) return 'error not enough energy';
 
-                    var amtTW = nuke.ghodiumCapacity-nuke.ghodium > creep.carryCapacity ? undefined : nuke.ghodiumCapacity-nuke.ghodium;
-                    var result = creep.withdraw(room.storage, RESOURCE_GHODIUM, amtTW);
+                    var amtTW = nuke.energyCapacity-nuke.energy > creep.carryCapacity ? undefined : nuke.energyCapacity-nuke.energy;
+                    var result = creep.withdraw(room.storage, RESOURCE_ENERGY, amtTW);
                     creep.memory.w = true;
                     //console.log(result);
                     if (result == OK) return OK;
                     else return 'failed';
                 }
-                else if (needsEnergy) {
-                    if (!room.storage.store[RESOURCE_ENERGY] || room.storage.store[RESOURCE_ENERGY] < 10000) return 'error not enough energy';
+                else if (needsGhodium) {
+                    if (!room.storage.store[RESOURCE_GHODIUM]) return 'error no ghodium';
 
-                    var amtTW = nuke.energyCapacity-nuke.energy > creep.carryCapacity ? undefined : nuke.energyCapacity-nuke.energy;
-                    var result = creep.withdraw(room.storage, RESOURCE_ENERGY, amtTW);
+                    var amtTW = nuke.ghodiumCapacity-nuke.ghodium > creep.carryCapacity ? undefined : nuke.ghodiumCapacity-nuke.ghodium;
+                    var result = creep.withdraw(room.storage, RESOURCE_GHODIUM, amtTW);
                     creep.memory.w = true;
                     //console.log(result);
                     if (result == OK) return OK;
