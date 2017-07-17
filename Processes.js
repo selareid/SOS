@@ -1264,8 +1264,8 @@ module.exports = {
                             if (this.fillTower(Memory, room, creep) == OK) creep.memory.doing = 'tower';
                             else if (this.pickupInRange(Memory, room, creep) == OK) creep.memory.doing = 'pickupInRange';
                             else if (this.linkToStorage(Memory, room, creep) == OK) creep.memory.doing = 'link';
-                            else if (this.TTS(Memory, room, creep) == OK) creep.memory.doing = 'TTS';
                             else if (this.fillNuke(Memory, room, creep) == OK) creep.memory.doing = 'fillNuke';
+                            else if (this.TTS(Memory, room, creep) == OK) creep.memory.doing = 'TTS';
                             else if (this.STT(Memory, room, creep) == OK) creep.memory.doing = 'STT';
                         }
                     }
@@ -1370,11 +1370,7 @@ module.exports = {
             if (!nuke) return 'error no nuke';
 
             if (creep.memory.w == true) {
-                for (let resourceType in creep.carry) {
-                    var result = creep.transfer(nuke, resourceType);
-                    creep.memory.w = true;
-                    if (result != OK) creep.transfer(room.storage, resourceType);
-                }
+                if (creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]) != OK) creep.memory.w = false;
             }
             else {// carry empty
                 var needsGhodium = nuke.ghodium < nuke.ghodiumCapacity;
