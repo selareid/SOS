@@ -479,7 +479,7 @@ module.exports = {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
-            if (!Memory.nr || Game.time > Memory.nr) Memory.nr = Game.time + 10 + Math.round(Math.random() * 11); //Todo Memory.nr = Game.time + 10000 + Math.round(Math.random()*57)
+            if (!Memory.nr || Game.time > Memory.nr) Memory.nr = Game.time + 10000 + Math.round(Math.random()*57)
             else return;
 
             var room = Game.rooms[Memory.rmN];
@@ -537,7 +537,7 @@ module.exports = {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
-            if (!Memory.nr || Game.time > Memory.nr) Memory.nr = Game.time + 10 + Math.round(Math.random()*11);//Todo Memory.nr = Game.time + 10000 + Math.round(Math.random()*57)
+            if (!Memory.nr || Game.time > Memory.nr) Memory.nr = Game.time + 10000 + Math.round(Math.random()*57)
             else return;
 
             var room = Game.rooms[Memory.rmN];
