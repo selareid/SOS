@@ -495,7 +495,7 @@ module.exports = {
                 .concat(_.map(room.find(FIND_SOURCES), (s) => {return s.pos.x+','+s.pos.y}));
 
             if (room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}).length < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level]) {
-                this.placeTower(room, new RoomPosition(Memory.toDoQ[Memory.toDo].split(',')[0]), Memory.toDoQ[Memory.toDo].split(',')[1], room.name);
+                this.placeTower(room, new RoomPosition(Memory.toDoQ[Memory.toDo].split(',')[0], Memory.toDoQ[Memory.toDo].split(',')[1], room.name));
                 Memory.toDoQ = Memory.toDoQ+1 > Memory.toDo.length-1 ? 0 : Memory.toDoQ+1;
             }
         },
