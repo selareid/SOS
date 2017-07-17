@@ -1419,7 +1419,7 @@ module.exports = {
                             break;
                         }
                     }
-                    else if (room.terminal.store[resourceType] > terminalGoals[resourceType] && room.storage.store[resourceType] && room.storage.store[resourceType] < 5000) {
+                    else if (room.terminal.store[resourceType] > terminalGoals[resourceType] && room.storage.store[resourceType] && room.storage.store[resourceType]+800 < 5000) {
                         resourceToMove = resourceType;
                         break;
                     }
