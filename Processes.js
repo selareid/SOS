@@ -103,11 +103,19 @@ module.exports = {
         run: function () {
 
             if (!Memory.nc || Game.time > Memory.nc) {
-                Memory.nc = Game.time + 100 + Math.round(Math.random()*100);
+                Memory.nc = Game.time + 100 + Math.round(Math.random() * 100);
 
-                var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'claim')[0];
+                (function () {
+                    var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'claim')[0];
 
-                if (flag && (!flag.room || !flag.room.controller.my) && _.filter(global.Mem.p, (p) => p.pN == 'claim').length < 1) spawnNewProcess('claim');
+                    if (flag && (!flag.room || !flag.room.controller.my) && _.filter(global.Mem.p, (p) => p.pN == 'claim').length < 1) spawnNewProcess('claim');
+                }());
+
+                (function () {
+                    var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'steal' && Game.rooms[f.name.split(' ')[1]])[0];
+
+                    if (flag && _.filter(global.Mem.p, (p) => p.pN == 'stealEnergy').length < 1) spawnNewProcess('stealEnergy');
+                }());
             }
         }
     },
@@ -167,6 +175,62 @@ module.exports = {
 
             if (creep.pos.isNearTo(creep.room.storage)) creep.transfer(creep.room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
             else creep.travelTo(creep.room.storage, {range: 1, repath: 0.01, maxRooms: 1});
+        }
+    },
+
+    stealEnergy: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            var room = Game.rooms[Memory.rmN];
+            var flag = Game.flags[Memory.f];
+
+            if (!flag || !room) {
+                var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'steal' && Game.rooms[f.name.split(' ')[1]])[0];
+                Memory.rmN = newFlag.name.split(' ')[1];
+                return newFlag ? Memory.f = newFlag.name : 'end';
+            }
+
+            if (Game.creeps[Memory.crp] || global.Mem.p['room:' + room.name].spawnQueue[Memory.crp]) {
+                if (!Game.creeps[Memory.crp]) return;
+                var creep = getCreep(Memory.crp, 'stealEnergy');
+                creep.say('stealEnergy');
+
+                if (_.sum(creep.carry) == 0) creep.memory.w = 1;
+                else if (_.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
+
+                if (creep.memory.w == 1) {
+                    if (creep.pos.roomName != flag.pos.roomName) {
+                        creep.travelTo(new RoomPosition(25, 25, flag.pos.roomName), {range: 23, repath: 0.01, maxRooms: 16});
+                    }
+                    else {
+                        var thingToStealFrom = creep.room.terminal.store[RESOURCE_ENERGY] ? creep.room.terminal : creep.room.storage.store[RESOURCE_ENERGY] ? creep.room.storage : undefined;
+
+                        if (!thingToStealFrom) {
+                            flag.remove();
+                            return 'end';
+                        }
+
+                        if (creep.pos.isNearTo(thingToStealFrom.pos)) creep.withdraw(thingToStealFrom, RESOURCE_ENERGY);
+                        else creep.travelTo(thingToStealFrom, {range: 1, repath: 0.01, maxRooms: 1});
+                    }
+                }
+                else {
+                    if (creep.pos.roomName != room.name) {
+                        creep.travelTo(new RoomPosition(25, 25, room.name), {range: 23, repath: 0.01, maxRooms: 16});
+                    }
+                    else {
+                        if (!room.storage) {
+                            flag.remove();
+                            return 'end';
+                        }
+
+                        if (creep.pos.isNearTo(room.storage.pos)) creep.transfer(room.storage, RESOURCE_ENERGY);
+                        else creep.travelTo(room.storage, {range: 1, repath: 0.01, maxRooms: 1});
+                    }
+                }
+            }
+            else Memory.crp = module.exports.room.addToSQ('room:' + room.name, 'stealEnergy');
         }
     },
 
