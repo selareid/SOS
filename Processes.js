@@ -643,7 +643,8 @@ module.exports = {
                     }
                     else if (Memory.ext.length < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][8]) {
 
-                        var extPos = Memory.ext[Math.round(Math.random() * Memory.ext.length-1)];
+                        var extPos = Memory.ext[Math.round(Math.random() * Memory.ext.length)];
+                        if (!extPos) return;
                         var pos = {x: extPos.split(',')[0], y: extPos.split(',')[1]};
 
                         var extGoals = [{
