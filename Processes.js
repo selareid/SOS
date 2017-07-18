@@ -880,7 +880,7 @@ module.exports = {
                         break;
                     case 2:
                         Memory.n++;
-                        if (Memory.credits > 0 && (!room.terminal.store[RESOURCE_GHODIUM] || room.terminal.store[RESOURCE_GHODIUM] < 2500)
+                        if (Memory.credits > 0 && (!room.storage.store[RESOURCE_GHODIUM] || room.storage.store[RESOURCE_GHODIUM] < 2500)
                             && _.sum(room.terminal.store) < room.terminal.storeCapacity) {
                             var bestBuy = _.min(Game.market.getAllOrders({
                                 resourceType: RESOURCE_GHODIUM,
