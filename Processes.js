@@ -29,7 +29,7 @@ const defaultBodyChart = {
     takeCare: [[WORK, CARRY, MOVE], []],
     claim: [[CLAIM, MOVE, MOVE], [], 1],
     buildSpawn: [[WORK, MOVE, CARRY], []],
-    stealEnergy: [[WORK, MOVE, MOVE], []]
+    stealEnergy: [[CARRY, MOVE, MOVE], []]
 };
 
 function getBodyChart(room) {
