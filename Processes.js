@@ -718,10 +718,10 @@ module.exports = {
                             range: Math.round(2 + Math.random() * 5)
                         }]
                             .concat(_.map(room.find(FIND_STRUCTURES), (s) => {
-                                return {pos: s.pos, range: Math.round(2 + Math.random() * 2)};
+                                return s.structureType == STRUCTURE_EXTENSION ? {pos: s.pos, range: 1} : {pos: s.pos, range: Math.round(2 + Math.random() * 2)};
                             }))
                             .concat(_.map(room.find(FIND_CONSTRUCTION_SITES), (s) => {
-                                return {pos: s.pos, range: 5};
+                                return s.structureType == STRUCTURE_EXTENSION ? {pos: s.pos, range: 1} : {pos: s.pos, range: Math.round(2 + Math.random() * 2)};
                             }))
                             .concat(_.map(room.find(FIND_SOURCES), (s) => {
                                 return {pos: s.pos, range: 5};
