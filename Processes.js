@@ -28,7 +28,8 @@ const defaultBodyChart = {
     iRmHaul: [[CARRY, CARRY, MOVE], []],
     takeCare: [[WORK, CARRY, MOVE], []],
     claim: [[CLAIM, MOVE, MOVE], [], 1],
-    buildSpawn: [[WORK, MOVE, CARRY], []]
+    buildSpawn: [[WORK, MOVE, CARRY], []],
+    stealEnergy: [[WORK, MOVE, MOVE], []]
 };
 
 function getBodyChart(room) {
