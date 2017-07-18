@@ -721,7 +721,7 @@ module.exports = {
                     break;
                 case 0:
                     Memory.nb++;
-
+                    if (room.controller.level < 5) return;
                     var mineral = room.find(FIND_MINERALS)[0];
                     _.forEach(storageFlag.pos.findPathTo(mineral, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
                             if (_.size(Game.constructionSites) < 100) {
@@ -731,7 +731,7 @@ module.exports = {
                     break;
                 default:
                     Memory.nb = 0;
-
+                    if (room.controller.level < 4) return;
                     _.forEach(storageFlag.pos.findPathTo(spawnFlag, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1}), (pathData) => {
                         if (_.size(Game.constructionSites) < 100) {
                             if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
