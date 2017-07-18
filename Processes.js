@@ -37,6 +37,7 @@ function getBodyChart(room) {
 
     if (room) {
         if (room.find(FIND_MY_CONSTRUCTION_SITES).length < 1) newChart['takeCare'][2] = 5;
+        newChart['fillSpawn'][2] = room.find(FIND_MY_SPAWNS)*3;
     }
 
     return newChart;
