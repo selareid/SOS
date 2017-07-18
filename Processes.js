@@ -189,7 +189,7 @@ module.exports = {
 
             if (!flag || !room) {
                 var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'steal' && Game.rooms[f.name.split(' ')[1]])[0];
-                Memory.rmN = newFlag.name.split(' ')[1];
+                Memory.rmN = newFlag ? newFlag.name.split(' ')[1] : undefined;
                 return newFlag ? Memory.f = newFlag.name : 'end';
             }
 
