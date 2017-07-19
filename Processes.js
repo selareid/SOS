@@ -395,7 +395,7 @@ module.exports = {
                 if (room.controller.level >= 8 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doLabs').length < 1) spawnNewProcess('doLabs', Memory.rmN);
             }
 
-            if (Game.time % 11 == 0 && room.controller.level >= 2 && !room.storage && !global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'placeStorage').length < 1) spawnNewProcess('placeStorage', Memory.rmN);
+            if (Game.time % 11 == 0 && room.controller.level >= 2 && !room.storage && !Game.flags[global[room.name].distrSquareFlag] && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'placeStorage').length < 1) spawnNewProcess('placeStorage', Memory.rmN);
 
             this.spawn(Memory_it);
         },
