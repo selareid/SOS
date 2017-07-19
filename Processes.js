@@ -197,7 +197,7 @@ module.exports = {
             if (Game.creeps[Memory.crp] || global.Mem.p['room:' + room.name].spawnQueue[Memory.crp]) {
                 if (!Game.creeps[Memory.crp]) return;
                 var creep = getCreep(Memory.crp, 'stealEnergy');
-                creep.say('stealEnergy');
+                creep.talk('stealEnergy');
 
                 if (_.sum(creep.carry) == 0) creep.memory.w = 1;
                 else if (_.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
@@ -263,7 +263,7 @@ module.exports = {
             if (Game.creeps[Memory.crp] || global.Mem.p['room:' + nearestRoom.name].spawnQueue[Memory.crp]) {
                 if (!Game.creeps[Memory.crp]) return;
                 var creep = getCreep(Memory.crp, 'claim');
-                creep.say('claim');
+                creep.talk('claim');
 
                 if (creep.pos.roomName != flag.pos.roomName) {
                     creep.travelTo(new RoomPosition(25, 25, flag.pos.roomName), {range: 23, repath: 0.01, maxRooms: 16});
@@ -298,7 +298,7 @@ module.exports = {
             if (Game.creeps[Memory.crp] || global.Mem.p['room:' + nearestRoom.name].spawnQueue[Memory.crp]) {
                 if (!Game.creeps[Memory.crp]) return;
                 var creep = getCreep(Memory.crp, 'claim');
-                creep.say('buildSpawn');
+                creep.talk('buildSpawn');
 
                 if (creep.pos.roomName != flag.pos.roomName) {
                     creep.travelTo(new RoomPosition(25, 25, flag.pos.roomName), {range: 23, repath: 0.01, maxRooms: 16});
@@ -1087,7 +1087,7 @@ module.exports = {
                 var creep = Memory.creep ? getCreep(Memory.creep, 'doLabs') : undefined;
 
                 if (creep) {
-                    creep.say('doLabs');
+                    creep.talk('doLabs');
 
                     if (!creep.memory.currentMineral) return creep.memory.currentMineral = RESOURCE_LEMERGIUM;
 
@@ -1143,7 +1143,7 @@ module.exports = {
                         return;
                     }
 
-                    creep.say('doHarvest');
+                    creep.talk('doHarvest');
                     
                     if (room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.p && c.memory.p != 'doHarvest'}).length >= 1) {
                         if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it);
@@ -1272,7 +1272,7 @@ module.exports = {
             if (Game.time % 17280 == 0) this.placeSpawn(room);
 
             if (creep) {
-                creep.say('fillSpawn');
+                creep.talk('fillSpawn');
                 if (creep.carry.energy == 0) Memory.w = 1;
                 else if (creep.carry.energy == creep.carryCapacity) Memory.w = 0;
 
@@ -1327,7 +1327,7 @@ module.exports = {
             if (!global[room.name]) global[room.name] = {};
 
             if (creep) {
-                creep.say('fillExt');
+                creep.talk('fillExt');
                 if (creep.carry.energy == 0) Memory.w = 1;
                 else if (creep.carry.energy == creep.carryCapacity) Memory.w = 0;
 
@@ -1641,7 +1641,7 @@ module.exports = {
                      return;
                  }
 
-                 creep.say('mine');
+                 creep.talk('mine');
 
                  if (_.sum(creep.carry) == 0) Memory.w = 1;
                  else if (_.sum(creep.carry) == creep.carryCapacity) Memory.w = 0;
@@ -1694,7 +1694,7 @@ module.exports = {
                         return;
                     }
 
-                    creep.say('iRmHaul');
+                    creep.talk('iRmHaul');
 
                     if (_.sum(creep.carry) == 0) Memory.w = 1;
                     else if (_.sum(creep.carry) == creep.carryCapacity) Memory.w = 0;
@@ -1756,7 +1756,7 @@ module.exports = {
                         return;
                     }
 
-                    creep.say('praiseRC');
+                    creep.talk('praiseRC');
 
                     if (creep.carry.energy == 0) {
                         if (creep.memory.w == 0 || creep.memory.w == 2) creep.memory.w = 2;
@@ -1854,7 +1854,7 @@ module.exports = {
             if (creep) {
                 if (creep.spawning) return;
 
-                creep.say('takeCare');
+                creep.talk('takeCare');
                 if (creep.carry.energy == 0) Memory.w = 1;
                 else if (creep.carry.energy == creep.carryCapacity) Memory.w = 0;
 

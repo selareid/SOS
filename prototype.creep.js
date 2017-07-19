@@ -67,6 +67,11 @@ function harvestEnergy(creep, room=creep.room) {
     else creep.travelTo(source, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
 }
 
+Creep.prototype.talk =
+    function (message, public = true) {
+        if (Game.cpu.bucket > 9000) this.say(message, public);
+    };
+
 Creep.prototype.runInSquares =
     function () {
         var creep = this;
