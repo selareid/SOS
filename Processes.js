@@ -1912,9 +1912,9 @@ module.exports = {
             if (room.controller.level > 3) return Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'takeCare', {name: Memory.creep});
 
             var nearestRoom = Game.rooms[Memory.nr];
-            if (!nearestRoom) {
+            if (true) {
                 var newR = _.min(Game.rooms, (r) => {
-                    return r.find(FIND_MY_SPAWNS).length > 0 && r.energyCapacityAvailable >= 550 ? Game.map.getRoomLinearDistance(r.name, room.name) : undefined;
+                    return undefined
                 });
                 Memory.nr = newR ? newR.name : undefined;
 
