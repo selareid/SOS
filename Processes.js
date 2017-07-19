@@ -485,7 +485,7 @@ module.exports = {
             if (!global[room.name]) global[room.name] = {};
             if (room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0]) return 'end';
 
-            var freeRange = 3;
+            const freeRange = 2;
             var bestPos;
 
             for (let x = 3; x < 46; x++) {
