@@ -507,10 +507,10 @@ module.exports = {
                     let toController;
 
                     _.forEach(room.find(FIND_SOURCES), (s) => {
-                        toSource.push(goodPos.getRangeTo(s));
+                        toSource.push(room.findPath(goodPos, s.pos, {ignoreCreeps: true, ignoreRoads: true, maxRooms: true}).length);
                     });
 
-                    toController = goodPos.getRangeTo(room.controller);
+                    toController = room.findPath(goodPos, room.controller.pos, {ignoreCreeps: true, ignoreRoads: true, maxRooms: true}).length;
 
                     let cnt = 0;
 
