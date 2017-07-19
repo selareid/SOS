@@ -608,15 +608,15 @@ module.exports = {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
+            var room = Game.rooms[Memory.rmN];
+            if (!room) return 'end';
+            if (!global[room.name]) global[room.name] = {};
+
             if (!Memory.nr || Game.time > Memory.nr || (room.controller.level > 1 && room.controller.level < 4 && Game.time-Memory.nr > 200)) {
                 var time = room.controller.level > 1 && room.controller.level < 4 ? 101 : 10000;
                 Memory.nr = Game.time + time + Math.round(Math.random()*57);
             }
             else return;
-
-            var room = Game.rooms[Memory.rmN];
-            if (!room) return 'end';
-            if (!global[room.name]) global[room.name] = {};
 
             switch (Memory.toDo) {
                 case 1:
