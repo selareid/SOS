@@ -527,7 +527,7 @@ module.exports = {
                         if (bestPos.s[foo] > toSource[foo]) cnt++;
                     }
 
-                    if (cnt >= 2 || (cnt >= 1 && toController <= bestPos.c)) {
+                    if (cnt >= 2 || (cnt >= 1 && toController <= bestPos.c) || toController*2 <= bestPos.c) {
                         bestPos = {
 
                             x: goodPos.x,
