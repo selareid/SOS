@@ -498,6 +498,9 @@ module.exports = {
                     let structs = pos.findInRange(FIND_STRUCTURES, freeRange, {filter: (s) => s.structureType != STRUCTURE_ROAD});
                     if (structs.length > 0) continue;
 
+                    let flags = pos.findInRange(FIND_FLAGS, freeRange);
+                    if (structs.length > 0) continue;
+
                     let terrain = _.filter(room.lookForAtArea(LOOK_TERRAIN, y - freeRange, x - freeRange, y + freeRange, x + freeRange, true), (p) => p.type == 'terrain' && p.terrain == 'wall');
                     if (terrain.length > 0) continue;
 
