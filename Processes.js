@@ -924,7 +924,7 @@ module.exports = {
             if (!Memory.nextRun || Game.time > Memory.nextRun) {
                 Memory.nextRun = Game.time + (34 + (Math.round(Math.random() * 11)));
 
-                if (room.terminal.store[RESOURCE_ENERGY] < 50000) return;
+                if (room.terminal.store[RESOURCE_ENERGY] < 10000) return;
 
                 switch (Memory.n) {
                     case 1:
@@ -961,18 +961,21 @@ module.exports = {
                         break;
                     case 2:
                         Memory.n++;
-                        if (Memory.credits > 0 && (!room.storage.store[RESOURCE_GHODIUM] || room.storage.store[RESOURCE_GHODIUM] < 2500)
+                        const arrayOfResourcesNeeded = [RESOURCE_GHODIUM, RESOURCE_LEMERGIUM, RESOURCE_OXYGEN];
+                        var resourceToBuy = arrayOfResourcesNeeded[Game.time % arrayOfResourcesNeeded.length];
+
+                        if (Memory.credits > 0 && (!room.storage.store[resourceToBuy] || room.storage.store[resourceToBuy] < 2500)
                             && _.sum(room.terminal.store) < room.terminal.storeCapacity) {
                             var bestBuy = _.min(Game.market.getAllOrders({
-                                resourceType: RESOURCE_GHODIUM,
+                                resourceType: resourceToBuy,
                                 type: ORDER_SELL
                             }), (o) => {
-                                if (o.amount >= 10) return o.price
+                                if (o.amount >= 10) return o.price * Game.market.calcTransactionCost(10, room.name, o.roomName);
                             });
 
                             var transCost = Game.market.calcTransactionCost(1, room.name, bestBuy.roomName);
 
-                            var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[RESOURCE_GHODIUM] ? room.terminal.store[RESOURCE_GHODIUM] : Math.round((room.terminal.store.energy / 2) / transCost);
+                            var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[resourceToBuy] ? room.terminal.store[resourceToBuy] : Math.round((room.terminal.store.energy / 2) / transCost);
                             if (amountToSend > bestBuy.amount) amountToSend = bestBuy.amount;
                             if (amountToSend * bestBuy.price > Memory.credits) amountToSend = Math.floor(Memory.credits / bestBuy.price);
                             if (amountToSend > room.terminal.storeCapacity - _.sum(room.terminal.store)) amountToSend = room.terminal.storeCapacity - _.sum(room.terminal.store);
