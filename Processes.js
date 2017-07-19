@@ -709,7 +709,7 @@ module.exports = {
                                 room.visual.circle(pathData.x, pathData.y, extStyle);
                             });
 
-                            var toAdd = extensionPath.path[Math.round(Math.random() * extensionPath.path.length)];
+                            var toAdd = extensionPath.path[Math.floor(Math.random() * extensionPath.path.length)];
 
                             Memory.ext = [toAdd.x + ',' + toAdd.y];
                         }
