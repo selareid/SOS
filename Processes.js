@@ -1017,6 +1017,35 @@ module.exports = {
                         //     }
                         // }
                         break;
+                    case 4:
+                        Memory.n++;
+                        if (Memory.credits > 0 && (!room.terminal.store[RESOURCE_POWER] || room.terminal.store[RESOURCE_POWER] < 100)
+                            && _.sum(room.terminal.store) < room.terminal.storeCapacity) {
+                            var bestBuy = _.min(Game.market.getAllOrders({
+                                resourceType: RESOURCE_POWER,
+                                type: ORDER_SELL
+                            }), (o) => {
+                                if (o.amount >= 10) return o.price * Game.market.calcTransactionCost(10, room.name, o.roomName);
+                            });
+
+                            var transCost = Game.market.calcTransactionCost(1, room.name, bestBuy.roomName);
+
+                            var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[RESOURCE_POWER] ? room.terminal.store[RESOURCE_POWER] : Math.round((room.terminal.store.energy / 2) / transCost);
+                            if (amountToSend > bestBuy.amount) amountToSend = bestBuy.amount;
+                            if (amountToSend * bestBuy.price > Memory.credits) amountToSend = Math.floor(Memory.credits / bestBuy.price);
+                            if (amountToSend > room.terminal.storeCapacity - _.sum(room.terminal.store)) amountToSend = room.terminal.storeCapacity - _.sum(room.terminal.store);
+
+                            if (amountToSend > 0) {
+                                var rsl = Game.market.deal(bestBuy.id, amountToSend, room.name);
+                                console.terminalLog(room, 'Tried to buy ' + bestBuy.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestBuy.price + ' Result ' + rsl);
+
+                                if (rsl == OK) {
+                                    Memory.creditChange -= amountToSend * bestBuy.price;
+                                    Memory.expectedStore += amountToSend;
+                                }
+                            }
+                        }
+                        break;
                     default:
                         Memory.n = 1;
                         if (room.terminal.store[Memory.mineral]) {
