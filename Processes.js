@@ -1135,7 +1135,7 @@ module.exports = {
         buildLabs: function (flag) {
             if (flag.room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LAB}).length < CONTROLLER_STRUCTURES[STRUCTURE_LAB][flag.room.controller.level]) {
                 _.forEach(this.labSpots, (ls) => {
-                    var newPos = ls ? flag.room.getPositionAt(flag.pos.x + ls.x, flag.pos.y + ls.y) : undefined;
+                    var newPos = ls && ls.x && ls.y ? flag.room.getPositionAt(flag.pos.x + ls.x, flag.pos.y + ls.y) : undefined;
                     if (newPos && !newPos.lookFor(LOOK_STRUCTURES) && !newPos.lookFor(LOOK_CONSTRUCTION_SITES)) flag.room.createConstructionSite(newPos, STRUCTURE_LAB);
                 });
 
