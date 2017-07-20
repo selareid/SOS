@@ -20,8 +20,9 @@ module.exports = {
         for (let process_it in processes) {
             let process = processes[process_it];
 
+            let startCpu = Game.cpu.getUsed();
 
-            Object.setPrototypeOf(process, Process);
+            // Object.setPrototypeOf(process, Process);
 
             if (process.pN != 'deadCreepHandler' && process.pN != 'doTowers' && process.pN != 'claim'
                 && ((Game.cpu.bucket < lowBucketAmount && Game.cpu.limit - Game.cpu.getUsed() < saveBucketLessCPU) || Game.cpu.getUsed() > Game.cpu.limit * 2 || Game.cpu.bucket < 2000)) {
@@ -51,6 +52,8 @@ module.exports = {
                     delete Memory.p[process_it];
                 }
             }
+
+            global.processCost[process.pN] = global.processCost[process.pN] ? global.processCost[process.pN]+startCpu-Game.cpu.getUsed() : startCpu-Game.cpu.getUsed();
         }
     }
 };

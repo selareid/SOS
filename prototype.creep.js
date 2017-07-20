@@ -74,27 +74,28 @@ Creep.prototype.talk =
 
 Creep.prototype.runInSquares =
     function () {
-        var creep = this;
-        switch (creep.memory.lastMove) {
-            case TOP:
-                creep.memory.lastMove = LEFT;
-                creep.move(LEFT);
-                break;
-            case LEFT:
-                creep.memory.lastMove = BOTTOM;
-                creep.move(BOTTOM);
-                break;
-            case BOTTOM:
-                creep.memory.lastMove = RIGHT;
-                creep.move(RIGHT);
-                break;
-            case RIGHT:
-                creep.memory.lastMove = TOP;
-                creep.move(TOP);
-                break;
-            default:
-                creep.memory.lastMove = TOP;
-                creep.move(TOP);
+        if (Game.time % 5 == 0) {
+            switch (this.memory.lastMove) {
+                case TOP:
+                    this.memory.lastMove = LEFT;
+                    this.move(LEFT);
+                    break;
+                case LEFT:
+                    this.memory.lastMove = BOTTOM;
+                    this.move(BOTTOM);
+                    break;
+                case BOTTOM:
+                    this.memory.lastMove = RIGHT;
+                    this.move(RIGHT);
+                    break;
+                case RIGHT:
+                    this.memory.lastMove = TOP;
+                    this.move(TOP);
+                    break;
+                default:
+                    this.memory.lastMove = TOP;
+                    this.move(TOP);
+            }
         }
     };
 

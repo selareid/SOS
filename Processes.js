@@ -1001,21 +1001,21 @@ module.exports = {
                         break;
                     case 3:
                         Memory.n++;
-                        if (room.terminal.store[RESOURCE_ENERGY] >= 75000 && room.storage.store[RESOURCE_ENERGY] >= 50000) {
-                            var order = _.max(Game.market.getAllOrders({
-                                resourceType: RESOURCE_ENERGY,
-                                type: ORDER_BUY
-                            }), (o) => {
-                                if (o.amount >= 10) return o.price / Game.market.calcTransactionCost(10, room.name, o.roomName)
-                            });
-                            if (!order) return;
-
-                            var engRsl = Game.market.deal(order.id, (24000 > order.amount ? order.amount : 24000), room.name);
-
-                            if (engRsl !== undefined && engRsl !== null) {
-                                console.terminalLog(room, 'Sold Energy: ' + order.id + '\n Amount: ' + (24000 > order.amount ? order.amount : 24000) + '\n At Price: ' + order.price + '\n To Room: ' + order.roomName + '\n With Result: ' + engRsl);
-                            }
-                        }
+                        // if (room.terminal.store[RESOURCE_ENERGY] >= 75000 && room.storage.store[RESOURCE_ENERGY] >= 50000) {
+                        //     var order = _.max(Game.market.getAllOrders({
+                        //         resourceType: RESOURCE_ENERGY,
+                        //         type: ORDER_BUY
+                        //     }), (o) => {
+                        //         if (o.amount >= 10) return o.price / Game.market.calcTransactionCost(10, room.name, o.roomName)
+                        //     });
+                        //     if (!order) return;
+                        //
+                        //     var engRsl = Game.market.deal(order.id, (24000 > order.amount ? order.amount : 24000), room.name);
+                        //
+                        //     if (engRsl !== undefined && engRsl !== null) {
+                        //         console.terminalLog(room, 'Sold Energy: ' + order.id + '\n Amount: ' + (24000 > order.amount ? order.amount : 24000) + '\n At Price: ' + order.price + '\n To Room: ' + order.roomName + '\n With Result: ' + engRsl);
+                        //     }
+                        // }
                         break;
                     default:
                         Memory.n = 1;
@@ -1130,13 +1130,13 @@ module.exports = {
             }
         },
 
-        labSpots: [{"x": 0, "y": 0}, {"x": 0, "y": 1}, {"x": -1, "y": 1}],
+        labSpots: [{"x": 0, "y": 0}, {"x": 1, "y": 1}, {"x": -1, "y": 1}],
 
         buildLabs: function (flag) {
             if (flag.room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LAB}).length < CONTROLLER_STRUCTURES[STRUCTURE_LAB][flag.room.controller.level]) {
                 _.forEach(this.labSpots, (ls) => {
-                    var newPos = ls && ls.x && ls.y ? flag.room.getPositionAt(flag.pos.x + ls.x, flag.pos.y + ls.y) : undefined;
-                    if (newPos && !newPos.lookFor(LOOK_STRUCTURES) && !newPos.lookFor(LOOK_CONSTRUCTION_SITES)) flag.room.createConstructionSite(newPos, STRUCTURE_LAB);
+                    var newPos = ls ? flag.room.getPositionAt(flag.pos.x + ls.x, flag.pos.y + ls.y) : undefined;
+                    if (newPos && newPos.lookFor(LOOK_STRUCTURES).length < 1 && newPos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1) flag.room.createConstructionSite(newPos, STRUCTURE_LAB);
                 });
 
             }
