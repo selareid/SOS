@@ -53,7 +53,7 @@ module.exports = {
                 }
             }
 
-            global.processCost[process.pN] = global.processCost[process.pN] ? global.processCost[process.pN]+startCpu-Game.cpu.getUsed() : startCpu-Game.cpu.getUsed();
+            global.processCost[process.pN] = global.processCost[process.pN] ? global.processCost[process.pN]+(Game.cpu.getUsed()-startCpu) : startCpu-Game.cpu.getUsed();
         }
     }
 };
