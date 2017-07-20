@@ -45,7 +45,7 @@ module.exports.run = () => {
         if (err.stack) console.kernelError(err.stack);
     }
 
-    if (Memory.stats) Memory.stats.cpu.processUse = global.processCost;
+    if (Memory.stats) Memory.stats.cpu.processUse = _.clone(global.processCost);
     if (Memory.stats) Memory.stats.cpu.getUsed = _.clone(Game.cpu.getUsed());
     console.logTickSummary();
 };
