@@ -562,8 +562,8 @@ module.exports = {
             if (!spawnFlag || !storageFlag) return;
 
             if (!Memory.toDo) Memory.toDo = 0;
-            if (!Memory.toDoQ) Memory.toDoQ = [spawnFlag.pos.x+','+spawnFlag.pos.y, storageFlag.pos.x+','+storageFlag.pos.y, room.controller.pos.x+','+room.controller.pos.y]
-                .concat(_.map(room.find(FIND_SOURCES), (s) => {return s.pos.x+','+s.pos.y}));
+            if (!Memory.toDoQ) Memory.toDoQ = [[spawnFlag.pos.x, spawnFlag.pos.y], [storageFlag.pos.x, storageFlag.pos.y], [room.controller.pos.x, room.controller.pos.y]]
+                .concat(_.map(room.find(FIND_SOURCES), (s) => {return [s.pos.x, s.pos.y]}));
 
             if (room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}).length < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level]) {
                 this.placeTower(room, new RoomPosition(Memory.toDoQ[Memory.toDo].split(',')[0], Memory.toDoQ[Memory.toDo].split(',')[1], room.name));
