@@ -1060,8 +1060,9 @@ module.exports = {
 
             var flag = Game.flags[Memory.flag];
 
-            if (!flag) {
-                return Memory.flag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(' ')[0] == 'lab'});
+            if (!flag || flag instanceof Array) {
+                var newFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(' ')[0] == 'lab'})[0];
+                return Memory.flag = newFlag ? newFlag.name : undefined;
             }
 
             var labs = Memory.labs ? _.map(Memory.labs, (id) => {return Game.getObjectById(id)}) : undefined;
