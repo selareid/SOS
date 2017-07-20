@@ -978,7 +978,7 @@ module.exports = {
                                 resourceType: resourceToBuy,
                                 type: ORDER_SELL
                             }), (o) => {
-                                if (o.amount >= 10) return o.price * Game.market.calcTransactionCost(10, room.name, o.roomName);
+                                if (o.amount >= 10) return o.price;
                             });
 
                             var transCost = Game.market.calcTransactionCost(1, room.name, bestBuy.roomName);
