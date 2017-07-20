@@ -1068,7 +1068,7 @@ module.exports = {
             var labs = Memory.labs ? _.map(Memory.labs, (id) => {return Game.getObjectById(id)}) : undefined;
 
             if (!labs || !labs[0] || !labs[1] || !labs[2]) {
-                var found = _.map(_.sort(flag.pos.findInRange(FIND_MY_STRUCTURES, 2), (s) => {return s.structureType == STRUCTURE_LAB ? s.pos.getRangeTo(flag.pos) : undefined}),
+                var found = _.map(_.sortBy(flag.pos.findInRange(FIND_MY_STRUCTURES, 2), (s) => {return s.structureType == STRUCTURE_LAB ? s.pos.getRangeTo(flag.pos) : undefined}),
                     (l) => {return l.id});
                 Memory.labs = found;
 
