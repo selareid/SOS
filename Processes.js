@@ -1130,7 +1130,7 @@ module.exports = {
             }
         },
 
-        labSpots: [{x: 0, y: 0}, {1: 0, y: 1}, {x: -1, y: 1}],
+        labSpots: [{"x": 0, "y": 0}, {"x": 0, "y": 1}, {"x": -1, "y": 1}],
 
         buildLabs: function (flag) {
             if (flag.room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LAB}).length < CONTROLLER_STRUCTURES[STRUCTURE_LAB][flag.room.controller.level]) {
