@@ -1466,6 +1466,9 @@ module.exports = {
                                 case 'fillNuke':
                                     this.fillNuke(Memory, room, creep);
                                     break;
+                                case 'fillPowerSpawn':
+                                    this.fillPowerSpawn(Memory, room, creep);
+                                    break;
                                 case 'STT':
                                     this.STT(Memory, room, creep);
                                     break;
@@ -1479,6 +1482,7 @@ module.exports = {
                             else if (this.pickupInRange(Memory, room, creep) == OK) creep.memory.doing = 'pickupInRange';
                             else if (this.linkToStorage(Memory, room, creep) == OK) creep.memory.doing = 'link';
                             else if (this.fillNuke(Memory, room, creep) == OK) creep.memory.doing = 'fillNuke';
+                            else if (this.fillPowerSpawn(Memory, room, creep) == OK) creep.memory.doing = 'fillPowerSpawn';
                             else if (this.TTS(Memory, room, creep) == OK) creep.memory.doing = 'TTS';
                             else if (this.STT(Memory, room, creep) == OK) creep.memory.doing = 'STT';
                         }
@@ -1598,6 +1602,34 @@ module.exports = {
                 else if (nuke.ghodium < nuke.ghodiumCapacity && room.storage.store[RESOURCE_GHODIUM]) {
                     var amtTW = nuke.ghodiumCapacity-nuke.ghodium > creep.carryCapacity ? undefined : nuke.ghodiumCapacity-nuke.ghodium;
                     var result = creep.withdraw(room.storage, RESOURCE_GHODIUM, amtTW);
+                    creep.memory.w = true;
+                    //console.log(result);
+                    if (result == OK) return OK;
+                    else return 'failed';
+                }
+            }
+        },
+
+        fillPowerSpawn: function (Memory, room, creep) {
+            var powerSpawn = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_POWER_SPAWN})[0];
+            if (!powerSpawn) return 'error no powerSpawn';
+
+            if (creep.memory.w == true) {
+                if (creep.transfer(powerSpawn, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]) != OK) creep.memory.w = false;
+            }
+            else {// carry empty
+                if (powerSpawn.energy < powerSpawn.energyCapacity && room.storage.store[RESOURCE_ENERGY] >= 10000) {
+                    var amtTW = powerSpawn.energyCapacity-powerSpawn.energy > creep.carryCapacity ? undefined : powerSpawn.energyCapacity-powerSpawn.energy;
+                    var result = creep.withdraw(room.storage, RESOURCE_ENERGY, amtTW);
+                    creep.memory.w = true;
+                    //console.log(result);
+                    if (result == OK) return OK;
+                    else return 'failed';
+                }
+                else if (powerSpawn.power < powerSpawn.powerCapacity && (room.storage.store[RESOURCE_POWER] || room.terminal.store[RESOURCE_POWER])) {
+                    var amtTW = powerSpawn.powerCapacity-powerSpawn.power > creep.carryCapacity ? undefined : powerSpawn.powerCapacity-powerSpawn.power;
+                    var whereToGetPower = room.terminal.store[RESOURCE_POWER] ? room.terminal : room.storage;
+                    var result = creep.withdraw(whereToGetPower, RESOURCE_POWER, amtTW);
                     creep.memory.w = true;
                     //console.log(result);
                     if (result == OK) return OK;
