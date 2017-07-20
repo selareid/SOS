@@ -601,6 +601,9 @@ module.exports = {
                 maxRooms: 1
             });
 
+            var newPos = new RoomPosition(path.path[path.path.length-1].x, path.path[path.path.length-1].y, room.name);
+
+            room.createConstructionSite(newPos, STRUCTURE_TOWER)
         }
     },
 
@@ -912,7 +915,6 @@ module.exports = {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
-            var creeps = Memory.crps ? Memory.crps : undefined;
             var room = Game.rooms[Memory.rmN];
             if (!room || !room.terminal || room.controller.level < 8) return 'end';
             if (!global[room.name]) global[room.name] = {};
@@ -1065,8 +1067,11 @@ module.exports = {
             var labs = Memory.labs ? _.map(Memory.labs, (id) => {return Game.getObjectById(id)}) : undefined;
 
             if (!labs || !labs[0] || !labs[1] || !labs[2]) {
-                Memory.labs = _.map(_.sort(flag.pos.findInRange(FIND_MY_STRUCTURES, 2), (s) => {return s.structureType == STRUCTURE_LAB ? s.pos.getRangeTo(flag.pos) : undefined}),
+                var found = _.map(_.sort(flag.pos.findInRange(FIND_MY_STRUCTURES, 2), (s) => {return s.structureType == STRUCTURE_LAB ? s.pos.getRangeTo(flag.pos) : undefined}),
                     (l) => {return l.id});
+                Memory.labs = found;
+
+                if (found.length < 3) this.buildLabs(flag)
             }
 
             var lab1 = Game.getObjectById(Memory.lab1);
@@ -1121,6 +1126,18 @@ module.exports = {
                 else {
                     Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'doLabs', {name: Memory.creep});
                 }
+            }
+        },
+
+        labSpots: [{x: 0, y: 0}, {1: 0, y: 1}, {x: -1, y: 1}],
+
+        buildLabs: function (flag) {
+            if (flag.room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LAB}).length < CONTROLLER_STRUCTURES[STRUCTURE_LAB][flag.room.controller.level]) {
+                _.forEach(this.labSpots, (labSpot) => {
+                    var newPos = flag.room.getPositionAt(flag.pos.x + labSpot.x, flag.pos.y + labSpot.y);
+                    if (!newPos.lookFor(LOOK_STRUCTURES) && !newPos.lookFor(LOOK_CONSTRUCTION_SITES)) flag.room.createConstructionSite(newPos, STRUCTURE_LAB);
+                });
+
             }
         }
     },
@@ -1869,7 +1886,7 @@ module.exports = {
                     }
                 }
 
-                if (creep.room.name != room.name) return creep.travelTo(room.getPositionAt(25, 25), {range: 21, obstacles: getObstacles(room), repath: 0.01, maxRooms: 16});
+                // if (creep.room.name != room.name) return creep.travelTo(room.getPositionAt(25, 25), {range: 21, obstacles: getObstacles(room), repath: 0.01, maxRooms: 16});
 
                 if (Memory.w == 1) {
                     creep.getConsumerEnergy(Memory, room);
@@ -1909,21 +1926,21 @@ module.exports = {
         },
         
         getCreep: function (Memory, room) {
-            if (room.controller.level > 3) return Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'takeCare', {name: Memory.creep});
+            /*if (room.controller.level > 3)*/ return Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'takeCare', {name: Memory.creep});
 
-            var nearestRoom = Game.rooms[Memory.nr];
-            if (true) {
-                var newR = _.min(Game.rooms, (r) => {
-                    return undefined
-                });
-                Memory.nr = newR ? newR.name : undefined;
-
-                return Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'takeCare', {name: Memory.creep});
-            }
-
-            if (nearestRoom.controller.level <= room.controller.level || Game.map.getRoomLinearDistance(room.name, nearestRoom.name) > 10) return Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'takeCare', {name: Memory.creep});
-
-            return Memory.creep = module.exports.room.addToSQ('room:' + nearestRoom.name, 'takeCare', {name: Memory.creep});
+            // var nearestRoom = Game.rooms[Memory.nr];
+            // if (!nearestRoom) {
+            //     var newR = _.min(Game.rooms, (r) => {
+            //         return r.find(FIND_MY_SPAWNS).length > 0 && r.energyCapacityAvailable >= 550 ? Game.map.getRoomLinearDistance(r.name, room.name) : undefined;
+            //     });
+            //     Memory.nr = newR ? newR.name : undefined;
+            //
+            //     return Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'takeCare', {name: Memory.creep});
+            // }
+            //
+            // if (nearestRoom.controller.level <= room.controller.level || Game.map.getRoomLinearDistance(room.name, nearestRoom.name) > 10) return Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'takeCare', {name: Memory.creep});
+            //
+            // return Memory.creep = module.exports.room.addToSQ('room:' + nearestRoom.name, 'takeCare', {name: Memory.creep});
         },
 
         findStructureToRepair: function (Memory, room, creep) {
