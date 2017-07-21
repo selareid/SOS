@@ -13,10 +13,10 @@ Creep.prototype.moveWithPath =
                 if (this.memory.path && this.memory.path.split(',')[1] == destPosName) thisPosName = this.memory.path.split(',')[1];
 
                 if (global[this.room.name].paths[thisPosName + ',' + destPosName]) {
-                    this.moveByPath(global[this.room.name].paths[thisPosName + ',' + destPosName]);
+                    var rsl = this.moveByPath(global[this.room.name].paths[thisPosName + ',' + destPosName]);
                     this.memory.goto++;
 
-                    if (!global[this.room.name].paths[thisPosName + ',' + destPosName][this.memory.goto + 1]) {
+                    if (rsl == ERR_NOT_FOUND || !global[this.room.name].paths[thisPosName + ',' + destPosName][this.memory.goto + 1]) {
                         delete this.memory.goto;
                         delete this.memory.path;
                     }
