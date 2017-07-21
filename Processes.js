@@ -892,8 +892,7 @@ module.exports = {
 
             if (!storageLink) return;
 
-            _.forEach(sourceLinks, (l_id) => {
-                var l = Game.getObjectById(l_id);
+            _.forEach(sourceLinks, (l) => {
                 if (l.cooldown == 0 && l.energy >= l.energyCapacity) l.transferEnergy(storageLink);
             });
             
@@ -993,7 +992,7 @@ module.exports = {
                         }
                         break;
                     case 3:
-                        Memory.n++;569
+                        Memory.n++;
                         // if (room.terminal.store[RESOURCE_ENERGY] >= 75000 && room.storage.store[RESOURCE_ENERGY] >= 50000) {
                         //     var order = _.max(Game.market.getAllOrders({
                         //         resourceType: RESOURCE_ENERGY,
