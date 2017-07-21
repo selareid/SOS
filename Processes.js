@@ -1270,7 +1270,7 @@ module.exports = {
 
             if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.filter(room.getStructures(STRUCTURE_LINK), (s) => {return s.pos.findInRange(FIND_SOURCES, 3)[0];});
 
-            var link = creep.pos.findClosestByRange(_.map(global[room.name].sourcelinks, (s) => {return Game.getObjectById(s)}));
+            var link = creep.pos.findClosestByRange(global[room.name].sourcelinks);
 
             if (link && link.pos.getRangeTo(creep.pos) < 3) {
                 if (creep.pos.isNearTo(link.pos)) creep.transfer(link, RESOURCE_ENERGY);
