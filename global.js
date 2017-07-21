@@ -19,7 +19,7 @@ module.exports = () => {
             case 'doStats': return 20;
             case 'checkRooms': return 11;
             case 'checkCreeps': return 10;
-            case 'doTowers': return 15;
+            case 'doTowers': return 255;
             case 'doHarvest': return 4;
             case 'fillSpawn': return 4;
             case 'strgDistr': return 4;
