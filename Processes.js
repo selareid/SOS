@@ -1268,9 +1268,9 @@ module.exports = {
         dropEnergy: function (Memory, creep, creep_it_it, room = creep.room) {
             var srcId = Memory.crps[creep_it_it].split(':')[1];
 
-            if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.filter(room.getStructures(STRUCTURE_LINK), (s) => {return s.pos.findInRange(FIND_SOURCES, 3)[0];});
+            if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.map(_.filter(room.getStructures(STRUCTURE_LINK), (s) => {return s.pos.findInRange(FIND_SOURCES, 3)[0];}), (s) => s.id);
 
-            var link = creep.pos.findClosestByRange(global[room.name].sourcelinks);
+            var link = _.map(creep.pos.findClosestByRange(global[room.name].sourcelinks), (s) => Game.getObjectById(s));
 
             if (link && link.pos.getRangeTo(creep.pos) < 3) {
                 if (creep.pos.isNearTo(link.pos)) creep.transfer(link, RESOURCE_ENERGY);
