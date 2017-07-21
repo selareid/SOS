@@ -13,7 +13,7 @@ Creep.prototype.moveWithPath =
                 if (this.memory.path && this.memory.path.split(',')[1] == destPosName) thisPosName = this.memory.path.split(',')[1];
 
                 if (global[this.room.name].paths[thisPosName + ',' + destPosName]) {
-                    this.move(global[this.room.name].paths[thisPosName + ',' + destPosName][0]);
+                    this.moveByPath(global[this.room.name].paths[thisPosName + ',' + destPosName]);
                     this.memory.goto++;
 
                     if (!global[this.room.name].paths[thisPosName + ',' + destPosName][this.memory.goto + 1]) {
@@ -22,11 +22,9 @@ Creep.prototype.moveWithPath =
                     }
                 }
                 else {
-                    var newPath = this.pos.findPathTo(dest, opts);
+                    global[this.room.name].paths[thisPosName + ',' + destPosName] = this.pos.findPathTo(dest, opts);
 
-                    global[this.room.name].paths[thisPosName + ',' + destPosName] = _.map(newPath, (p) => p.direction);
-
-                    this.move(global[this.room.name].paths[thisPosName + ',' + destPosName][0]);
+                    this.moveByPath(global[this.room.name].paths[thisPosName + ',' + destPosName]);
                     this.memory.goto = 1;
                     this.memory.path = thisPosName + ',' + destPosName;
                 }
