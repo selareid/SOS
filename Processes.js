@@ -449,11 +449,7 @@ module.exports = {
             var room = Game.rooms[Memory.rmN];
             if (!room || room.find(FIND_HOSTILE_CREEPS).length < 1) return 'end';
             if (!global[room.name]) global[room.name] = {};
-
-            if (!global[room.name].towers || !global[room.name].towers[0]) global[room.name].towers = _.map(room.getStructures(STRUCTURE_TOWER), (t) => {return t.id});
-
-            var towers = global[room.name].towers;
-            if (towers.length < 1) return 'end';
+            if (room.getStructures(STRUCTURE_TOWER).length < 1) return 'end';
 
             var baddies = room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())});
             if (baddies.length < 1) return 'end';
@@ -463,7 +459,7 @@ module.exports = {
                 this.attack(idiot);
             };
 
-            _.forEach(towers, (tower_id) => {
+            _.forEach(room.getStructures(STRUCTURE_TOWER), (tower_id) => {
                 var tower = Game.getObjectById(tower_id);
                 tower.killIdiot(tower.pos.findClosestByRange(baddies));
             });
@@ -1557,10 +1553,8 @@ module.exports = {
         
         fillTower: function (Memory, room, creep) {
 
-            if (!global[room.name].towers || !global[room.name].towers[0]) global[room.name].towers = _.map(room.getStructures(STRUCTURE_TOWER), (t) => {return t.id});
-
             if (!Game.getObjectById(Memory.tower)) {
-                var fnd = creep.pos.findInRange(_.map(global[room.name].towers, (t) => {return Game.getObjectById(t)}), 1)[0];
+                var fnd = creep.pos.findInRange(room.getStructures(STRUCTURE_TOWER), 1)[0];
                 Memory.tower = fnd ? fnd.id : undefined;
             }
                 
