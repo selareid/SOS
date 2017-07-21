@@ -567,7 +567,7 @@ module.exports = {
 
             if (room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}).length < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level]) {
                 this.placeTower(room, new RoomPosition(Memory.toDoQ[Memory.toDo].split(',')[0], Memory.toDoQ[Memory.toDo].split(',')[1], room.name));
-                Memory.toDoQ = Memory.toDoQ+1 > Memory.toDo.length-1 ? 0 : Memory.toDoQ+1;
+                Memory.toDo = Memory.toDo+1 > Memory.toDo.length-1 ? 0 : Memory.toDo+1;
             }
         },
 
@@ -1000,7 +1000,7 @@ module.exports = {
                         }
                         break;
                     case 3:
-                        Memory.n++;
+                        Memory.n++;569
                         // if (room.terminal.store[RESOURCE_ENERGY] >= 75000 && room.storage.store[RESOURCE_ENERGY] >= 50000) {
                         //     var order = _.max(Game.market.getAllOrders({
                         //         resourceType: RESOURCE_ENERGY,
