@@ -1321,7 +1321,7 @@ module.exports = {
             var blocked = false;
 
             _.forEach(creep.room.getPositionAt(creep.pos.x+opDirTS.x, creep.pos.y+opDirTS.y).lookFor(LOOK_STRUCTURES), (s) => {
-                if (s.structureType != STRUCTURE_SPAWN) s.destroy();
+                if (s.structureType != STRUCTURE_SPAWN && s.structureType != STRUCTURE_LINK) s.destroy();
                 else blocked = true;
             });
 
