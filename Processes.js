@@ -66,7 +66,6 @@ module.exports = {
             global.Mem.p = {};
             global.Mem.init = true;
 
-            spawnNewProcess('checkForToken');
             spawnNewProcess('doStats');
             spawnNewProcess('checkRooms');
             spawnNewProcess('checkCreeps');
@@ -74,18 +73,11 @@ module.exports = {
         }
     },
 
-    checkForToken: {
-        run: function () {
-            var token = _.min(Game.market.getAllOrders({resourceType: SUBSCRIPTION_TOKEN, type: ORDER_SELL}), (o) => o.price);
-            if (token && token.price < Game.market.credits) Game.market.deal(token.id, 1);
-        }
-    },
-
     doStats: {
         run: function () {
             Memory.stats = {
                 tick: Game.time,
-                cpu: _.cloneDeep(Game.cpu),
+                cpu: _.clone(Game.cpu),
                 gcl: Game.gcl,
                 constructionSites: _.size(Game.constructionSites),
                 tokens: Game.resources.token,
@@ -126,15 +118,19 @@ module.exports = {
 
     checkRooms: {
         run: function () {
-            for (let roomName in Game.rooms) {
-                let room = Game.rooms[roomName];
-                if (!room || !room.controller || !room.controller.my || room.find(FIND_MY_SPAWNS).length < 1) continue;
-                
-                if (!Memory.p['room:' + roomName]) {
-                    _.forEach(room.find(FIND_MY_CREEPS, (c) => {
-                        c.suicide();
-                    }));
-                    Memory.p['room:' + roomName] = new Process('room', roomName);
+            if (!Memory.nc || Game.time > Memory.nc) {
+                Memory.nc = Game.time + 5 + Math.round(Math.random() * 7);
+
+                for (let roomName in Game.rooms) {
+                    let room = Game.rooms[roomName];
+                    if (!room || !room.controller || !room.controller.my || room.find(FIND_MY_SPAWNS).length < 1) continue;
+
+                    if (!Memory.p['room:' + roomName]) {
+                        _.forEach(room.find(FIND_MY_CREEPS, (c) => {
+                            c.suicide();
+                        }));
+                        Memory.p['room:' + roomName] = new Process('room', roomName);
+                    }
                 }
             }
         }
@@ -142,19 +138,21 @@ module.exports = {
 
     checkCreeps: {
         run: function () {
-            if (Game.time % 7 != 0) return;
+            if (!Memory.nc || Game.time > Memory.nc) {
+                Memory.nc = Game.time + 5 + Math.round(Math.random() * 5);
 
-            _.forEach(Game.creeps, (creep) => {
-                if (!creep.memory.p || !creep.memory.l || Game.time - creep.memory.l > 4) {
-                    if (isUndefinedOrNull(creep.memory.nc)) creep.memory.nc = 0;
-                    else creep.memory.nc++;
+                _.forEach(Game.creeps, (creep) => {
+                    if (!creep.memory.p || !creep.memory.l || Game.time - creep.memory.l > 4) {
+                        if (isUndefinedOrNull(creep.memory.nc)) creep.memory.nc = 0;
+                        else creep.memory.nc++;
 
-                    if (creep.memory.nc > 13) {
-                        spawnNewProcess('deadCreepHandler', creep.room.name, creep.name);
+                        if (creep.memory.nc > 3) {
+                            spawnNewProcess('deadCreepHandler', creep.room.name, creep.name);
+                        }
                     }
-                }
-                else delete creep.memory.nc;
-            });
+                    else delete creep.memory.nc;
+                });
+            }
         }
     },
 
@@ -168,8 +166,6 @@ module.exports = {
                 delete Memory.oNCreation;
                 return;
             }
-
-            if (Memory.rmN) delete Memory.rmN;
 
             var creep = Game.creeps[Memory.creep];
 
@@ -364,15 +360,12 @@ module.exports = {
 
             if (!global[room.name]) global[room.name] = {};
 
+            if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
+
             if (Game.time % 3 == 0 && room.find(FIND_HOSTILE_CREEPS).length > 0 && room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())}).length > 0
                 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doTowers').length < 1) spawnNewProcess('doTowers', Memory.rmN);
 
             if (Game.time % 11 == 0) {
-                if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
-                if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.getStructures(STRUCTURE_LINK), (l) => {
-                    return l.id
-                });
-
                 if (room.controller.level > 7 && room.storage) {
                     if (room.terminal && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doTerminal').length < 1) spawnNewProcess('doTerminal', Memory.rmN);
 
@@ -386,7 +379,7 @@ module.exports = {
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'buildRoads').length < 1) spawnNewProcess('buildRoads', Memory.rmN);
                     if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'praiseRC').length < 1) spawnNewProcess('praiseRC', Memory.rmN);
 
-                if (room.controller.level >= 4 && global[room.name].links.length < 3 && global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'iRmHaul').length < 1) spawnNewProcess('iRmHaul', Memory.rmN);
+                if (room.controller.level >= 4 && room.getStructures(STRUCTURE_LINK).length < 3 && global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'iRmHaul').length < 1) spawnNewProcess('iRmHaul', Memory.rmN);
 
                 if (room.controller.level >= 2 && global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'placeExtensions').length < 1) spawnNewProcess('placeExtensions', Memory.rmN);
                 if (room.controller.level >= 3 && global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'placeTowers').length < 1) spawnNewProcess('placeTowers', Memory.rmN);
@@ -883,10 +876,9 @@ module.exports = {
                 Memory.RH = randomHash;
             }
 
-            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.getStructures(STRUCTURE_LINK), (l) => {return l.id});
-            if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.filter(global[room.name].links, (s) => {if (Game.getObjectById(s)) {return Game.getObjectById(s).pos.findInRange(FIND_SOURCES, 3)[0]}});
+            if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.filter(room.getStructures(STRUCTURE_LINK), (s) => s.pos.findInRange(FIND_SOURCES, 3)[0]);
 
-            var links = _.map(global[room.name].links, (l) => {return Game.getObjectById(l)});
+            var links = room.getStructures(STRUCTURE_LINK);
 
             if (global[randomHash] && (!global[randomHash].sl || !Memory.lt || Game.time - Memory.lt > 101)) {
                 global[randomHash].sl = storageFlag.pos.findInRange(links, 1)[0]
@@ -898,7 +890,7 @@ module.exports = {
             var sourceLinks = global[room.name].sourcelinks;
             var link = _.filter(links, (s) => s.energy < 50 && s.id != storageLink.id && !sourceLinks.includes(s.id))[0];
 
-            if (!storageLink) return global[room.name].links = undefined;
+            if (!storageLink) return;
 
             _.forEach(sourceLinks, (l_id) => {
                 var l = Game.getObjectById(l_id);
@@ -1254,8 +1246,7 @@ module.exports = {
         dropEnergy: function (Memory, creep, creep_it_it, room = creep.room) {
             var srcId = Memory.crps[creep_it_it].split(':')[1];
 
-            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.getStructures(STRUCTURE_LINK), (l) => {return l.id});
-            if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.filter(global[room.name].links, (s) => {return Game.getObjectById(s) && Game.getObjectById(s).pos.findInRange(FIND_SOURCES, 3)[0];});
+            if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.filter(room.getStructures(STRUCTURE_LINK), (s) => {return s.pos.findInRange(FIND_SOURCES, 3)[0];});
 
             var link = creep.pos.findClosestByRange(_.map(global[room.name].sourcelinks, (s) => {return Game.getObjectById(s)}));
 
@@ -1277,7 +1268,7 @@ module.exports = {
                     creep.drop(RESOURCE_ENERGY);
                 }
 
-                if (global[room.name].links.length < CONTROLLER_STRUCTURES.link[creep.room.controller.level]) {
+                if (room.getStructures(STRUCTURE_LINK).length < CONTROLLER_STRUCTURES.link[creep.room.controller.level]) {
                     if (!Game.getObjectById(srcId).pos.findInRange(FIND_CONSTRUCTION_SITES, 2)[0]) {
                         this.placeLink(Game.getObjectById(srcId), creep);
                     }
@@ -1421,13 +1412,12 @@ module.exports = {
             if (!creeps) return Memory.crps = [];
 
             if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
-            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.getStructures(STRUCTURE_LINK), (l) => {return l.id});
 
             var flag = global[room.name].distrSquareFlag;
             if (!room.storage || !flag) return;
             if (!global[room.name]) global[room.name] = {};
             if (!Game.getObjectById(Memory.link)) {
-                var link = flag.pos.findInRange(_.map(global[room.name].links, (s) => {return Game.getObjectById(s)}), 1)[0];
+                var link = flag.pos.findInRange(room.getStructures(STRUCTURE_LINK), 1)[0];
                 Memory.link = link ? link.id : undefined;
 
                 if (!link && Game.time % 101 == 0) return this.placeStrucs(room, flag);
@@ -1554,8 +1544,7 @@ module.exports = {
                 var storageLink = Game.getObjectById(Memory.link);
 
                 if (storageLink && storageLink.energy > 0) {
-                    if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.getStructures(STRUCTURE_LINK), (l) => {return l.id});
-                    var link = _.filter(_.map(global[room.name].links, (s) => {return Game.getObjectById(s)}), (s) => s.energy < 50 && s.id != storageLink.id && !s.pos.findInRange(FIND_SOURCES, 3)[0])[0];
+                    var link = _.filter(room.getStructures(STRUCTURE_LINK), (s) => s.energy < 50 && s.id != storageLink.id && !s.pos.findInRange(FIND_SOURCES, 3)[0])[0];
                     
                     if (room.storage.store.energy <= 1000 || !link) {
                         creep.memory.w = true;
@@ -1852,7 +1841,7 @@ module.exports = {
                     creep.talk('praiseRC');
 
                     if (creep.carry.energy == 0) {
-                        if (creep.memory.w == 0 || creep.memory.w == 2) creep.memory.w = 2;
+                        if (Game.cpu.bucket < 9000 && (creep.memory.w == 0 || creep.memory.w == 2)) creep.memory.w = 2;
                         else creep.memory.w = 1;
                     }
                     else if (creep.carry.energy == creep.carryCapacity) creep.memory.w = 0;
@@ -1908,10 +1897,8 @@ module.exports = {
                 Memory.RH = randomHash;
             }
 
-            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.getStructures(STRUCTURE_LINK), (s) => {return s.id});
-
             if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
-                if (room.controller) global[randomHash].l = room.controller.pos.findInRange(_.map(global[room.name].links, (s) => {return Game.getObjectById(s)}), 3)[0];
+                if (room.controller) global[randomHash].l = room.controller.pos.findInRange(room.getStructures(STRUCTURE_LINK), 3)[0];
                 Memory.lt = Game.time;
             }
 

@@ -15,7 +15,6 @@ module.exports = () => {
 
     getPrio = function(process) {
         switch (process) {
-            case 'checkForToken': return -1;
             case 'doStats': return 20;
             case 'checkRooms': return 11;
             case 'checkCreeps': return 10;
