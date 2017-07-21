@@ -1728,7 +1728,7 @@ module.exports = {
          if (!room || !room.storage || room.controller.level < 6) return 'end';
 
          var mineral = room.find(FIND_MINERALS)[0];
-         if (!mineral || ((mineral.mineralAmount < 1 && mineral.ticksToRegeneration > 200) || !creeps || creeps.length < 1)) return 'end';
+         if (!mineral || (mineral.mineralAmount < 1 && mineral.ticksToRegeneration > 200 && (!creeps || creeps.length < 1))) return 'end';
 
          if (!global[room.name]) global[room.name] = {};
          if (!creeps) return Memory.crps = [];
