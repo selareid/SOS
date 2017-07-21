@@ -4,8 +4,8 @@ Creep.prototype.moveWithPath =
             if (dest.pos) dest = dest.pos;
 
             if (dest && dest.roomName == this.pos.roomName) {
-                if (global[this.room.name]) global[this.room.name] = {};
-                if (global[this.room.name].paths) global[this.room.name].paths = {};
+                if (!global[this.room.name]) global[this.room.name] = {};
+                if (!global[this.room.name].paths) global[this.room.name].paths = {};
 
                 var creepPosName = (this.pos.x * 100 + this.pos.y).toString(36);
                 var destPosName = (dest.x * 100 + dest.y).toString(36);
