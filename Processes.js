@@ -1131,9 +1131,11 @@ module.exports = {
 
                     if (lab1.mineralAmount >= lab1.mineralCapacity) {
                         creep.memory.currentMineral = creep.memory.currentMineral == RESOURCE_LEMERGIUM ? RESOURCE_OXYGEN : RESOURCE_LEMERGIUM;
+                        creep.memory.w = 2;
                     }
                     else if (lab2.mineralAmount >= lab2.mineralCapacity) {
                         creep.memory.currentMineral = creep.memory.currentMineral == RESOURCE_LEMERGIUM ? RESOURCE_OXYGEN : RESOURCE_LEMERGIUM;
+                        creep.memory.w = 2;
                     }
 
                     if (!creep.memory.w == 2 && _.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
