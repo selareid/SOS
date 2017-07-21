@@ -1937,14 +1937,6 @@ module.exports = {
                 if (creep.carry.energy == 0) Memory.w = 1;
                 else if (creep.carry.energy == creep.carryCapacity) Memory.w = 0;
 
-                if (_.sum(creep.carry) - creep.carry.energy > 0) {
-                    for (let resourceType in creep.carry) {
-                        if (resourceType == RESOURCE_ENERGY) continue;
-                        creep.drop(resourceType);
-                        break;
-                    }
-                }
-
                 // if (creep.room.name != room.name) return creep.moveWithPath(room.getPositionAt(25, 25), {range: 21, obstacles: getObstacles(room), repath: 0.01, maxRooms: 16});
 
                 if (Memory.w == 1) {
@@ -1974,7 +1966,7 @@ module.exports = {
                                     if (creep.pos.getRangeTo(defenseToRepair) > 3) creep.moveWithPath(defenseToRepair, {range: 3, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                                     else creep.repair(defenseToRepair);
                                 }
-                                else if (creep.pos.findInRange(FIND_CREEPS, 1).length > 0) creep.runInSquares();
+                                else creep.runInSquares();
                             }
                         }
                     }
@@ -2006,11 +1998,11 @@ module.exports = {
             var structure = Memory.str ? Game.getObjectById(Memory.str) : undefined;
 
             if (!structure || structure.hits >= structure.hitsMax || (structure.structureType == STRUCTURE_RAMPART && structure.hits > (structure.hitsMax * 0.001))) {
-                structure = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                structure = room.find(FIND_STRUCTURES, {
                     filter: (s) => (s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART
                     && s.hits < (s.hitsMax * 0.5) || (s.structureType == STRUCTURE_RAMPART && s.hits < (s.hitsMax * 0.001)))
                     && (s.structureType != STRUCTURE_CONTAINER || !s.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => s.structureType == STRUCTURE_LINK})[0])
-                });
+                })[0];
             }
 
             if (structure) Memory.str = structure.id;
@@ -2024,28 +2016,15 @@ module.exports = {
                 minDefenceLevel = 100;
             }
 
-            var structures = room.find(FIND_STRUCTURES,
-                {filter: (s) => (s.structureType == STRUCTURE_RAMPART || s.structureType == STRUCTURE_WALL) && s.hits < minDefenceLevel});
+            var structure = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_RAMPART).concat(room.getStructures(STRUCTURE_WALL)), {filter: (s) => s.hits < minDefenceLevel});
 
-            var structure = creep.pos.findClosestByRange(structures);
-
-            if (!structure) {
-                Memory.mdl = minDefenceLevel + 1000;
-                return;
-            }
-
-            return structure;
+            return structure ? structure : Memory.mdl = minDefenceLevel + 1000;
         },
 
         getTowerToRefill: function (Memory, room) {
-            var towers = _.filter(room.getStructures(STRUCTURE_TOWER), (s) => s.energy < s.energyCapacity);
+            var tower = _.min(room.getStructures(STRUCTURE_TOWER), 'energy');
 
-            if (!towers.length > 0) return undefined;
-
-            var tower = _.min(towers, 'energy');
-
-            return tower ? tower : undefined;
-
+            return tower && tower.energy < tower.energyCapacity ? tower : undefined;
         }
     }
 };
