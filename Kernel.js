@@ -16,6 +16,7 @@ module.exports = {
         global.processesTotal = _.size(processes);
         global.processesRun = 0;
         global.processesSkipped = [];
+        global.processesRunName = [];
 
         for (let process_it in processes) {
             let process = processes[process_it];
@@ -37,6 +38,7 @@ module.exports = {
                     try {
                         var rsl = Processes[process.pN.split(':')[0]].run(process_it);
                         global.processesRun++;
+                        global.processesRunName.push(process.pN);
                     }
                     catch (err) {
                         console.processError(err);
