@@ -340,7 +340,7 @@ module.exports = {
         },
 
         placeSpawn1: function (flagPos) {
-            if (!_.size(Game.constructionSites) < 100) {
+            if (_.size(Game.constructionSites) < 100) {
                 let pos = new RoomPosition(flagPos.x + 1, flagPos.y, flagPos.roomName);
                 Game.rooms[flagPos.roomName].createConstructionSite(pos.x, pos.y, STRUCTURE_SPAWN);
             }
@@ -1270,14 +1270,14 @@ module.exports = {
                 }
                 else {
                     var src = Game.getObjectById(srcId);
-                    if (!_.size(Game.constructionSites) < 100 && src && creep.pos.isNearTo(src) && creep.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER}).length < 1
+                    if (_.size(Game.constructionSites) < 100 && src && creep.pos.isNearTo(src) && creep.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER}).length < 1
                         && creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1).length < 1) room.createConstructionSite(creep.pos.x, creep.pos.y, STRUCTURE_CONTAINER)
                 }
             }
         },
 
         placeLink: function (source, creep) {
-            if (!_.size(Game.constructionSites) < 100) return;
+            if (_.size(Game.constructionSites) >= 100) return;
 
             const opRP = {
                 [TOP]: {d: BOTTOM, x: 0, y: 1},
@@ -1347,7 +1347,7 @@ module.exports = {
         spawns: [{"x": 1, "y": 0}, {"x": -1, "y": 0}, {"x": 0, "y": -1}],
 
         placeSpawn: function (room) {
-            if (!_.size(Game.constructionSites) < 100 && CONTROLLER_STRUCTURES.spawn[room.controller.level] > room.find(FIND_MY_SPAWNS).length) {
+            if (_.size(Game.constructionSites) < 100 && CONTROLLER_STRUCTURES.spawn[room.controller.level] > room.find(FIND_MY_SPAWNS).length) {
                 var flag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'fillSpawn'})[0];
                 var cnt = room.find(FIND_MY_SPAWNS).length;
 
@@ -1495,7 +1495,7 @@ module.exports = {
 
         placeStrucs: function (room, flag) {
             for (let struc of this.structs) {
-                if (!_.size(Game.constructionSites) < 100
+                if (_.size(Game.constructionSites) < 100
                     && CONTROLLER_STRUCTURES[struc.s][room.controller.level] > room.getStructures(struc.s).length) {
                     let strucPos = new RoomPosition(flag.pos.x + struc.x, flag.pos.y + struc.y, room.name);
 
@@ -1800,7 +1800,7 @@ module.exports = {
         },
 
         placeStorage: function (room) {
-            if (room.storage || !_.size(Game.constructionSites) < 100) return;
+            if (room.storage || _.size(Game.constructionSites) >= 100) return;
             if (Game.time % 11 == 0) {
 
                 var distrFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
