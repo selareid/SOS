@@ -13,6 +13,6 @@ Room.prototype.getStructures =
             global[this.name].structures.structures = mappedGroup;
         }
 
-        var needed = global[this.name].structures.structures[structureType].map(Game.getObjectById).filter(obj => obj !== null);
+        var needed = _.filter(_.map(global[this.name].structures.structures[structureType], (s) => Game.getObjectById(s)), (obj) => obj !== null);
         return filter ? _.filter(needed, filter) : needed;
     };
