@@ -1102,56 +1102,82 @@ module.exports = {
             }
 
             //reactions section
-            _.forEach(labs, (lab) => {
+            var needEnergy = _.filter(labs, (lab) => {
                 if (lab.id != lab1.id && lab.id != lab2.id && lab1.mineralAmount >= 5 && lab2.mineralAmount >= 5 && !lab.cooldown && lab.mineralAmount < lab.mineralCapacity) {
                     lab.runReaction(lab1, lab2);
                 }
+
+                return lab.energy < lab.energyCapacity;
             });
             //reactions section
 
-            if ((room.storage.store[RESOURCE_LEMERGIUM] || room.terminal.store[RESOURCE_LEMERGIUM]) && (room.storage.store[RESOURCE_OXYGEN] || room.terminal.store[RESOURCE_OXYGEN])) {
+            if (needEnergy.length > 0 || ((room.storage.store[RESOURCE_LEMERGIUM] || room.terminal.store[RESOURCE_LEMERGIUM]) && (room.storage.store[RESOURCE_OXYGEN] || room.terminal.store[RESOURCE_OXYGEN]))) {
                 var creep = Memory.creep ? getCreep(Memory.creep, 'doLabs') : undefined;
 
                 if (creep) {
                     creep.talk('doLabs');
 
-                    if (!creep.memory.currentMineral) return creep.memory.currentMineral = RESOURCE_LEMERGIUM;
+                    if (needEnergy.length > 0) {
+                        if (!creep.memory.w == 2 && _.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
+                        else if (creep.carry.energy == 0) creep.memory.w = 1;
 
-                    if (lab1.mineralType == creep.memory.currentMineral && lab1.mineralAmount >= lab1.mineralCapacity) {
-                        creep.memory.currentMineral = creep.memory.currentMineral == RESOURCE_LEMERGIUM ? RESOURCE_OXYGEN : RESOURCE_LEMERGIUM;
-                        creep.memory.w = 2;
-                    }
-                    else if (lab2.mineralType == creep.memory.currentMineral && lab2.mineralAmount >= lab2.mineralCapacity) {
-                        creep.memory.currentMineral = creep.memory.currentMineral == RESOURCE_LEMERGIUM ? RESOURCE_OXYGEN : RESOURCE_LEMERGIUM;
-                        creep.memory.w = 2;
-                    }
-
-                    if (!creep.memory.w == 2 && _.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
-                    else if (_.sum(creep.carry) == 0) creep.memory.w = 1;
-
-                    if (creep.memory.w == 1) {
-                        var hasResource = room.storage.store[creep.memory.currentMineral] ? room.storage : room.terminal.store[creep.memory.currentMineral] ? room.terminal : undefined;
-
-                        if (hasResource) {
-                            if (creep.pos.isNearTo(hasResource)) {
-                                creep.withdraw(hasResource, creep.memory.currentMineral);
-                                creep.memory.w = 0;
+                        if (creep.memory.w == 1) {
+                            if (room.storage.store[RESOURCE_ENERGY]) {
+                                if (creep.pos.isNearTo(room.storage)) {
+                                    creep.withdraw(room.storage, RESOURCE_ENERGY);
+                                    creep.memory.w = 0;
+                                }
+                                else creep.moveWithPath(room.storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                             }
-                            else creep.moveWithPath(hasResource, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                        }
+                        else if (creep.memory.w == 2) {
+                            if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
+                            else creep.moveWithPath(room.storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                        }
+                        else {
+                            if (creep.pos.isNearTo(needEnergy[0])) creep.transfer(needEnergy[0], RESOURCE_ENERGY);
+                            else creep.moveWithPath(needEnergy[0], {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                         }
                     }
-                    else if (creep.memory.w == 2) {
-                        if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
-                            else creep.moveWithPath(room.storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
-                    }
                     else {
-                        var labToDo = !lab1.mineralType || lab1.mineralType == creep.memory.currentMineral ? lab1 : lab2;
+                        if (!creep.memory.currentMineral) return creep.memory.currentMineral = RESOURCE_LEMERGIUM;
 
-                        if (creep.pos.isNearTo(labToDo)) creep.transfer(labToDo, creep.memory.currentMineral);
-                        else creep.moveWithPath(labToDo, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                        if (lab1.mineralType == creep.memory.currentMineral && lab1.mineralAmount >= lab1.mineralCapacity) {
+                            creep.memory.currentMineral = creep.memory.currentMineral == RESOURCE_LEMERGIUM ? RESOURCE_OXYGEN : RESOURCE_LEMERGIUM;
+                            creep.memory.w = 2;
+                        }
+                        else if (lab2.mineralType == creep.memory.currentMineral && lab2.mineralAmount >= lab2.mineralCapacity) {
+                            creep.memory.currentMineral = creep.memory.currentMineral == RESOURCE_LEMERGIUM ? RESOURCE_OXYGEN : RESOURCE_LEMERGIUM;
+                            creep.memory.w = 2;
+                        }
+
+                        if (!creep.memory.w == 2 && _.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
+                        else if (_.sum(creep.carry) == 0) creep.memory.w = 1;
+
+                        if (creep.memory.w == 1) {
+                            var hasResource = room.storage.store[creep.memory.currentMineral] ? room.storage : room.terminal.store[creep.memory.currentMineral] ? room.terminal : undefined;
+
+                            if (hasResource) {
+                                if (creep.pos.isNearTo(hasResource)) {
+                                    creep.withdraw(hasResource, creep.memory.currentMineral);
+                                    creep.memory.w = 0;
+                                }
+                                else creep.moveWithPath(hasResource, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                            }
+                        }
+                        else if (creep.memory.w == 2) {
+                            if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
+                            else creep.moveWithPath(room.storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                        }
+                        else {
+                            var labToDo = !lab1.mineralType || lab1.mineralType == creep.memory.currentMineral ? lab1 : lab2;
+
+                            if (creep.pos.isNearTo(labToDo)) creep.transfer(labToDo, creep.memory.currentMineral);
+                            else creep.moveWithPath(labToDo, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                        }
                     }
                 }
-                else if (!lab1.mineralAmount || !lab2.mineralAmount) {
+                else if (needEnergy.length > 0 || !lab1.mineralAmount || !lab2.mineralAmount) {
                     Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'doLabs', {name: Memory.creep});
                 }
             }
