@@ -369,7 +369,7 @@ module.exports = {
 
             if (Game.time % 11 == 0) {
                 if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
-                if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {
+                if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.getStructures(STRUCTURE_LINK), (l) => {
                     return l.id
                 });
 
@@ -457,7 +457,7 @@ module.exports = {
             if (!room || room.find(FIND_HOSTILE_CREEPS).length < 1) return 'end';
             if (!global[room.name]) global[room.name] = {};
 
-            if (!global[room.name].towers || !global[room.name].towers[0]) global[room.name].towers = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}), (t) => {return t.id});
+            if (!global[room.name].towers || !global[room.name].towers[0]) global[room.name].towers = _.map(room.getStructures(STRUCTURE_TOWER), (t) => {return t.id});
 
             var towers = global[room.name].towers;
             if (towers.length < 1) return 'end';
@@ -566,7 +566,7 @@ module.exports = {
             if (!Memory.toDoQ) Memory.toDoQ = [[spawnFlag.pos.x, spawnFlag.pos.y], [storageFlag.pos.x, storageFlag.pos.y], [room.controller.pos.x, room.controller.pos.y]]
                 .concat(_.map(room.find(FIND_SOURCES), (s) => {return [s.pos.x, s.pos.y]}));
 
-            if (room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}).length < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level]) {
+            if (room.getStructures(STRUCTURE_TOWER).length < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level]) {
                 this.placeTower(room, new RoomPosition(Memory.toDoQ[Memory.toDo].split(',')[0], Memory.toDoQ[Memory.toDo].split(',')[1], room.name));
                 Memory.toDo = Memory.toDo+1 > Memory.toDo.length-1 ? 0 : Memory.toDo+1;
             }
@@ -627,7 +627,7 @@ module.exports = {
                     Memory.toDo++;
 
                     if (Memory.ext
-                        && room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_EXTENSION}) < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level]) {
+                        && room.getStructures(STRUCTURE_EXTENSION) < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level]) {
 
                         _.forEach(Memory.ext, (sPos) => {
                             var extensionPos = new RoomPosition(Number.parseInt(sPos.split(',')[0]), Number.parseInt(sPos.split(',')[1]), room.name);
@@ -883,7 +883,7 @@ module.exports = {
                 Memory.RH = randomHash;
             }
 
-            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
+            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.getStructures(STRUCTURE_LINK), (l) => {return l.id});
             if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.filter(global[room.name].links, (s) => {if (Game.getObjectById(s)) {return Game.getObjectById(s).pos.findInRange(FIND_SOURCES, 3)[0]}});
 
             var links = _.map(global[room.name].links, (l) => {return Game.getObjectById(l)});
@@ -1173,7 +1173,7 @@ module.exports = {
         labSpots: [{"x": 0, "y": 0}, {"x": 1, "y": 1}, {"x": -1, "y": 1}],
 
         buildLabs: function (flag) {
-            if (flag.room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LAB}).length < CONTROLLER_STRUCTURES[STRUCTURE_LAB][flag.room.controller.level]) {
+            if (flag.room.getStructures(STRUCTURE_LAB).length < CONTROLLER_STRUCTURES[STRUCTURE_LAB][flag.room.controller.level]) {
                 _.forEach(this.labSpots, (ls) => {
                     var newPos = ls ? flag.room.getPositionAt(flag.pos.x + ls.x, flag.pos.y + ls.y) : undefined;
                     if (newPos && newPos.lookFor(LOOK_STRUCTURES).length < 1 && newPos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1) flag.room.createConstructionSite(newPos, STRUCTURE_LAB);
@@ -1254,7 +1254,7 @@ module.exports = {
         dropEnergy: function (Memory, creep, creep_it_it, room = creep.room) {
             var srcId = Memory.crps[creep_it_it].split(':')[1];
 
-            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
+            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.getStructures(STRUCTURE_LINK), (l) => {return l.id});
             if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.filter(global[room.name].links, (s) => {return Game.getObjectById(s) && Game.getObjectById(s).pos.findInRange(FIND_SOURCES, 3)[0];});
 
             var link = creep.pos.findClosestByRange(_.map(global[room.name].sourcelinks, (s) => {return Game.getObjectById(s)}));
@@ -1421,7 +1421,7 @@ module.exports = {
             if (!creeps) return Memory.crps = [];
 
             if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
-            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
+            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.getStructures(STRUCTURE_LINK), (l) => {return l.id});
 
             var flag = global[room.name].distrSquareFlag;
             if (!room.storage || !flag) return;
@@ -1511,7 +1511,7 @@ module.exports = {
         placeStrucs: function (room, flag) {
             for (let struc of this.structs) {
                 if (!_.size(Game.constructionSites) < 100
-                    && CONTROLLER_STRUCTURES[struc.s][room.controller.level] > room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == struc.s}).length) {
+                    && CONTROLLER_STRUCTURES[struc.s][room.controller.level] > room.getStructures(struc.s).length) {
                     let strucPos = new RoomPosition(flag.pos.x + struc.x, flag.pos.y + struc.y, room.name);
 
                     if (!strucPos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == struc.s})[0]) room.createConstructionSite(strucPos.x, strucPos.y, struc.s);
@@ -1554,7 +1554,7 @@ module.exports = {
                 var storageLink = Game.getObjectById(Memory.link);
 
                 if (storageLink && storageLink.energy > 0) {
-                    if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (l) => {return l.id});
+                    if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.getStructures(STRUCTURE_LINK), (l) => {return l.id});
                     var link = _.filter(_.map(global[room.name].links, (s) => {return Game.getObjectById(s)}), (s) => s.energy < 50 && s.id != storageLink.id && !s.pos.findInRange(FIND_SOURCES, 3)[0])[0];
                     
                     if (room.storage.store.energy <= 1000 || !link) {
@@ -1569,7 +1569,7 @@ module.exports = {
         
         fillTower: function (Memory, room, creep) {
 
-            if (!global[room.name].towers || !global[room.name].towers[0]) global[room.name].towers = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER}), (t) => {return t.id});
+            if (!global[room.name].towers || !global[room.name].towers[0]) global[room.name].towers = _.map(room.getStructures(STRUCTURE_TOWER), (t) => {return t.id});
 
             if (!Game.getObjectById(Memory.tower)) {
                 var fnd = creep.pos.findInRange(_.map(global[room.name].towers, (t) => {return Game.getObjectById(t)}), 1)[0];
@@ -1813,7 +1813,7 @@ module.exports = {
         },
 
         getNumberOfCarriers: function (room) {
-            var links = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}).length;
+            var links = room.getStructures(STRUCTURE_LINK).length;
             return links >= 3 ? 0 : (links >= 2 ? 1 : 2);
         },
 
@@ -1908,7 +1908,7 @@ module.exports = {
                 Memory.RH = randomHash;
             }
 
-            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}), (s) => {return s.id});
+            if (!global[room.name].links || !global[room.name].links[0]) global[room.name].links = _.map(room.getStructures(STRUCTURE_LINK), (s) => {return s.id});
 
             if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
                 if (room.controller) global[randomHash].l = room.controller.pos.findInRange(_.map(global[room.name].links, (s) => {return Game.getObjectById(s)}), 3)[0];
@@ -1925,7 +1925,7 @@ module.exports = {
                 creep.getConsumerEnergy(Memory, room);
 
                 if (_.size(Game.constructionSites) < 100 && Game.time % 101 == 0 && room.controller.pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 3).length < 1 && room.controller.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < 1
-                    && CONTROLLER_STRUCTURES[STRUCTURE_LINK][room.controller.level] > room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_LINK}).length) {
+                    && CONTROLLER_STRUCTURES[STRUCTURE_LINK][room.controller.level] > room.getStructures(STRUCTURE_LINK).length) {
                     var path = room.storage.pos.findPathTo(room.controller.pos, {range: 3});
 
                     var linkPos = new RoomPosition(path[path.length-1].x, path[path.length-1].y, room.name);
@@ -2052,7 +2052,7 @@ module.exports = {
         },
 
         getTowerToRefill: function (Memory, room) {
-            var towers = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER && s.energy < s.energyCapacity});
+            var towers = _.filter(room.getStructures(STRUCTURE_TOWER), (s) => s.energy < s.energyCapacity);
 
             if (!towers.length > 0) return undefined;
 
