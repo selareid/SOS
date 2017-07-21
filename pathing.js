@@ -10,6 +10,8 @@ Creep.prototype.moveWithPath =
                 var thisPosName = (this.pos.x * 100 + this.pos.y).toString(36);
                 var destPosName = (dest.x * 100 + dest.y).toString(36);
 
+                if (this.memory.path.split(',')[1] == destPosName) thisPosName = this.memory.path.split(',')[1];
+
                 if (global[this.room.name].paths[thisPosName + ',' + destPosName]) {
                     this.move(global[this.room.name].paths[thisPosName + ',' + destPosName][0]);
                     this.memory.goto++;
@@ -25,6 +27,7 @@ Creep.prototype.moveWithPath =
 
                     this.move(global[this.room.name].paths[thisPosName + ',' + destPosName][0]);
                     this.memory.goto = 1;
+                    this.memory.path = thisPosName + ',' + destPosName;
                 }
             }
             else if (dest) {
