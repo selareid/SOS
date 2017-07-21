@@ -1164,7 +1164,7 @@ module.exports = {
                         else creep.moveWithPath(labToDo, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                     }
                 }
-                else {
+                else if (!lab1.mineralAmount || !lab2.mineralAmount) {
                     Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'doLabs', {name: Memory.creep});
                 }
             }
