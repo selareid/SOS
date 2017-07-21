@@ -1129,10 +1129,14 @@ module.exports = {
 
                     if (!creep.memory.currentMineral) return creep.memory.currentMineral = RESOURCE_LEMERGIUM;
 
-                    if (lab1.mineralAmount >= lab1.mineralCapacity) ccreep.memory.currentMineral = creep.memory.currentMineral == RESOURCE_LEMERGIUM ? RESOURCE_OXYGEN : RESOURCE_LEMERGIUM;
-                    else if (lab2.mineralAmount >= lab2.mineralCapacity) creep.memory.currentMineral = creep.memory.currentMineral == RESOURCE_LEMERGIUM ? RESOURCE_OXYGEN : RESOURCE_LEMERGIUM;
+                    if (lab1.mineralAmount >= lab1.mineralCapacity) {
+                        creep.memory.currentMineral = creep.memory.currentMineral == RESOURCE_LEMERGIUM ? RESOURCE_OXYGEN : RESOURCE_LEMERGIUM;
+                    }
+                    else if (lab2.mineralAmount >= lab2.mineralCapacity) {
+                        creep.memory.currentMineral = creep.memory.currentMineral == RESOURCE_LEMERGIUM ? RESOURCE_OXYGEN : RESOURCE_LEMERGIUM;
+                    }
 
-                    if (_.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
+                    if (!creep.memory.w == 2 && _.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
                     else if (_.sum(creep.carry) == 0) creep.memory.w = 1;
 
                     if (creep.memory.w == 1) {
@@ -1145,6 +1149,10 @@ module.exports = {
                             }
                             else creep.travelTo(hasResource, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                         }
+                    }
+                    else if (creep.memory.w == 2) {
+                        if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
+                            else creep.travelTo(room.storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                     }
                     else {
                         var labToDo = lab1.resourceType == creep.memory.currentMineral ? lab1 : lab2;
@@ -1785,7 +1793,7 @@ module.exports = {
                         creep.getCarrierResources(Memory);
                     }
                     else if (room.storage) {
-                        if (creep.pos.isNearTo(room.storage.pos)) creep.transfer(room.storage, Object.keys(creep.carry)[0]);
+                        if (creep.pos.isNearTo(room.storage.pos)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
                         else creep.travelTo(room.storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                     }
 
