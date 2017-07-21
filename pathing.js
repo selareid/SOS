@@ -1,6 +1,7 @@
 Creep.prototype.moveWithPath =
     function (dest, opts = {range: 1, maxRooms: 1, obstacles: getObstacles(this.room)}) {
         try {
+            if (dest.pos) dest = dest.pos;
 
             if (dest && dest.roomName == this.pos.roomName) {
                 if (global[this.room.name]) global[this.room.name] = {};
