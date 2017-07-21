@@ -20,6 +20,7 @@ module.exports = () => {
     errorString = "[" + "<p style=\"display:inline; color: #ed4543\">ERROR</p>" + "] ";
     kernelString = "[" + "<p style=\"display:inline; color: rgba(228, 231, 17, 0.81)\">KERNEL</p>" + "] ";
     processString = "[" + "<p style=\"display:inline; color: rgba(110, 231, 95, 0.81)\">PROCESS</p>" + "] ";
+    pathString = "[" + "<p style=\"display:inline; color: rgba(110, 231, 95, 0.81)\">PATH</p>" + "] ";
 
     timeString = "[" + "<p style=\"display:inline; color: #abd7ed\">" + Game.time + "</p>" + "] ";
     spawnString = "[" + "<p style=\"display:inline; color: #71ed7c\">SPAWN</p>" + "] ";
@@ -47,6 +48,11 @@ module.exports = () => {
     console.processError = function (errorMessage) {
         console.log(timeString + processString + errorString + errorMessage);
         Game.notify(timeString + processString + errorString + errorMessage);
+    };
+
+    console.pathError = function (errorMessage) {
+        console.log(timeString + pathString + errorString + errorMessage);
+        Game.notify(timeString + pathString + errorString + errorMessage);
     };
 
     console.logTickStart = function () {
