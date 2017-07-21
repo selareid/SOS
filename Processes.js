@@ -1157,7 +1157,7 @@ module.exports = {
                             else creep.travelTo(room.storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                     }
                     else {
-                        var labToDo = lab1.resourceType == creep.memory.currentMineral ? lab1 : lab2;
+                        var labToDo = lab1.mineralType == creep.memory.currentMineral ? lab1 : lab2;
 
                         if (creep.pos.isNearTo(labToDo)) creep.transfer(labToDo, creep.memory.currentMineral);
                         else creep.travelTo(labToDo, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
