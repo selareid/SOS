@@ -1,10 +1,18 @@
+const structureTimeToSaveFor = 13;
 Room.prototype.getStructures =
-    function (structureType, filter = () => true) {
-    if (!global[this.name]) global[this.name] = {};
-        if (!global[this.name].structures || global[this.name].structures.lc != Game.time) {
+    function (structureType, filter) {
+        if (!global[this.name]) global[this.name] = {};
+        if (!global[this.name].structures || Game.time-global[this.name].structures.lc > structureTimeToSaveFor) {
             global[this.name].structures = {lc: Game.time};
-            global[this.name].structures.structures = _.groupBy(this.find(FIND_STRUCTURES), (s) => s.structureType);
+
+            var grouped = _.groupBy(this.find(FIND_STRUCTURES), (s) => s.structureType);
+            var mappedGroup = {};
+
+            for (let group in grouped) mappedGroup[group] = _.map(grouped[group], (s) => {return s ? s.id : null});
+
+            global[this.name].structures.structures = mappedGroup;
         }
 
-        return _.filter(global[this.name].structures.structures[structureType], filter);
+        var needed = global[this.name].structures.structures[structureType].map(Game.getObjectById).filter(obj => obj !== null);
+        return filter ? _.filter(needed, filter) : needed;
     };
