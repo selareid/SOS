@@ -872,7 +872,7 @@ module.exports = {
                 Memory.RH = randomHash;
             }
 
-            if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.filter(room.getStructures(STRUCTURE_LINK), (s) => s.pos.findInRange(FIND_SOURCES, 3)[0]);
+            if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.map(_.filter(room.getStructures(STRUCTURE_LINK), (s) => s.pos.findInRange(FIND_SOURCES, 3)[0]), (l) => l.id);
 
             var links = room.getStructures(STRUCTURE_LINK);
 
@@ -888,7 +888,8 @@ module.exports = {
 
             if (!storageLink) return;
 
-            _.forEach(sourceLinks, (l) => {
+            _.forEach(sourceLinks, (l_id) => {
+                var l = Game.getObjectById(l_id);
                 if (l.cooldown == 0 && l.energy >= l.energyCapacity) l.transferEnergy(storageLink);
             });
             
