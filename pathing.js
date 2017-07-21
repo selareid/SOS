@@ -18,6 +18,7 @@ Creep.prototype.moveWithPath =
 
                     if (!global[this.room.name].paths[thisPosName + ',' + destPosName][this.memory.goto + 1]) {
                         delete this.memory.goto;
+                        delete this.memory.path;
                     }
                 }
                 else {
