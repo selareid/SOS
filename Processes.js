@@ -889,7 +889,7 @@ module.exports = {
 
             _.forEach(sourceLinks, (l_id) => {
                 var l = Game.getObjectById(l_id);
-                if (l.cooldown == 0 && l.energy >= l.energyCapacity) l.transferEnergy(storageLink);
+                if (l && l.cooldown == 0 && l.energy >= l.energyCapacity) l.transferEnergy(storageLink);
             });
             
             
