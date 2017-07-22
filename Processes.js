@@ -1744,9 +1744,9 @@ module.exports = {
 
                  creep.talk('mine');
 
-                 if (_.sum(creep.carry) == 0) Memory.w = 1;
-                 else if (_.sum(creep.carry) == creep.carryCapacity) Memory.w = 0;
-
+                 if (_.sum(creep.carry) == 0) Memory.w = 0;
+                 else if (_.sum(creep.carry) == creep.carryCapacity) Memory.w = 1;
+                 
                  if (Memory.w == 1) {
                      if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
                      else creep.moveWithPath(room.storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
