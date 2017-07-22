@@ -1526,7 +1526,15 @@ module.exports = {
                     creep.getConsumerEnergy(Memory, room);
                 }
                 else {
-                    var extension = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_EXTENSION && s.energy < s.energyCapacity});
+                    var extension;
+
+                    _.forEach(room.getStructures(STRUCTURE_EXTENSION), (s) => {
+                        if (s.energy < s.energyCapacity) {
+                            extension = s;
+                            return false;
+                        }
+                    });
+
                     if (extension) {
                         if (creep.pos.isNearTo(extension)) creep.transfer(extension, RESOURCE_ENERGY);
                         else creep.moveWithPath(extension, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
