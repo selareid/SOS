@@ -272,8 +272,9 @@ module.exports = {
 
                             if (crusher.pos.isNearTo(target)) crusher.attack(target);
                             else {
-                                var path = crusher.pos.findPathTo(target.pos, {ignoreCreeps: true, ignoreRoads: true, ignoreDestructibleStructures: true, swampCost: 1});
-                                crusher.moveByPath(path);
+                                if (crusher.moveTo(target, {reUsePath: 1, ignoreCreeps: true, ignoreRoads: true, swampCost: 1}) == ERR_NO_PATH) {
+                                    crusher.attack(crusher.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_WALL}));
+                                }
                             }
                         }
                     }
