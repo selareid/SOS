@@ -31,7 +31,9 @@ const defaultBodyChart = {
     claim: [[CLAIM, MOVE, MOVE], [], 1],
     buildSpawn: [[WORK, MOVE, CARRY], []],
     stealEnergy: [[CARRY, MOVE, MOVE], []],
-    doLabs: [[CARRY, CARRY, MOVE], [], 8]
+    doLabs: [[CARRY, CARRY, MOVE], [], 8],
+    healer: [[MOVE, HEAL], []],
+    crusher: [[MOVE, ATTACK], []]
 };
 
 function getBodyChart(room) {
@@ -199,6 +201,84 @@ module.exports = {
 
             if (creep.pos.isNearTo(creep.room.storage)) creep.transfer(creep.room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
             else creep.moveWithPath(creep.room.storage, {range: 1, repath: 0.01, maxRooms: 1});
+        }
+    },
+
+    crusher: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            var room = Game.rooms[Memory.rmN];
+            var flag = Game.flags[Memory.f];
+
+            if (!Memory.complete && (!flag || !room)) {
+                var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'crusher' && Game.rooms[f.name.split(' ')[1]])[0];
+                Memory.rmN = newFlag ? newFlag.name.split(' ')[1] : undefined;
+                return newFlag ? Memory.f = newFlag.name : 'end';
+            }
+
+            var crusher = Game.creep[Memory.crusher];
+            var healer = Game.creep[Memory.healer];
+
+            if (!Memory.complete && !healer) Memory.healer = module.exports.room.addToSQ('room:' + room.name, 'healer');
+            if (!Memory.complete && !crusher) Memory.crusher = module.exports.room.addToSQ('room:' + room.name, 'crusher');
+
+            if (Memory.complete && !healer && !crusher) {
+                flag.remove();
+                return 'end';
+            }
+
+            if (healer) {
+                if (!Memory.boosted || _.filter(healer.body, (b) => b.type == HEAL && b.boost == undefined).length > 0) {
+                    var lab = Game.getObjectById(Memory.lab);
+
+                    if (!lab) {
+                        var newLab = _.filter(room.getStructures(STRUCTURE_LAB), (l) => l.mineralType == RESOURCE_LEMERGIUM_OXIDE && l.energy > LAB_BOOST_ENERGY && l.mineralAmount > LAB_BOOST_MINERAL);
+                        Memory.lab = newLab ? newLab.id : undefined;
+                        Memory.boosted = newLab ? false : true;
+                    }
+                    else {
+                        if (healer.isNearTo(lab)) {
+                            if (lab.boostCreep(healer) == OK) Memory.boosted = true;
+                        }
+                        else healer.moveWithPath(lab);
+                    }
+                }
+                else if (crusher) {
+                    if (!healer.pos.isNearTo(crusher)) healer.moveTo(crusher, {reusePath: 2});
+                    else {
+                        if (crusher.pos.roomName != flag.pos.roomName) {
+                            crusher.travelTo(flag, {range: 23, repath: 0.01});
+                            healer.move(healer.pos.getDirectionTo(crusher.pos));
+                            healer.heal(crusher);
+                        }
+                        else {
+                            healer.move(healer.pos.getDirectionTo(crusher.pos));
+                            if (healer.hits < healer.hitsMax) healer.heal(healer);
+                            else healer.heal(crusher);
+
+                            var target = Game.getObjectById(Memory.target);
+
+                            if (!target) {
+                                var newTarget = crusher.pos.findClosestByRange(FIND_HOSTILE_SPAWNS);
+                                if (!newTarget) newTarget = crusher.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES);
+                                if (!newTarget) newTarget = crusher.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+
+                                Memory.target = newTarget ? Memory.target.id : undefined;
+                                target = newTarget;
+
+                                if (!target) Memory.complete = true;
+                            }
+
+                            if (crusher.pos.isNearTo(target)) crusher.attack(target);
+                            else {
+                                var path = crusher.pos.findPathTo(target.pos, {ignoreCreeps: true, ignoreRoads: true, ignoreDestructibleStructures: true, swampCost: 1});
+                                crusher.moveByPath(path);
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
 
