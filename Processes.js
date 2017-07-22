@@ -1225,7 +1225,7 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room || !room.storage || !room.terminal || !room.getStructures(STRUCTURE_POWER_SPAWN).length < 1) return 'end';
+            if (!room || !room.storage || !room.terminal || room.getStructures(STRUCTURE_POWER_SPAWN).length < 1) return 'end';
 
             var powerSpawn = room.getStructures(STRUCTURE_POWER_SPAWN)[0];
 
