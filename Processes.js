@@ -661,7 +661,7 @@ module.exports = {
 
             if (room.getStructures(STRUCTURE_TOWER).length < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level]) {
                 this.placeTower(room, new RoomPosition(Memory.toDoQ[Memory.toDo].split(',')[0], Memory.toDoQ[Memory.toDo].split(',')[1], room.name));
-                Memory.toDo = Memory.toDo+1 > Memory.toDo.length-1 ? 0 : Memory.toDo+1;
+                Memory.toDo = Memory.toDo+1 > Memory.toDoQ.length-1 ? 0 : Memory.toDo+1;
             }
         },
 
