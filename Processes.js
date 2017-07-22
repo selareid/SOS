@@ -412,7 +412,7 @@ module.exports = {
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'strgDistr').length < 1) spawnNewProcess('strgDistr', Memory.rmN);
                 if (room.controller.level >= 5 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doLinks').length < 1) spawnNewProcess('doLinks', Memory.rmN);
                 if (room.controller.level >= 8 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doLabs').length < 1) spawnNewProcess('doLabs', Memory.rmN);
-                if (room.controller.level >= 8 && room.getStructures(STRUCTURE_POWER_SPAWN) && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doPowerProc').length < 1) spawnNewProcess('doPowerProc', Memory.rmN);
+                if (room.controller.level >= 8 && room.getStructures(STRUCTURE_POWER_SPAWN).length > 0 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doPowerProc').length < 1) spawnNewProcess('doPowerProc', Memory.rmN);
             }
 
             this.spawn(Memory_it);
