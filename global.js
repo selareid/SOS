@@ -25,7 +25,8 @@ module.exports = () => {
             case 'praiseRC': return 3;
             case 'takeCare': return 3;
             case 'room': return 10;
-            case 'doTerminal': return -1;
+            case 'doTerminal': return -10;
+            case 'doPowerProc': return -10;
             default: return 0;
         }
     };
