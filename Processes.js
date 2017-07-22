@@ -1729,7 +1729,7 @@ module.exports = {
         },
 
         fillNuke: function (Memory, room, creep) {
-            var nuke = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_NUKER})[0];
+            var nuke = room.getStructures(STRUCTURE_NUKER) && room.getStructures(STRUCTURE_NUKER)[0] && creep.pos.isNearTo(room.getStructures(STRUCTURE_NUKER)[0]) ? room.getStructures(STRUCTURE_NUKER)[0] : undefined;
             if (!nuke) return 'error no nuke';
 
             if (creep.memory.w == true) {
@@ -1756,7 +1756,7 @@ module.exports = {
         },
 
         fillPowerSpawn: function (Memory, room, creep) {
-            var powerSpawn = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_POWER_SPAWN})[0];
+            var powerSpawn = room.getStructures(STRUCTURE_POWER_SPAWN) && room.getStructures(STRUCTURE_POWER_SPAWN)[0] && creep.pos.isNearTo(room.getStructures(STRUCTURE_POWER_SPAWN)[0]) ? room.getStructures(STRUCTURE_POWER_SPAWN)[0] : undefined;;
             if (!powerSpawn) return 'error no powerSpawn';
 
             if (creep.memory.w == true) {
