@@ -25,10 +25,13 @@ module.exports = () => {
             case 'praiseRC': return 3;
             case 'takeCare': return 3;
             case 'room': return 10;
-            case 'doTerminal': return -10;
+            case 'checkGlobalProcesses': return -5;
+            case 'doTerminal': return -5;
             case 'doPowerProc': return -10;
             case 'placeTowers': return -10;
             case 'placeExtensions': return -10;
+            case 'checkRamparts': return -10;
+            case 'buildRoads': return -10;
             default: return 0;
         }
     };
