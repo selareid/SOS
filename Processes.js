@@ -57,7 +57,7 @@ function getRandomHash() {
 }
 
 module.exports = {
-    //global processes
+    //global processes (not tied to room)
 
     init: {
         run: function () {
@@ -113,6 +113,8 @@ module.exports = {
                     if (flag && _.filter(global.Mem.p, (p) => p.pN == 'stealEnergy').length < 1) spawnNewProcess('stealEnergy');
                 }());
             }
+
+            if (Game.time % 1001 == 0 && _.filter(global.Mem.p, (p) => p.pN == 'checkRamparts').length < 1) spawnNewProcess('checkRamparts');
         }
     },
 
@@ -156,7 +158,29 @@ module.exports = {
         }
     },
 
-    //global processes (not tied to room)
+    checkRamparts: {
+        doList: [STRUCTURE_NUKER, STRUCTURE_STORAGE, STRUCTURE_SPAWN, STRUCTURE_POWER_SPAWN],
+
+        run: function () {
+            if (!Memory.nc || Game.time > Memory.nc) {
+                Memory.nc = Game.time + 5 + Math.round(Math.random() * 5);
+
+                var toDo = Memory.td ? Memory.td : 0;
+
+                var structures = _.groupBy(Game.structures, (s) => s.structureType);
+
+                _.forEach(structures[toDo], (s) => {
+                    if (!s.room || _.size(Game.constructionSites) >= 100) return;
+
+                    if (_.filter(s.pos.lookFor(LOOK_STRUCTURES), (r) => r.structureType == STRUCTURE_RAMPART).length < 1) s.room.createConstructionSite(s.pos, STRUCTURE_RAMPART);
+                });
+
+                if (Memory.td+1 >= this.doList.length) return 'end';
+                Memory.td = Memory.td ? Memory.td+1 : 1;
+            }
+        }
+    },
+
     deadCreepHandler: {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
