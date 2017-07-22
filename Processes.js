@@ -39,7 +39,7 @@ function getBodyChart(room) {
 
     if (room) {
         if (room.find(FIND_MY_CONSTRUCTION_SITES).length < 1) newChart['takeCare'][2] = 5;
-        newChart['fillSpawn'][2] = room.find(FIND_MY_SPAWNS)*3;
+        newChart['fillSpawn'][2] = room.find(FIND_MY_SPAWNS).length*3;
     }
 
     return newChart;
@@ -1746,7 +1746,7 @@ module.exports = {
 
                  if (_.sum(creep.carry) == 0) Memory.w = 0;
                  else if (_.sum(creep.carry) == creep.carryCapacity) Memory.w = 1;
-                 
+
                  if (Memory.w == 1) {
                      if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
                      else creep.moveWithPath(room.storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
