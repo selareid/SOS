@@ -459,8 +459,7 @@ module.exports = {
                 this.attack(idiot);
             };
 
-            _.forEach(room.getStructures(STRUCTURE_TOWER), (tower_id) => {
-                var tower = Game.getObjectById(tower_id);
+            _.forEach(room.getStructures(STRUCTURE_TOWER), (tower) => {
                 tower.killIdiot(tower.pos.findClosestByRange(baddies));
             });
         }
