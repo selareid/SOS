@@ -406,14 +406,14 @@ module.exports = {
                 if (room.controller.level >= 4 && room.getStructures(STRUCTURE_LINK).length < 3 && global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'iRmHaul').length < 1) spawnNewProcess('iRmHaul', Memory.rmN);
 
                 if (room.controller.level >= 2 && global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'placeExtensions').length < 1) spawnNewProcess('placeExtensions', Memory.rmN);
+                if (room.controller.level >= 2 && !room.storage && !Game.flags[global[room.name].distrSquareFlag] && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'placeStorage').length < 1) spawnNewProcess('placeStorage', Memory.rmN);
                 if (room.controller.level >= 3 && global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'placeTowers').length < 1) spawnNewProcess('placeTowers', Memory.rmN);
 
                 if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'strgDistr').length < 1) spawnNewProcess('strgDistr', Memory.rmN);
                 if (room.controller.level >= 5 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doLinks').length < 1) spawnNewProcess('doLinks', Memory.rmN);
                 if (room.controller.level >= 8 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doLabs').length < 1) spawnNewProcess('doLabs', Memory.rmN);
+                if (room.controller.level >= 8 && room.getStructures(STRUCTURE_POWER_SPAWN) && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doPowerProc').length < 1) spawnNewProcess('doPowerProc', Memory.rmN);
             }
-
-            if (Game.time % 11 == 0 && room.controller.level >= 2 && !room.storage && !Game.flags[global[room.name].distrSquareFlag] && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'placeStorage').length < 1) spawnNewProcess('placeStorage', Memory.rmN);
 
             this.spawn(Memory_it);
         },
@@ -1217,6 +1217,19 @@ module.exports = {
                 });
 
             }
+        }
+    },
+
+    doPowerProc: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            var room = Game.rooms[Memory.rmN];
+            if (!room || !room.storage || !room.terminal || !room.getStructures(STRUCTURE_POWER_SPAWN).length < 1) return 'end';
+
+            var powerSpawn = room.getStructures(STRUCTURE_POWER_SPAWN)[0];
+
+            if (powerSpawn && powerSpawn.energy >= 50 && powerSpawn.power >= 1) powerSpawn.processPower();
         }
     },
 
