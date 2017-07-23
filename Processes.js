@@ -1744,9 +1744,10 @@ module.exports = {
                     if (result == OK) return OK;
                     else return 'failed';
                 }
-                else if (nuke.ghodium < nuke.ghodiumCapacity && room.storage.store[RESOURCE_GHODIUM]) {
-                    var amtTW = nuke.ghodiumCapacity-nuke.ghodium > creep.carryCapacity ? undefined : nuke.ghodiumCapacity-nuke.ghodium;
-                    var result = creep.withdraw(room.storage, RESOURCE_GHODIUM, amtTW);
+                else if (nuke.ghodium < nuke.ghodiumCapacity && (room.storage.store[RESOURCE_GHODIUM] || room.terminal.store[RESOURCE_GHODIUM])) {
+                    var whereToGetGhodium = room.terminal.store[RESOURCE_GHODIUM] ? room.terminal : room.storage;
+                    var amtTW = nuke.ghodiumCapacity-nuke.ghodium > creep.carryCapacity || nuke.ghodiumCapacity-nuke.ghodium >  whereToGetGhodium.store[RESOURCE_GHODIUM] ? undefined : nuke.ghodiumCapacity-nuke.ghodium;
+                    var result = creep.withdraw(whereToGetGhodium, RESOURCE_GHODIUM, amtTW);
                     creep.memory.w = true;
                     //console.log(result);
                     if (result == OK) return OK;
@@ -1773,7 +1774,7 @@ module.exports = {
                 }
                 else if (powerSpawn.power < powerSpawn.powerCapacity && (room.storage.store[RESOURCE_POWER] || room.terminal.store[RESOURCE_POWER])) {
                     var whereToGetPower = room.terminal.store[RESOURCE_POWER] ? room.terminal : room.storage;
-                    var amtTW = powerSpawn.powerCapacity-powerSpawn.power > creep.carryCapacity || powerSpawn.powerCapacity-powerSpawn.power >  whereToGetPower ? undefined : powerSpawn.powerCapacity-powerSpawn.power;
+                    var amtTW = powerSpawn.powerCapacity-powerSpawn.power > creep.carryCapacity || powerSpawn.powerCapacity-powerSpawn.power >  whereToGetPower.store[RESOURCE_POWER] ? undefined : powerSpawn.powerCapacity-powerSpawn.power;
                     var result = creep.withdraw(whereToGetPower, RESOURCE_POWER, amtTW);
                     creep.memory.w = true;
                     //console.log(result);
