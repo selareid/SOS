@@ -1389,7 +1389,7 @@ module.exports = {
 
             var link = creep.pos.findClosestByRange(_.map(global[room.name].sourcelinks, (s) => Game.getObjectById(s)));
 
-            if (link && link.pos.getRangeTo(creep.pos) < 3) {
+            if (link && Game.getObjectById(srcId).pos.getRangeTo(creep.pos) < 2) {
                 if (creep.pos.isNearTo(link.pos)) creep.transfer(link, RESOURCE_ENERGY);
                  else creep.moveWithPath(link, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
             }
