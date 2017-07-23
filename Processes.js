@@ -1772,8 +1772,8 @@ module.exports = {
                     else return 'failed';
                 }
                 else if (powerSpawn.power < powerSpawn.powerCapacity && (room.storage.store[RESOURCE_POWER] || room.terminal.store[RESOURCE_POWER])) {
-                    var amtTW = powerSpawn.powerCapacity-powerSpawn.power > creep.carryCapacity ? undefined : powerSpawn.powerCapacity-powerSpawn.power;
                     var whereToGetPower = room.terminal.store[RESOURCE_POWER] ? room.terminal : room.storage;
+                    var amtTW = powerSpawn.powerCapacity-powerSpawn.power > creep.carryCapacity || powerSpawn.powerCapacity-powerSpawn.power >  whereToGetPower ? undefined : powerSpawn.powerCapacity-powerSpawn.power;
                     var result = creep.withdraw(whereToGetPower, RESOURCE_POWER, amtTW);
                     creep.memory.w = true;
                     //console.log(result);
