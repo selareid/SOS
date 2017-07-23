@@ -82,7 +82,6 @@ module.exports = () => {
 
     console.logKernel = function (message) {
         console.log(timeString + kernelString + message);
-        Game.notify(timeString + kernelString + message);
     };
 
     console.notify = function (message) {
