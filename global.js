@@ -37,7 +37,8 @@ module.exports = () => {
     };
 
     processExists = function(processType, roomName) {
-        return roomName ? _.filter(global.Mem.p, (p) => p.pN == processType).length < 1 : _.filter(global.Mem.p, (p) => p.rmN == roomName && p.pN == processType).length < 1;
+        return roomName ? _.filter(global.Mem.p, (p) => p.pN == processType).length > 0 || _.filter(global.Mem.iP, (p) => p.pN == processType).length > 0
+            : _.filter(global.Mem.p, (p) => p.rmN == roomName && p.pN == processType).length > 0 || _.filter(global.Mem.iP, (p) => p.rmN == roomName && p.pN == processType).length > 0;
     };
 
     spawnNewProcess = function(processType, roomName, oNCreation) {

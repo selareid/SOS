@@ -64,8 +64,8 @@ module.exports = {
     init: {
         run: function () {
             global.Mem.notify = [];
-            global.Mem.creeps = {};
             global.Mem.p = {};
+            global.Mem.iP = {};
             global.Mem.init = true;
 
             spawnNewProcess('doStats');
@@ -102,61 +102,58 @@ module.exports = {
 
             if (!Memory.nc || Game.time > Memory.nc) {
                 Memory.nc = Game.time + 100 + Math.round(Math.random() * 100);
-
                 (function () {
                     var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'claim')[0];
 
-                    if (flag && (!flag.room || !flag.room.controller.my) && processExists('claim')) spawnNewProcess('claim');
+                    if (flag && (!flag.room || !flag.room.controller.my) && !processExists('claim')) spawnNewProcess('claim');
                 }());
 
                 (function () {
                     var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'steal' && Game.rooms[f.name.split(' ')[1]])[0];
 
-                    if (flag && processExists('stealEnergy')) spawnNewProcess('stealEnergy');
+                    if (flag && !processExists('stealEnergy')) spawnNewProcess('stealEnergy');
                 }());
             }
 
-            if (Game.time % 1001 == 0 && processExists('checkRamparts')) spawnNewProcess('checkRamparts');
+            if (Game.time % 1001 == 0 && !processExists('checkRamparts')) spawnNewProcess('checkRamparts');
         }
     },
 
     checkRooms: {
         run: function () {
-            if (!Memory.nc || Game.time > Memory.nc) {
-                Memory.nc = Game.time + 5 + Math.round(Math.random() * 7);
 
-                for (let roomName in Game.rooms) {
-                    let room = Game.rooms[roomName];
-                    if (!room || !room.controller || !room.controller.my || room.find(FIND_MY_SPAWNS).length < 1) continue;
+            for (let roomName in Game.rooms) {
+                let room = Game.rooms[roomName];
+                if (!room || !room.controller || !room.controller.my || room.find(FIND_MY_SPAWNS).length < 1) continue;
 
-                    if (!Memory.p['room:' + roomName]) {
-                        _.forEach(room.find(FIND_MY_CREEPS, (c) => {
-                            c.suicide();
-                        }));
-                        Memory.p['room:' + roomName] = new Process('room', roomName);
-                    }
+                if (!Memory.p['room:' + roomName]) {
+                    _.forEach(room.find(FIND_MY_CREEPS, (c) => {
+                        c.suicide();
+                    }));
+                    Memory.p['room:' + roomName] = new Process('room', roomName);
                 }
             }
+
+            return {response: 'idle', time: Game.time + 5 + Math.round(Math.random() * 7)};
         }
     },
 
     checkCreeps: {
         run: function () {
-            if (!Memory.nc || Game.time > Memory.nc) {
-                Memory.nc = Game.time + 5 + Math.round(Math.random() * 5);
 
-                _.forEach(Game.creeps, (creep) => {
-                    if (!creep.memory.p || !creep.memory.l || Game.time - creep.memory.l > 4) {
-                        if (isUndefinedOrNull(creep.memory.nc)) creep.memory.nc = 0;
-                        else creep.memory.nc++;
+            _.forEach(Game.creeps, (creep) => {
+                if (!creep.memory.p || !creep.memory.l || Game.time - creep.memory.l > 4) {
+                    if (isUndefinedOrNull(creep.memory.nc)) creep.memory.nc = 0;
+                    else creep.memory.nc++;
 
-                        if (creep.memory.nc > 3) {
-                            spawnNewProcess('deadCreepHandler', creep.room.name, creep.name);
-                        }
+                    if (creep.memory.nc > 3) {
+                        spawnNewProcess('deadCreepHandler', creep.room.name, creep.name);
                     }
-                    else delete creep.memory.nc;
-                });
-            }
+                }
+                else delete creep.memory.nc;
+            });
+
+            return {response: 'idle', time: Game.time + 5 + Math.round(Math.random() * 5)};
         }
     },
 
@@ -164,22 +161,20 @@ module.exports = {
         doList: [STRUCTURE_NUKER, STRUCTURE_STORAGE, STRUCTURE_SPAWN, STRUCTURE_POWER_SPAWN],
 
         run: function () {
-            if (!Memory.nc || Game.time > Memory.nc) {
-                Memory.nc = Game.time + 5 + Math.round(Math.random() * 5);
+            var toDo = Memory.td ? Memory.td : 0;
 
-                var toDo = Memory.td ? Memory.td : 0;
+            var structures = _.groupBy(Game.structures, (s) => s.structureType);
 
-                var structures = _.groupBy(Game.structures, (s) => s.structureType);
+            _.forEach(structures[toDo], (s) => {
+                if (!s.room || _.size(Game.constructionSites) >= 100) return;
 
-                _.forEach(structures[toDo], (s) => {
-                    if (!s.room || _.size(Game.constructionSites) >= 100) return;
+                if (_.filter(s.pos.lookFor(LOOK_STRUCTURES), (r) => r.structureType == STRUCTURE_RAMPART).length < 1) s.room.createConstructionSite(s.pos, STRUCTURE_RAMPART);
+            });
 
-                    if (_.filter(s.pos.lookFor(LOOK_STRUCTURES), (r) => r.structureType == STRUCTURE_RAMPART).length < 1) s.room.createConstructionSite(s.pos, STRUCTURE_RAMPART);
-                });
+            if (Memory.td + 1 >= this.doList.length) return {response: 'end'};
+            Memory.td = Memory.td ? Memory.td + 1 : 1;
 
-                if (Memory.td+1 >= this.doList.length) return 'end';
-                Memory.td = Memory.td ? Memory.td+1 : 1;
-            }
+            return {response: 'idle', time: Game.time + 5 + Math.round(Math.random() * 5)};
         }
     },
 
@@ -195,7 +190,7 @@ module.exports = {
 
             var creep = Game.creeps[Memory.creep];
 
-            if (!creep || !creep.room.storage || _.sum(creep.room.storage.store) >= creep.room.storage.storeCapacity) return 'end';
+            if (!creep || !creep.room.storage || _.sum(creep.room.storage.store) >= creep.room.storage.storeCapacity) return {response: 'end'};
 
             if (_.sum(creep.carry) == 0) return creep.suicide();
 
@@ -225,7 +220,7 @@ module.exports = {
 
             if (Memory.complete && !healer && !crusher) {
                 flag.remove();
-                return 'end';
+                return {response: 'end'};
             }
 
             if (healer) {
@@ -313,7 +308,7 @@ module.exports = {
 
                         if (!thingToStealFrom) {
                             flag.remove();
-                            return 'end';
+                            return {response: 'end'};
                         }
 
                         if (creep.pos.isNearTo(thingToStealFrom.pos)) creep.withdraw(thingToStealFrom, RESOURCE_ENERGY);
@@ -327,7 +322,7 @@ module.exports = {
                     else {
                         if (!room.storage) {
                             flag.remove();
-                            return 'end';
+                            return {response: 'end'};
                         }
 
                         if (creep.pos.isNearTo(room.storage.pos)) creep.transfer(room.storage, RESOURCE_ENERGY);
@@ -350,8 +345,8 @@ module.exports = {
             }
 
             if (flag.room && flag.room.controller.my) {
-                if (processExists('buildSpawn')) spawnNewProcess('buildSpawn');
-                return 'end';
+                if (!processExists('buildSpawn')) spawnNewProcess('buildSpawn');
+                return {response: 'end'};
             }
 
             var nearestRoom = Game.rooms[Memory.nr];
@@ -439,7 +434,7 @@ module.exports = {
                 if (!flag.room || flag.room.find(FIND_MY_SPAWNS) < 1) Memory.crp = module.exports.room.addToSQ('room:' + nearestRoom.name, 'buildSpawn');
                 else {
                     flag.remove();
-                    return 'end';
+                    return {response: 'end'};
                  }
             }
         },
@@ -459,7 +454,7 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room) return 'end';
+            if (!room) return {response: 'end'};
 
             if (!Memory.spawnQueue) Memory.spawnQueue = {};
 
@@ -468,32 +463,32 @@ module.exports = {
             if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
 
             if (Game.time % 3 == 0 && room.find(FIND_HOSTILE_CREEPS).length > 0 && room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())}).length > 0
-                && processExists('doTowers', Memory.rmN)) spawnNewProcess('doTowers', Memory.rmN);
+                && !processExists('doTowers', Memory.rmN)) spawnNewProcess('doTowers', Memory.rmN);
 
             if (Game.time % 11 == 0) {
                 if (room.controller.level > 7 && room.storage) {
-                    if (room.terminal && processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
+                    if (room.terminal && !processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
 
                     var mineral = room.find(FIND_MINERALS)[0];
                     if (mineral && ((mineral.mineralAmount > 1 || mineral.ticksToRegeneration < 200) && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'mine').length < 1)) spawnNewProcess('mine', Memory.rmN);
                 }
-                if (processExists('doHarvest', Memory.rmN)) spawnNewProcess('doHarvest', Memory.rmN);
-                if (processExists('takeCare', Memory.rmN)) spawnNewProcess('takeCare', Memory.rmN);
-                if (processExists('fillSpawn', Memory.rmN)) spawnNewProcess('fillSpawn', Memory.rmN);
-                if (processExists('fillExt', Memory.rmN)) spawnNewProcess('fillExt', Memory.rmN);
-                if (processExists('buildRoads', Memory.rmN)) spawnNewProcess('buildRoads', Memory.rmN);
-                if (processExists('praiseRC', Memory.rmN)) spawnNewProcess('praiseRC', Memory.rmN);
+                if (!processExists('doHarvest', Memory.rmN)) spawnNewProcess('doHarvest', Memory.rmN);
+                if (!processExists('takeCare', Memory.rmN)) spawnNewProcess('takeCare', Memory.rmN);
+                if (!processExists('fillSpawn', Memory.rmN)) spawnNewProcess('fillSpawn', Memory.rmN);
+                if (!processExists('fillExt', Memory.rmN)) spawnNewProcess('fillExt', Memory.rmN);
+                if (!processExists('buildRoads', Memory.rmN)) spawnNewProcess('buildRoads', Memory.rmN);
+                if (!processExists('praiseRC', Memory.rmN)) spawnNewProcess('praiseRC', Memory.rmN);
 
-                if (room.controller.level >= 4 && room.getStructures(STRUCTURE_LINK).length < 3 && global[room.name].distrSquareFlag && processExists('iRmHaul', Memory.rmN)) spawnNewProcess('iRmHaul', Memory.rmN);
+                if (room.controller.level >= 4 && room.getStructures(STRUCTURE_LINK).length < 3 && global[room.name].distrSquareFlag && !processExists('iRmHaul', Memory.rmN)) spawnNewProcess('iRmHaul', Memory.rmN);
 
-                if (room.controller.level >= 2 && global[room.name].distrSquareFlag && processExists('placeExtensions', Memory.rmN)) spawnNewProcess('placeExtensions', Memory.rmN);
-                if (room.controller.level >= 2 && !room.storage && !Game.flags[global[room.name].distrSquareFlag] && processExists('placeStorage', Memory.rmN)) spawnNewProcess('placeStorage', Memory.rmN);
-                if (room.controller.level >= 3 && global[room.name].distrSquareFlag && processExists('placeTowers', Memory.rmN)) spawnNewProcess('placeTowers', Memory.rmN);
+                if (room.controller.level >= 2 && global[room.name].distrSquareFlag && !processExists('placeExtensions', Memory.rmN)) spawnNewProcess('placeExtensions', Memory.rmN);
+                if (room.controller.level >= 2 && !room.storage && !Game.flags[global[room.name].distrSquareFlag] && !processExists('placeStorage', Memory.rmN)) spawnNewProcess('placeStorage', Memory.rmN);
+                if (room.controller.level >= 3 && global[room.name].distrSquareFlag && !processExists('placeTowers', Memory.rmN)) spawnNewProcess('placeTowers', Memory.rmN);
 
-                if (processExists('strgDistr', Memory.rmN)) spawnNewProcess('strgDistr', Memory.rmN);
-                if (room.controller.level >= 5 && processExists('doLinks', Memory.rmN)) spawnNewProcess('doLinks', Memory.rmN);
-                if (room.controller.level >= 8 && processExists('doLabs', Memory.rmN)) spawnNewProcess('doLabs', Memory.rmN);
-                if (room.controller.level >= 8 && room.getStructures(STRUCTURE_POWER_SPAWN).length > 0 && processExists('doPowerProc', Memory.rmN)) spawnNewProcess('doPowerProc', Memory.rmN);
+                if (!processExists('strgDistr', Memory.rmN)) spawnNewProcess('strgDistr', Memory.rmN);
+                if (room.controller.level >= 5 && !processExists('doLinks', Memory.rmN)) spawnNewProcess('doLinks', Memory.rmN);
+                if (room.controller.level >= 8 && !processExists('doLabs', Memory.rmN)) spawnNewProcess('doLabs', Memory.rmN);
+                if (room.controller.level >= 8 && room.getStructures(STRUCTURE_POWER_SPAWN).length > 0 && !processExists('doPowerProc', Memory.rmN)) spawnNewProcess('doPowerProc', Memory.rmN);
             }
 
             this.spawn(Memory_it);
@@ -552,12 +547,12 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room || room.find(FIND_HOSTILE_CREEPS).length < 1) return 'end';
+            if (!room || room.find(FIND_HOSTILE_CREEPS).length < 1) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
-            if (room.getStructures(STRUCTURE_TOWER).length < 1) return 'end';
+            if (room.getStructures(STRUCTURE_TOWER).length < 1) return {response: 'end'};
 
             var baddies = room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())});
-            if (baddies.length < 1) return 'end';
+            if (baddies.length < 1) return {response: 'end'};
 
             StructureTower.prototype.killIdiot = function (idiot) {
                 if (!idiot || this.energy == 0) return;
@@ -575,9 +570,9 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room) return 'end';
+            if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
-            if (room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0]) return 'end';
+            if (room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0]) return {response: 'end'};
 
             const freeRange = 2;
             var bestPos;
@@ -644,11 +639,8 @@ module.exports = {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
-            if (!Memory.nr || Game.time > Memory.nr) Memory.nr = Game.time + 10000 + Math.round(Math.random()*57);
-            else return;
-
             var room = Game.rooms[Memory.rmN];
-            if (!room) return 'end';
+            if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
 
             var spawnFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'fillSpawn'})[0];
@@ -663,6 +655,8 @@ module.exports = {
                 this.placeTower(room, new RoomPosition(Memory.toDoQ[Memory.toDo].split(',')[0], Memory.toDoQ[Memory.toDo].split(',')[1], room.name));
                 Memory.toDo = Memory.toDo+1 > Memory.toDoQ.length-1 ? 0 : Memory.toDo+1;
             }
+
+            return {response: 'idle', time: Game.time + 10000 + Math.round(Math.random()*57)};
         },
 
         placeTower: function (room, startPos) {
@@ -706,14 +700,8 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room) return 'end';
+            if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
-
-            if (!Memory.nr || Game.time > Memory.nr || (room.controller.level > 1 && room.controller.level < 4 && Game.time-Memory.nr > 200)) {
-                var time = room.controller.level > 1 && room.controller.level < 4 ? 101 : 10000;
-                Memory.nr = Game.time + time + Math.round(Math.random()*57);
-            }
-            else return;
 
             switch (Memory.toDo) {
                 case 1:
@@ -858,6 +846,8 @@ module.exports = {
                     }
                     Memory.toDo = 1;
             }
+
+            return room.controller.level > 1 && room.controller.level < 4 ? {response: 'idle', time: Game.time + 500 + Math.round(Math.random()*57)} : {response: 'idle', time: Game.time + 10000 + Math.round(Math.random()*57)};
         }
     },
 
@@ -865,11 +855,8 @@ module.exports = {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
-            if (!Memory.nr || Game.time > Memory.nr) Memory.nr = Game.time + 10000 + Math.round(Math.random()*57);
-            else return;
-
             var room = Game.rooms[Memory.rmN];
-            if (!room) return 'end';
+            if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
 
             var spawnFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'fillSpawn'})[0];
@@ -921,6 +908,8 @@ module.exports = {
                         }
                     });
             }
+
+            return {response: 'idle', time: Game.time + 10000 + Math.round(Math.random()*57)};
         },
         
         getCostMatrix: function (roomName, storageFlag, spawnFlag) {
@@ -961,7 +950,7 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room) return 'end';
+            if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
 
             if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
@@ -1009,7 +998,7 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room || !room.terminal || room.controller.level < 8) return 'end';
+            if (!room || !room.terminal || room.controller.level < 8) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
             if (!Memory.mineral) Memory.mineral = room.find(FIND_MINERALS)[0] ? room.find(FIND_MINERALS)[0].mineralType : undefined;
             if (Memory.credits === undefined) Memory.credits = 500;
@@ -1177,7 +1166,7 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room || !room.storage || !room.terminal) return 'end';
+            if (!room || !room.storage || !room.terminal) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
 
             var flag = Game.flags[Memory.flag];
@@ -1306,7 +1295,7 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room || !room.storage || !room.terminal || room.getStructures(STRUCTURE_POWER_SPAWN).length < 1) return 'end';
+            if (!room || !room.storage || !room.terminal || room.getStructures(STRUCTURE_POWER_SPAWN).length < 1) return {response: 'end'};
 
             var powerSpawn = room.getStructures(STRUCTURE_POWER_SPAWN)[0];
 
@@ -1320,7 +1309,7 @@ module.exports = {
 
             var creeps = Memory.crps ? Memory.crps : undefined;
             var room = Game.rooms[Memory.rmN];
-            if (!room) return 'end';
+            if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
             if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
             if (!creeps) return Memory.crps = [];
@@ -1453,7 +1442,7 @@ module.exports = {
 
             var creep = Memory.creep ? getCreep(Memory.creep, 'fillSpawn') : undefined;
             var room = Game.rooms[Memory.rmN];
-            if (!room) return 'end';
+            if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
 
             if (!global[room.name].fillSpawnFlag) global[room.name].fillSpawnFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'fillSpawn'})[0];
@@ -1514,7 +1503,7 @@ module.exports = {
 
             var creep = Memory.creep ? getCreep(Memory.creep, 'fillExt') : undefined;
             var room = Game.rooms[Memory.rmN];
-            if (!room) return 'end';
+            if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
 
             if (creep) {
@@ -1554,7 +1543,7 @@ module.exports = {
 
             var creeps = Memory.crps ? Memory.crps : undefined;
             var room = Game.rooms[Memory.rmN];
-            if (!room) return 'end';
+            if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
             if (!creeps) return Memory.crps = [];
 
@@ -1851,10 +1840,10 @@ module.exports = {
 
          var creeps = Memory.crps ? Memory.crps : undefined;
          var room = Game.rooms[Memory.rmN];
-         if (!room || !room.storage || room.controller.level < 6) return 'end';
+         if (!room || !room.storage || room.controller.level < 6) return {response: 'end'};
 
          var mineral = room.find(FIND_MINERALS)[0];
-         if (!mineral || (mineral.mineralAmount < 1 && mineral.ticksToRegeneration > 200 && (!creeps || creeps.length < 1))) return 'end';
+         if (!mineral || (mineral.mineralAmount < 1 && mineral.ticksToRegeneration > 200 && (!creeps || creeps.length < 1))) return {response: 'end'};
 
          if (!global[room.name]) global[room.name] = {};
          if (!creeps) return Memory.crps = [];
@@ -1906,7 +1895,7 @@ module.exports = {
 
             var creeps = Memory.crps ? Memory.crps : undefined;
             var room = Game.rooms[Memory.rmN];
-            if (!room) return 'end';
+            if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
             if (!creeps) return Memory.crps = [];
             if (!room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0]) return;
@@ -1943,7 +1932,7 @@ module.exports = {
             if (Game.time % 3 == 0) {
                 var numberOfCreepsNeeded = this.getNumberOfCarriers(room);
                 if (creeps.length < numberOfCreepsNeeded) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'iRmHaul'));
-                else if (creeps.length == 0 && numberOfCreepsNeeded == 0) return 'end';
+                else if (creeps.length == 0 && numberOfCreepsNeeded == 0) return {response: 'end'};
             }
         },
 
@@ -1970,7 +1959,7 @@ module.exports = {
 
             var creeps = Memory.crps ? Memory.crps : undefined;
             var room = Game.rooms[Memory.rmN];
-            if (!room) return 'end';
+            if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
             if (!creeps) return Memory.crps = [];
 
@@ -2074,7 +2063,7 @@ module.exports = {
 
             var creep = Memory.creep ? getCreep(Memory.creep, 'takeCare') : undefined;
             var room = Game.rooms[Memory.rmN];
-            if (!room) return 'end';
+            if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
 
             if (creep) {

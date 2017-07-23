@@ -7,6 +7,24 @@ module.exports = {
     run:  function() {
         if (!Memory.init) return Processes.init.run();
 
+        //idle processes
+        for (let idle_it in Memory.iP) {
+            if (!Memory.iP[idle_it] || !Memory.iP[idle_it][0] || !Memory.iP[idle_it][1]) {
+                delete Memory.iP[idle_it];
+                console.logKernel('REMOVE PROCESS ' + idle_it + ' FROM IDLE PROCESSES');
+                continue;
+            }
+
+            if (Game.time >= Memory.iP[idle_it][0]) {
+                console.logKernel('ADDED PROCESS ' + idle_it + ' BACK TO NORMAL PROCESSES QUEUE');
+
+                Memory.p[idle_it] = _.cloneDeep(Memory.iP[idle_it][1]);
+                delete Memory.iP[idle_it];
+            }
+        }
+        //idle processes
+
+        //normal processes
         var processes = Memory.p;
 
         _.sortBy(processes, (po) => {
@@ -39,13 +57,31 @@ module.exports = {
                         var rsl = Processes[process.pN.split(':')[0]].run(process_it);
                         global.processesRun++;
                         global.processesRunName.push(process.pN);
+
+                        if (rsl) {
+                            switch (rsl.response) {
+                                case 'end':
+                                    delete Memory.p[process_it];
+                                    break;
+                                case 'idle':
+                                    if (rsl.time) {
+                                        Memory.iP[process_it] = [
+                                            rsl.time,
+                                            _.cloneDeep(Memory.p[process_it])
+                                        ];
+
+                                        console.logKernel('ADDED PROCESS ' + process_it + ' TO IDLE PROCESSES');
+
+                                        delete Memory.p[process_it];
+                                    }
+                                    break;
+                            }
+                        }
                     }
                     catch (err) {
                         console.processError(err);
                         if (err.stack) console.processError(err.stack);
                     }
-
-                    if (rsl == 'end') delete Memory.p[process_it];
 
                     process.prio = getPrio(process.pN);
                 }
@@ -57,5 +93,6 @@ module.exports = {
 
             global.processCost[process.pN] = global.processCost[process.pN] ? global.processCost[process.pN]+(Game.cpu.getUsed()-startCpu) : Game.cpu.getUsed()-startCpu;
         }
+        //normal processes
     }
 };

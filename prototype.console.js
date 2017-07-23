@@ -80,6 +80,11 @@ module.exports = () => {
         console.log(timeString + roomLink(room) + spawnString + creepName);
     };
 
+    console.logKernel = function (message) {
+        console.log(timeString + kernelString + message);
+        Game.notify(timeString + kernelString + message);
+    };
+
     console.notify = function (message) {
         console.log(timeString + message);
         Game.notify(timeString + message);
