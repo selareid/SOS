@@ -2,6 +2,7 @@ const Processes = require('Processes');
 
 const lowBucketAmount = 9000;
 const saveBucketLessCPU = 2.5;
+const saveBucketAllowance = 2;
 
 module.exports = {
     run:  function() {
@@ -42,7 +43,8 @@ module.exports = {
             // Object.setPrototypeOf(process, Process);
 
             if (process.pN != 'deadCreepHandler' && process.pN != 'doTowers' && process.pN != 'claim'
-                && ((Game.cpu.bucket < lowBucketAmount && Game.cpu.limit - Game.cpu.getUsed() < saveBucketLessCPU) || Game.cpu.getUsed() > Game.cpu.limit * 2 || Game.cpu.bucket < 2000)) {
+                && ((Game.cpu.bucket < lowBucketAmount && Game.cpu.limit - Game.cpu.getUsed() < saveBucketLessCPU) || Game.cpu.getUsed() > Game.cpu.limit * 2 || Game.cpu.bucket < 2000)
+                && (!process.avg || Game.cpu.limit - Game.cpu.getUsed() < saveBucketAllowance || Game.cpu.limit - process.avg - Game.cpu.getUsed() < saveBucketAllowance)) {
                 //skip process
                 process.prio++;
                 global.processesSkipped.push(process.pN);
@@ -57,7 +59,7 @@ module.exports = {
                         let rsl = Processes[process.pN.split(':')[0]].run(process_it);
 
                         let used = Game.cpu.getUsed()-startCpu;
-                        process.avg = process.avg ?  ((process.avg*process.times)+(used.toFixed(3)))/(process.times+1) : used;
+                        process.avg = process.avg ?  ((process.avg*process.times)+used)/(process.times+1) : used;
                         process.times = process.times ? process.times+1 : 1;
 
                         global.processCost[process.pN] = global.processCost[process.pN] ? global.processCost[process.pN]+used : Game.cpu.getUsed()-startCpu;
