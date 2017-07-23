@@ -36,6 +36,10 @@ module.exports = () => {
         }
     };
 
+    processExists = function(processType, roomName) {
+        return roomName ? _.filter(global.Mem.p, (p) => p.pN == processType).length < 1 : _.filter(global.Mem.p, (p) => p.rmN == roomName && p.pN == processType).length < 1;
+    };
+
     spawnNewProcess = function(processType, roomName, oNCreation) {
         var tag = processType + ':' + Game.time % 100 + Math.round(Math.random() * 100);
 

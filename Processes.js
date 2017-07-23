@@ -106,17 +106,17 @@ module.exports = {
                 (function () {
                     var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'claim')[0];
 
-                    if (flag && (!flag.room || !flag.room.controller.my) && _.filter(global.Mem.p, (p) => p.pN == 'claim').length < 1) spawnNewProcess('claim');
+                    if (flag && (!flag.room || !flag.room.controller.my) && processExists('claim')) spawnNewProcess('claim');
                 }());
 
                 (function () {
                     var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'steal' && Game.rooms[f.name.split(' ')[1]])[0];
 
-                    if (flag && _.filter(global.Mem.p, (p) => p.pN == 'stealEnergy').length < 1) spawnNewProcess('stealEnergy');
+                    if (flag && processExists('stealEnergy')) spawnNewProcess('stealEnergy');
                 }());
             }
 
-            if (Game.time % 1001 == 0 && _.filter(global.Mem.p, (p) => p.pN == 'checkRamparts').length < 1) spawnNewProcess('checkRamparts');
+            if (Game.time % 1001 == 0 && processExists('checkRamparts')) spawnNewProcess('checkRamparts');
         }
     },
 
@@ -350,7 +350,7 @@ module.exports = {
             }
 
             if (flag.room && flag.room.controller.my) {
-                if (_.filter(global.Mem.p, (p) => p.pN == 'buildSpawn').length < 1) spawnNewProcess('buildSpawn');
+                if (processExists('buildSpawn')) spawnNewProcess('buildSpawn');
                 return 'end';
             }
 
@@ -468,32 +468,32 @@ module.exports = {
             if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
 
             if (Game.time % 3 == 0 && room.find(FIND_HOSTILE_CREEPS).length > 0 && room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())}).length > 0
-                && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doTowers').length < 1) spawnNewProcess('doTowers', Memory.rmN);
+                && processExists('doTowers', Memory.rmN)) spawnNewProcess('doTowers', Memory.rmN);
 
             if (Game.time % 11 == 0) {
                 if (room.controller.level > 7 && room.storage) {
-                    if (room.terminal && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doTerminal').length < 1) spawnNewProcess('doTerminal', Memory.rmN);
+                    if (room.terminal && processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
 
                     var mineral = room.find(FIND_MINERALS)[0];
                     if (mineral && ((mineral.mineralAmount > 1 || mineral.ticksToRegeneration < 200) && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'mine').length < 1)) spawnNewProcess('mine', Memory.rmN);
                 }
-                if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doHarvest').length < 1) spawnNewProcess('doHarvest', Memory.rmN);
-                if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'takeCare').length < 1) spawnNewProcess('takeCare', Memory.rmN);
-                if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'fillSpawn').length < 1) spawnNewProcess('fillSpawn', Memory.rmN);
-                if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'fillExt').length < 1) spawnNewProcess('fillExt', Memory.rmN);
-                if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'buildRoads').length < 1) spawnNewProcess('buildRoads', Memory.rmN);
-                    if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'praiseRC').length < 1) spawnNewProcess('praiseRC', Memory.rmN);
+                if (processExists('doHarvest', Memory.rmN)) spawnNewProcess('doHarvest', Memory.rmN);
+                if (processExists('takeCare', Memory.rmN)) spawnNewProcess('takeCare', Memory.rmN);
+                if (processExists('fillSpawn', Memory.rmN)) spawnNewProcess('fillSpawn', Memory.rmN);
+                if (processExists('fillExt', Memory.rmN)) spawnNewProcess('fillExt', Memory.rmN);
+                if (processExists('buildRoads', Memory.rmN)) spawnNewProcess('buildRoads', Memory.rmN);
+                if (processExists('praiseRC', Memory.rmN)) spawnNewProcess('praiseRC', Memory.rmN);
 
-                if (room.controller.level >= 4 && room.getStructures(STRUCTURE_LINK).length < 3 && global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'iRmHaul').length < 1) spawnNewProcess('iRmHaul', Memory.rmN);
+                if (room.controller.level >= 4 && room.getStructures(STRUCTURE_LINK).length < 3 && global[room.name].distrSquareFlag && processExists('iRmHaul', Memory.rmN)) spawnNewProcess('iRmHaul', Memory.rmN);
 
-                if (room.controller.level >= 2 && global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'placeExtensions').length < 1) spawnNewProcess('placeExtensions', Memory.rmN);
-                if (room.controller.level >= 2 && !room.storage && !Game.flags[global[room.name].distrSquareFlag] && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'placeStorage').length < 1) spawnNewProcess('placeStorage', Memory.rmN);
-                if (room.controller.level >= 3 && global[room.name].distrSquareFlag && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'placeTowers').length < 1) spawnNewProcess('placeTowers', Memory.rmN);
+                if (room.controller.level >= 2 && global[room.name].distrSquareFlag && processExists('placeExtensions', Memory.rmN)) spawnNewProcess('placeExtensions', Memory.rmN);
+                if (room.controller.level >= 2 && !room.storage && !Game.flags[global[room.name].distrSquareFlag] && processExists('placeStorage', Memory.rmN)) spawnNewProcess('placeStorage', Memory.rmN);
+                if (room.controller.level >= 3 && global[room.name].distrSquareFlag && processExists('placeTowers', Memory.rmN)) spawnNewProcess('placeTowers', Memory.rmN);
 
-                if (_.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'strgDistr').length < 1) spawnNewProcess('strgDistr', Memory.rmN);
-                if (room.controller.level >= 5 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doLinks').length < 1) spawnNewProcess('doLinks', Memory.rmN);
-                if (room.controller.level >= 8 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doLabs').length < 1) spawnNewProcess('doLabs', Memory.rmN);
-                if (room.controller.level >= 8 && room.getStructures(STRUCTURE_POWER_SPAWN).length > 0 && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'doPowerProc').length < 1) spawnNewProcess('doPowerProc', Memory.rmN);
+                if (processExists('strgDistr', Memory.rmN)) spawnNewProcess('strgDistr', Memory.rmN);
+                if (room.controller.level >= 5 && processExists('doLinks', Memory.rmN)) spawnNewProcess('doLinks', Memory.rmN);
+                if (room.controller.level >= 8 && processExists('doLabs', Memory.rmN)) spawnNewProcess('doLabs', Memory.rmN);
+                if (room.controller.level >= 8 && room.getStructures(STRUCTURE_POWER_SPAWN).length > 0 && processExists('doPowerProc', Memory.rmN)) spawnNewProcess('doPowerProc', Memory.rmN);
             }
 
             this.spawn(Memory_it);
