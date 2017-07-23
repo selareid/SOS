@@ -652,11 +652,11 @@ module.exports = {
                 .concat(_.map(room.find(FIND_SOURCES), (s) => {return [s.pos.x, s.pos.y]}));
 
             if (room.getStructures(STRUCTURE_TOWER).length < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level]) {
-                this.placeTower(room, new RoomPosition(Memory.toDoQ[Memory.toDo].split(',')[0], Memory.toDoQ[Memory.toDo].split(',')[1], room.name));
+                this.placeTower(room, new RoomPosition(Memory.toDoQ[Memory.toDo][0], Memory.toDoQ[Memory.toDo][1], room.name));
                 Memory.toDo = Memory.toDo+1 > Memory.toDoQ.length-1 ? 0 : Memory.toDo+1;
             }
 
-            return {response: 'idle', time: Game.time + 10000 + Math.round(Math.random()*57)};
+            return {response: 'idle', time: Game.time + 1000 + Math.round(Math.random()*1000)};
         },
 
         placeTower: function (room, startPos) {
