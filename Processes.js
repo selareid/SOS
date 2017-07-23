@@ -477,7 +477,7 @@ module.exports = {
                 if (!processExists('fillSpawn', Memory.rmN)) spawnNewProcess('fillSpawn', Memory.rmN);
                 if (!processExists('fillExt', Memory.rmN)) spawnNewProcess('fillExt', Memory.rmN);
                 if (!processExists('buildRoads', Memory.rmN)) spawnNewProcess('buildRoads', Memory.rmN);
-                if (!processExists('praiseRC', Memory.rmN)) spawnNewProcess('praiseRC', Memory.rmN);
+                if ((room.controller.level < 8 || room.controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[room.controller.level]*0.5) && !processExists('praiseRC', Memory.rmN)) spawnNewProcess('praiseRC', Memory.rmN);
 
                 if (room.controller.level >= 4 && room.getStructures(STRUCTURE_LINK).length < 3 && global[room.name].distrSquareFlag && !processExists('iRmHaul', Memory.rmN)) spawnNewProcess('iRmHaul', Memory.rmN);
 
@@ -2000,6 +2000,7 @@ module.exports = {
 
             //get more creeps
             if (creeps.length < this.getNumberOfUpgraders(room)) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'praiseRC'));
+            else if (creeps.length < 1 && this.getNumberOfUpgraders(room) < 1) return {response: 'end'}
         },
 
         getNumberOfUpgraders: function (room) {
@@ -2083,6 +2084,10 @@ module.exports = {
                     if (structureToRepair) {
                         if (creep.pos.getRangeTo(structureToRepair) > 3) creep.moveWithPath(structureToRepair, {range: 3, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                         else creep.repair(structureToRepair);
+                    }
+                    else if (room.controller.level < 8 || room.controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[room.controller.level]*0.5) {
+                        if (creep.pos.getRangeTo(room.controller) > 3) creep.moveWithPath(room.controller, {range: 3, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                        else creep.upgradeController(room.controller);
                     }
                     else {
                         var structureToBuild = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
