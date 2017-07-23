@@ -39,8 +39,6 @@ module.exports = {
         for (let process_it in processes) {
             let process = processes[process_it];
 
-            let startCpu = Game.cpu.getUsed();
-
             // Object.setPrototypeOf(process, Process);
 
             if (process.pN != 'deadCreepHandler' && process.pN != 'doTowers' && process.pN != 'claim'
@@ -54,7 +52,16 @@ module.exports = {
 
                 if (Processes[process.pN.split(':')[0]]) {
                     try {
-                        var rsl = Processes[process.pN.split(':')[0]].run(process_it);
+                        let startCpu = Game.cpu.getUsed();
+
+                        let rsl = Processes[process.pN.split(':')[0]].run(process_it);
+
+                        let used = Game.cpu.getUsed()-startCpu;
+                        process.avg = process.avg ?  ((process.avg*process.times)+(used.toFixed(3)))/(process.times+1) : used;
+                        process.times = process.times ? process.times+1 : 1;
+
+                        global.processCost[process.pN] = global.processCost[process.pN] ? global.processCost[process.pN]+used : Game.cpu.getUsed()-startCpu;
+
                         global.processesRun++;
                         global.processesRunName.push(process.pN);
 
@@ -90,8 +97,6 @@ module.exports = {
                     delete Memory.p[process_it];
                 }
             }
-
-            global.processCost[process.pN] = global.processCost[process.pN] ? global.processCost[process.pN]+(Game.cpu.getUsed()-startCpu) : Game.cpu.getUsed()-startCpu;
         }
         //normal processes
     }
