@@ -1299,6 +1299,8 @@ module.exports = {
             var powerSpawn = room.getStructures(STRUCTURE_POWER_SPAWN)[0];
 
             if (powerSpawn && powerSpawn.energy >= 50 && powerSpawn.power >= 1) powerSpawn.processPower();
+
+            return {response: 'idle', time: Game.time + 3 + Math.round(Math.random() * 2)};
         }
     },
 
