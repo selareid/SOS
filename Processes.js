@@ -1674,6 +1674,7 @@ module.exports = {
                 //if carry is full
                 var storage = room.storage;
                 creep.transfer(storage, RESOURCE_ENERGY);
+                creep.memory.w = false;
             }
             else {
                 //if carry is empty
