@@ -1092,7 +1092,7 @@ module.exports = {
                     break;
                 case 4:
                     Memory.n++;
-                    if (Memory.credits > 0 && (!room.terminal.store[RESOURCE_POWER] || room.terminal.store[RESOURCE_POWER] < 350)
+                    if (Memory.credits > 0 && (!room.terminal.store[RESOURCE_POWER] || room.terminal.store[RESOURCE_POWER] < 500)
                         && _.sum(room.terminal.store) < room.terminal.storeCapacity) {
                         var bestBuy = _.min(Game.market.getAllOrders({
                             resourceType: RESOURCE_POWER,
