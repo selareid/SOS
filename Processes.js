@@ -1172,7 +1172,7 @@ module.exports = {
             var labs = Memory.labs ? _.map(Memory.labs, (id) => {return Game.getObjectById(id)}) : undefined;
 
             if (!labs || !labs[0] || !labs[1] || !labs[2]) {
-                var found = _.map(_.sortBy(flag.pos.findInRange(FIND_MY_STRUCTURES, 2), (s) => {return s.structureType == STRUCTURE_LAB ? s.pos.getRangeTo(flag.pos) : undefined}),
+                var found = _.map(_.sortBy(flag.pos.findInRange(room.getStructures(STRUCTURE_LAB), 2), (s) => {return s.pos.getRangeTo(flag.pos)}),
                     (l) => {return l.id});
                 Memory.labs = found;
 
@@ -1379,8 +1379,8 @@ module.exports = {
             }
             else {
                 var container = Game.getObjectById(srcId)
-                    ? Game.getObjectById(srcId).pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.energy < s.storeCapacity})[0]
-                    : creep.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.energy < s.storeCapacity})[0];
+                    ? Game.getObjectById(srcId).pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 1, {filter: (s) => s.store.energy < s.storeCapacity})[0]
+                    : creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 1, {filter: (s) => s.store.energy < s.storeCapacity})[0];
 
                 if (container) {
                     if (creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -1398,7 +1398,7 @@ module.exports = {
                 }
                 else {
                     var src = Game.getObjectById(srcId);
-                    if (_.size(Game.constructionSites) < 100 && src && creep.pos.isNearTo(src) && creep.pos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_CONTAINER}).length < 1
+                    if (_.size(Game.constructionSites) < 100 && src && creep.pos.isNearTo(src) && creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 1).length < 1
                         && creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1).length < 1) room.createConstructionSite(creep.pos.x, creep.pos.y, STRUCTURE_CONTAINER)
                 }
             }
@@ -1498,7 +1498,7 @@ module.exports = {
 
                 for (let pos_it of this.spawns) {
                     let pos = new RoomPosition(flag.pos.x + pos_it.x, flag.pos.y + pos_it.y, room.name);
-                    if (!pos.findInRange(FIND_MY_STRUCTURES, 0, {filter: (s) => s.structureType == STRUCTURE_RAMPART})[0] && !pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 0)[0]) {
+                    if (!pos.findInRange(room.getStructures(STRUCTURE_RAMPART), 0)[0] && !pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 0)[0]) {
                         room.createConstructionSite(pos.x, pos.y, STRUCTURE_RAMPART);
                     }
                 }
@@ -1650,7 +1650,7 @@ module.exports = {
                     && CONTROLLER_STRUCTURES[struc.s][room.controller.level] > room.getStructures(struc.s).length) {
                     let strucPos = new RoomPosition(flag.pos.x + struc.x, flag.pos.y + struc.y, room.name);
 
-                    if (!strucPos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == struc.s})[0]) room.createConstructionSite(strucPos.x, strucPos.y, struc.s);
+                    if (!strucPos.findInRange(room.getStructures(struc.s), 1)[0]) room.createConstructionSite(strucPos.x, strucPos.y, struc.s);
                 }
             }
 
@@ -1662,7 +1662,7 @@ module.exports = {
                 if (_.size(Game.constructionSites) < 100) {
                     let strucPos = new RoomPosition(flag.pos.x + struc.x, flag.pos.y + struc.y, room.name);
 
-                    if (!strucPos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_RAMPART})[0]) room.createConstructionSite(strucPos.x, strucPos.y, STRUCTURE_RAMPART);
+                    if (!strucPos.findInRange(room.getStructures(STRUCTURE_RAMPART), 1)[0]) room.createConstructionSite(strucPos.x, strucPos.y, STRUCTURE_RAMPART);
                 }
             }
 
