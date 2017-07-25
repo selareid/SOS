@@ -2155,11 +2155,7 @@ module.exports = {
             var structure = Memory.str ? Game.getObjectById(Memory.str) : undefined;
 
             if (!structure || structure.hits >= structure.hitsMax || (structure.structureType == STRUCTURE_RAMPART && structure.hits > (structure.hitsMax * 0.001))) {
-                structure = room.find(FIND_STRUCTURES, {
-                    filter: (s) => (s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART
-                    && s.hits < (s.hitsMax * 0.5) || (s.structureType == STRUCTURE_RAMPART && s.hits < (s.hitsMax * 0.001)))
-                    && (s.structureType != STRUCTURE_CONTAINER || !s.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => s.structureType == STRUCTURE_LINK})[0])
-                })[0];
+                structure = room.memory.repairQueue && room.memory.repairQueue.length > 0 ? room.memory.repairQueue[0] : undefined;
             }
 
             if (structure) Memory.str = structure.id;
