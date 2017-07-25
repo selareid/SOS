@@ -162,7 +162,9 @@ module.exports = {
                 if (!structure.room) return;
                 if (!structure.room.memory.repairQueue) structure.room.memory.repairQueue = [];
 
-                if (structure.hits < structure.hitsMax && !structure.room.memory.repairQueue.includes(structure.id)) structure.room.memory.repairQueue.push(structure.id);
+                if (structure.structureType != STRUCTURE_WALL
+                    && ((structure.structureType != STRUCTURE_RAMPART && structure.hits < structure.hitsMax) || (structure.structureType != STRUCTURE_RAMPART && structure.hits < structure.hitsMax*0.001))
+                    && !structure.room.memory.repairQueue.includes(structure.id)) structure.room.memory.repairQueue.push(structure.id);
             });
 
             return {response: 'idle', time: Game.time + 975 + Math.round(Math.random()*100)};
