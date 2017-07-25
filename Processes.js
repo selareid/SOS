@@ -2156,7 +2156,7 @@ module.exports = {
             var structure = Memory.str ? Game.getObjectById(Memory.str) : undefined;
 
             if (!structure || structure.hits >= structure.hitsMax || (structure.structureType == STRUCTURE_RAMPART && structure.hits > (structure.hitsMax * 0.001))) {
-                structure = room.memory.repairQueue && room.memory.repairQueue.length > 0 ? room.memory.repairQueue[0] : undefined;
+                structure = room.memory.repairQueue && room.memory.repairQueue.length > 0 ? Game.getObjectById(room.memory.repairQueue[0]) : undefined;
             }
 
             if (structure) Memory.str = structure.id;
