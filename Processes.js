@@ -1445,6 +1445,7 @@ module.exports = {
 
             if (!flag) return this.placeFlag(room);
             if (Game.time % 17280 == 0) this.placeSpawn(room);
+            if (Game.time % 17280 == 0) this.placeRamparts(room);
 
             if (creep) {
                 creep.talk('fillSpawn');
@@ -1486,6 +1487,19 @@ module.exports = {
 
                         cnt++;
                         if (cnt >= CONTROLLER_STRUCTURES.spawn[room.controller.level]) break;
+                    }
+                }
+            }
+        },
+
+        placeRamparts: function (room) {
+            if (_.size(Game.constructionSites) < 100) {
+                var flag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'fillSpawn'})[0];
+
+                for (let pos_it of this.spawns) {
+                    let pos = new RoomPosition(flag.pos.x + pos_it.x, flag.pos.y + pos_it.y, room.name);
+                    if (!pos.findInRange(FIND_MY_STRUCTURES, 0, {filter: (s) => s.structureType == STRUCTURE_RAMPART})[0] && !pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 0)[0]) {
+                        room.createConstructionSite(pos.x, pos.y, STRUCTURE_RAMPART);
                     }
                 }
             }
@@ -1641,6 +1655,18 @@ module.exports = {
 
             _.filter(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_ROAD}, (s) => s.destroy());
         },
+
+        placeRamparts: function (room, flag) {
+            for (let struc of this.structs) {
+                if (_.size(Game.constructionSites) < 100) {
+                    let strucPos = new RoomPosition(flag.pos.x + struc.x, flag.pos.y + struc.y, room.name);
+
+                    if (!strucPos.findInRange(FIND_STRUCTURES, 1, {filter: (s) => s.structureType == STRUCTURE_RAMPART})[0]) room.createConstructionSite(strucPos.x, strucPos.y, STRUCTURE_RAMPART);
+                }
+            }
+
+            _.filter(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_ROAD}, (s) => s.destroy());
+        }
 
         pickupInRange: function (Memory, room, creep) {
             if (creep.memory.w == true) {
