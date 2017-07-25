@@ -72,6 +72,8 @@ module.exports = {
             spawnNewProcess('checkRooms');
             spawnNewProcess('checkCreeps');
             spawnNewProcess('checkGlobalProcesses');
+            spawnNewProcess('checkStructRepair');
+            spawnNewProcess('checkRamparts');
         }
     },
 
@@ -100,22 +102,19 @@ module.exports = {
     checkGlobalProcesses: {
         run: function () {
 
-            if (!Memory.nc || Game.time > Memory.nc) {
-                Memory.nc = Game.time + 100 + Math.round(Math.random() * 100);
-                (function () {
-                    var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'claim')[0];
+            (function () {
+                var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'claim')[0];
 
-                    if (flag && (!flag.room || !flag.room.controller.my) && !processExists('claim')) spawnNewProcess('claim');
-                }());
+                if (flag && (!flag.room || !flag.room.controller.my) && !processExists('claim')) spawnNewProcess('claim');
+            }());
 
-                (function () {
-                    var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'steal' && Game.rooms[f.name.split(' ')[1]])[0];
+            (function () {
+                var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'steal' && Game.rooms[f.name.split(' ')[1]])[0];
 
-                    if (flag && !processExists('stealEnergy')) spawnNewProcess('stealEnergy');
-                }());
-            }
+                if (flag && !processExists('stealEnergy')) spawnNewProcess('stealEnergy');
+            }());
 
-            if (Game.time % 1001 == 0 && !processExists('checkRamparts')) spawnNewProcess('checkRamparts');
+            return {response: 'idle', time: Game.time + 100 + Math.round(Math.random() * 100)};
         }
     },
 
@@ -154,6 +153,19 @@ module.exports = {
             });
 
             return {response: 'idle', time: Game.time + 5 + Math.round(Math.random() * 5)};
+        }
+    },
+
+    checkStructRepair: {
+        run: function () {
+            _.forEach(Game.structures, (structure) => {
+                if (!structure.room) return;
+                if (!structure.room.memory.repairQueue) structure.room.memory.repairQueue = [];
+
+                if (structure.hits < structure.hitsMax && !structure.room.memory.repairQueue.includes(structure.id)) structure.room.memory.repairQueue.push(structure.id);
+            });
+
+            return {response: 'idle', time: Game.time + 975 + Math.round(Math.random()*100)};
         }
     },
 
