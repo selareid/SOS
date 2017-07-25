@@ -1569,6 +1569,7 @@ module.exports = {
                 else return;
             }
             if (Game.time % 120960 == 0) this.placeStrucs(room, flag);
+            if (Game.time % 120960 == 0) this.placeRamparts(room, flag);
 
             if (creeps.length > 0) {
                 //creep loop
@@ -1666,7 +1667,7 @@ module.exports = {
             }
 
             _.filter(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_ROAD}, (s) => s.destroy());
-        }
+        },
 
         pickupInRange: function (Memory, room, creep) {
             if (creep.memory.w == true) {
