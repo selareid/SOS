@@ -2163,6 +2163,7 @@ module.exports = {
 
             if (!structure || structure.hits >= structure.hitsMax || (structure.structureType == STRUCTURE_RAMPART && structure.hits > (structure.hitsMax * 0.001))) {
                 structure = room.memory.repairQueue && room.memory.repairQueue.length > 0 ? room.memory.repairQueue[0] : undefined;
+                room.memory.repairQueue.splice(0, 1);
             }
 
             if (structure) Memory.str = structure.id;
