@@ -30,7 +30,6 @@ module.exports = () => {
             case 'doPowerProc': return -10;
             case 'placeTowers': return -10;
             case 'placeExtensions': return -10;
-            case 'checkRamparts': return -10;
             case 'buildRoads': return -10;
             default: return 0;
         }
