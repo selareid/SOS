@@ -186,7 +186,10 @@ module.exports = {
                 if (_.filter(s.pos.lookFor(LOOK_STRUCTURES), (r) => r.structureType == STRUCTURE_RAMPART).length < 1) s.room.createConstructionSite(s.pos, STRUCTURE_RAMPART);
             });
 
-            if (Memory.td + 1 >= this.doList.length) return {response: 'idle', time: Game.time + 1001 + Math.round(Math.random() * 200)};
+            if (Memory.td + 1 >= this.doList.length) {
+                Memory.td = 0;
+                return {response: 'idle', time: Game.time + 1001 + Math.round(Math.random() * 200)};
+            }
             Memory.td = Memory.td ? Memory.td + 1 : 1;
 
             return {response: 'idle', time: Game.time + 5 + Math.round(Math.random() * 5)};
