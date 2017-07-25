@@ -162,9 +162,9 @@ module.exports = {
                 if (!structure.room) return;
                 if (!structure.room.memory.repairQueue) structure.room.memory.repairQueue = [];
 
-                if ((s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART && s.hits < (s.hitsMax * 0.5)
-                    || (s.structureType == STRUCTURE_RAMPART && s.hits < (s.hitsMax * 0.001)))
-                    && (s.structureType != STRUCTURE_CONTAINER || !s.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => s.structureType == STRUCTURE_LINK}))
+                if ((structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_RAMPART && structure.hits < (structure.hitsMax * 0.5)
+                    || (structure.structureType == STRUCTURE_RAMPART && structure.hits < (structure.hitsMax * 0.001)))
+                    && (structure.structureType != STRUCTURE_CONTAINER || !structure.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => structure.structureType == STRUCTURE_LINK}))
                     && !structure.room.memory.repairQueue.includes(structure.id)) structure.room.memory.repairQueue.push(structure.id);
             });
 
