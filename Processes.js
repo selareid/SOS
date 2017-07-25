@@ -999,7 +999,7 @@ module.exports = {
 
             var currentStore = _.sum(room.terminal.store);
             if (Memory.expectedStore != currentStore) {
-                Memory.credits += Memory.creditChange;
+                Memory.credits += Memory.creditChange*0.9;
             }
 
             Memory.creditChange = 0;
