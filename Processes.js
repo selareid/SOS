@@ -49,7 +49,7 @@ function getBodyChart(room) {
                 var totalTime = Number.POSITIVE_INFINITY;
                 var time = room.findPath(room.find(FIND_SOURCES)[0].pos, room.find(FIND_SOURCES)[1].pos).length;
 
-                for (; Math.abs(300 - totalTime) > 30; parts++) {
+                for (; Math.floor(totalTime) > 300; parts++) {
                     let mine = 3000 / (parts * 2);
 
                     totalTime = Math.floor((mine * 2) + (time * 2));
