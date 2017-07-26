@@ -1351,10 +1351,12 @@ module.exports = {
                         if (room.controller.level >= 7) {
                             var source = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
 
-                            if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it, source.id);
+                            if (source) {
+                                if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it, source.id);
 
-                            if (creep.pos.isNearTo(source)) creep.harvest(source);
-                            else creep.moveWithPath(source, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                                if (creep.pos.isNearTo(source)) creep.harvest(source);
+                                else creep.moveWithPath(source, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                            }
                         }
                         else {
                             if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it);
