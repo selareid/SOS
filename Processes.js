@@ -57,8 +57,14 @@ function getBodyChart(room) {
 
                 room.memory.hrvstPrts = parts;
                 newChart['doHarvest'][2] = parts;
+                newChart['doHarvest'][1] = [MOVE, CARRY];
+                newChart['doHarvest'][0] = [WORK, MOVE];
             }
-            else newChart['doHarvest'][2] = room.memory.hrvstPrts;
+            else {
+                newChart['doHarvest'][2] = room.memory.hrvstPrts;
+                newChart['doHarvest'][1] = [MOVE, CARRY];
+                newChart['doHarvest'][0] = [WORK, MOVE];
+            }
         }
     }
 
