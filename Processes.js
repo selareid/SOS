@@ -183,6 +183,7 @@ module.exports = {
     checkStructRepair: {
         run: function () {
             _.forEach(Game.rooms, (room) => {
+                if (!room.controller || !room.controller.my) return;
                 if (!room.memory.repairQueue) room.memory.repairQueue = [];
 
                 _.forEach(room.find(FIND_STRUCTURES), (structure) => {
