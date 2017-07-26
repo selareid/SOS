@@ -42,6 +42,24 @@ function getBodyChart(room) {
     if (room) {
         if (room.find(FIND_MY_CONSTRUCTION_SITES).length < 1) newChart['takeCare'][2] = 5;
         newChart['fillSpawn'][2] = room.find(FIND_MY_SPAWNS).length*3;
+
+        if (room.controller.level >= 7 && room.find(FIND_SOURCES).length >= 2) {
+            if (!room.memory.hrvstPrts) {
+                var parts = 0;
+                var totalTime = Number.POSITIVE_INFINITY;
+                var time = room.findPath(room.find(FIND_SOURCES)[0].pos, room.find(FIND_SOURCES)[1].pos).length;
+
+                for (; Math.abs(300 - totalTime) > 30; parts++) {
+                    let mine = 3000 / (parts * 2);
+
+                    totalTime = Math.floor((mine * 2) + (time * 2));
+                }
+
+                room.memory.hrvstPrts = parts;
+                newChart['doHarvest'][2] = parts;
+            }
+            else newChart['doHarvest'][2] = room.memory.hrvstPrts;
+        }
     }
 
     return newChart;
@@ -1321,10 +1339,21 @@ module.exports = {
                     }
 
                     creep.talk('doHarvest');
-                    
+
                     if (room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.p && c.memory.p != 'doHarvest'}).length >= 1) {
-                        if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it);
-                        this.harvest(Memory, room, creep_it_it);
+
+                        if (room.controller.level >= 7) {
+                            var source = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+
+                            if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it, source.id);
+
+                            if (creep.pos.isNearTo(source)) creep.harvest(source);
+                            else creep.moveWithPath(source, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                        }
+                        else {
+                            if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it);
+                            this.harvest(Memory, room, creep_it_it);
+                        }
                     }
                     else {
                         if (creep.carry.energy >= creep.carryCapacity) {
@@ -1339,7 +1368,12 @@ module.exports = {
             }
 
             //get more creeps
-            if (creeps.length < room.find(FIND_SOURCES).length) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'doHarvest'));
+            if (creeps.length < this.getHarvesters(room)) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'doHarvest'));
+        },
+
+        getHarvesters: function (room) {
+            if (room.energyCapacityAvailable < 2200) return room.find(FIND_SOURCES).length;
+            else return 1;
         },
 
         harvest: function (Memory, room, creep_it_it) {
@@ -1367,9 +1401,7 @@ module.exports = {
             else Memory.crps[creep_it_it] = creep.name;
         },
 
-        dropEnergy: function (Memory, creep, creep_it_it, room = creep.room) {
-            var srcId = Memory.crps[creep_it_it].split(':')[1];
-
+        dropEnergy: function (Memory, creep, creep_it_it, srcId = Memory.crps[creep_it_it].split(':')[1], room = creep.room) {
             if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.map(_.filter(room.getStructures(STRUCTURE_LINK), (s) => {return s.pos.findInRange(FIND_SOURCES, 3)[0];}), (s) => s.id);
 
             var link = Game.getObjectById(srcId).pos.findClosestByRange(_.map(global[room.name].sourcelinks, (s) => Game.getObjectById(s)));
