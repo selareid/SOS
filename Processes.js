@@ -716,7 +716,7 @@ module.exports = {
     },
 
     placeExtensions: {
-        extensionStar: [{x: 0, y: 1}, {x: 0, y: -1}, {x: 1, y: 0}, {x: -1, y: 0}],
+        extensionStar: [{x: 0, y: 1}, {x: 0, y: -1}, {x: 1, y: 0}, {x: -1, y: 0}, {x: 0, y: 0}],
 
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
@@ -750,19 +750,19 @@ module.exports = {
 
                     if (!Memory.ext) {
                         var goals = [].concat(_.map(room.find(FIND_STRUCTURES), (s) => {
-                            return {pos: s.pos, range: Math.round(2 + Math.random() * 2)};
+                            return {pos: s.pos, range: Math.round(1 + Math.random())};
                         }))
                             .concat(_.map(room.find(FIND_CONSTRUCTION_SITES), (s) => {
-                                return {pos: s.pos, range: Math.round(2 + Math.random() * 2)};
+                                return {pos: s.pos, range: Math.round(1 + Math.random())};
                             }))
                             .concat(_.map(room.find(FIND_SOURCES), (s) => {
-                                return {pos: s.pos, range: 5};
-                            }))
-                            .concat(_.map(room.find(FIND_MINERALS), (s) => {
                                 return {pos: s.pos, range: 3};
                             }))
-                            .concat(_.map(room.find(FIND_CREEPS), (s) => {
+                            .concat(_.map(room.find(FIND_MINERALS), (s) => {
                                 return {pos: s.pos, range: 2};
+                            }))
+                            .concat(_.map(room.find(FIND_CREEPS), (s) => {
+                                return {pos: s.pos, range: 1};
                             }))
                             .concat(_.map(room.find(FIND_FLAGS), (s) => {
                                 return {pos: s.pos, range: Math.round(4 + Math.random() * 2)};
@@ -787,24 +787,23 @@ module.exports = {
                             var extGoals = [{
                                 pos: new RoomPosition(pos.x, pos.y, room.name),
                                 range: Math.round(2 + Math.random() * 5)
-                            }]
-                                .concat(_.map(room.find(FIND_STRUCTURES), (s) => {
-                                    return {pos: s.pos, range: Math.round(2 + Math.random() * 2)};
-                                }))
+                            }].concat(_.map(room.find(FIND_STRUCTURES), (s) => {
+                                return {pos: s.pos, range: Math.round(1 + Math.random())};
+                            }))
                                 .concat(_.map(room.find(FIND_CONSTRUCTION_SITES), (s) => {
-                                    return {pos: s.pos, range: 5};
+                                    return {pos: s.pos, range: Math.round(1 + Math.random())};
                                 }))
                                 .concat(_.map(room.find(FIND_SOURCES), (s) => {
-                                    return {pos: s.pos, range: 5};
-                                }))
-                                .concat(_.map(room.find(FIND_MINERALS), (s) => {
                                     return {pos: s.pos, range: 3};
                                 }))
-                                .concat(_.map(room.find(FIND_CREEPS), (s) => {
+                                .concat(_.map(room.find(FIND_MINERALS), (s) => {
                                     return {pos: s.pos, range: 2};
                                 }))
+                                .concat(_.map(room.find(FIND_CREEPS), (s) => {
+                                    return {pos: s.pos, range: 1};
+                                }))
                                 .concat(_.map(room.find(FIND_FLAGS), (s) => {
-                                    return {pos: s.pos, range: 5};
+                                    return {pos: s.pos, range: Math.round(4 + Math.random() * 2)};
                                 }));
 
                             var extensionPath = PathFinder.search(new RoomPosition(pos.x, pos.y, room.name), extGoals, {
@@ -824,7 +823,7 @@ module.exports = {
                         }
 
                     }
-                    else if (Memory.ext.length < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][8]) {
+                    else if (Memory.ext.length*5 < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][8]) {
 
                         var extPos = Memory.ext[Math.round(Math.random() * Memory.ext.length)];
                         if (!extPos) return;
@@ -833,24 +832,23 @@ module.exports = {
                         var extGoals = [{
                             pos: new RoomPosition(pos.x, pos.y, room.name),
                             range: Math.round(2 + Math.random() * 5)
-                        }]
-                            .concat(_.map(room.find(FIND_STRUCTURES), (s) => {
-                                return s.structureType == STRUCTURE_EXTENSION ? {pos: s.pos, range: 1} : {pos: s.pos, range: Math.round(2 + Math.random() * 2)};
-                            }))
+                        }].concat(_.map(room.find(FIND_STRUCTURES), (s) => {
+                            return {pos: s.pos, range: Math.round(1 + Math.random())};
+                        }))
                             .concat(_.map(room.find(FIND_CONSTRUCTION_SITES), (s) => {
-                                return s.structureType == STRUCTURE_EXTENSION ? {pos: s.pos, range: 1} : {pos: s.pos, range: Math.round(2 + Math.random() * 2)};
+                                return {pos: s.pos, range: Math.round(1 + Math.random())};
                             }))
                             .concat(_.map(room.find(FIND_SOURCES), (s) => {
-                                return {pos: s.pos, range: 5};
-                            }))
-                            .concat(_.map(room.find(FIND_MINERALS), (s) => {
                                 return {pos: s.pos, range: 3};
                             }))
-                            .concat(_.map(room.find(FIND_CREEPS), (s) => {
+                            .concat(_.map(room.find(FIND_MINERALS), (s) => {
                                 return {pos: s.pos, range: 2};
                             }))
+                            .concat(_.map(room.find(FIND_CREEPS), (s) => {
+                                return {pos: s.pos, range: 1};
+                            }))
                             .concat(_.map(room.find(FIND_FLAGS), (s) => {
-                                return {pos: s.pos, range: 5};
+                                return {pos: s.pos, range: Math.round(4 + Math.random() * 2)};
                             }));
 
                         var extensionPath = PathFinder.search(new RoomPosition(pos.x, pos.y, room.name), extGoals, {
