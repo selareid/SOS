@@ -886,6 +886,19 @@ module.exports = {
             var costMatrix = this.getCostMatrix(room.name, storageFlag, spawnFlag);
 
             switch (Memory.nb) {
+                case 3:
+                    Memory.nb++;
+
+                    if (!room.find(FIND_SOURCES)[1]) break;
+                    
+                    var structure = room.find(FIND_SOURCES)[0];
+                    _.forEach(room.find(FIND_SOURCES)[1].pos.findPathTo(structure, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
+                        if (_.size(Game.constructionSites) < 100) {
+                            if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]
+                                && _.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_TERRAIN), (s) => s == 'swamp')[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
+                        }
+                    });
+                    break;
                 case 2:
                     Memory.nb++;
                     _.forEach(room.find(FIND_SOURCES), (structure) => {
