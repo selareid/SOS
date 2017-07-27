@@ -716,6 +716,8 @@ module.exports = {
     },
 
     placeExtensions: {
+        extensionStar: [{x: 0, y: 1}, {x: 0, y: -1}, {x: 1, y: 0}, {x: -1, y: 0}],
+
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
@@ -731,9 +733,11 @@ module.exports = {
                         && room.getStructures(STRUCTURE_EXTENSION) < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level]) {
 
                         _.forEach(Memory.ext, (sPos) => {
-                            var extensionPos = new RoomPosition(Number.parseInt(sPos.split(',')[0]), Number.parseInt(sPos.split(',')[1]), room.name);
+                            _.forEach(this.extensionStar, (sPosS) => {
+                                var extensionPos = new RoomPosition(Number.parseInt(sPos.split(',')[0])+sPosS.x, Number.parseInt(sPos.split(',')[1])+sPosS.y, room.name);
 
-                            if (extensionPos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1 && extensionPos.lookFor(LOOK_STRUCTURES).length < 1) room.createConstructionSite(extensionPos, STRUCTURE_EXTENSION);
+                                if (extensionPos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1 && extensionPos.lookFor(LOOK_STRUCTURES).length < 1) room.createConstructionSite(extensionPos, STRUCTURE_EXTENSION);
+                            });
                         });
                     }
                     break;
@@ -890,7 +894,7 @@ module.exports = {
                     Memory.nb++;
 
                     if (!room.find(FIND_SOURCES)[1]) break;
-                    
+
                     var structure = room.find(FIND_SOURCES)[0];
                     _.forEach(room.find(FIND_SOURCES)[1].pos.findPathTo(structure, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
                         if (_.size(Game.constructionSites) < 100) {
