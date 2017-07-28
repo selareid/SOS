@@ -2238,7 +2238,7 @@ module.exports = {
                         if (creep.pos.getRangeTo(structureToRepair) > 3) creep.moveWithPath(structureToRepair, {range: 3, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                         else creep.repair(structureToRepair);
                     }
-                    else if (room.controller.level < 8 || room.controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[room.controller.level]*0.5) {
+                    else if (room.controller.level == 8 && room.controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[room.controller.level]*0.5) {
                         if (creep.pos.getRangeTo(room.controller) > 3) creep.moveWithPath(room.controller, {range: 3, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                         else creep.upgradeController(room.controller);
                     }
