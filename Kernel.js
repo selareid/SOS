@@ -88,8 +88,7 @@ module.exports = {
                         }
                     }
                     catch (err) {
-                        console.processError(err);
-                        if (err.stack) console.processError(err.stack);
+                        err && err.stack ? console.processError(err.stack) : console.processError(err);
                     }
 
                     process.prio = getPrio(process.pN);

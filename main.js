@@ -34,15 +34,14 @@ module.exports.run = () => {
         })();
     }
     catch (err) {
-        console.errorLog(err);
+        err && err.stack ? console.errorLog(err.stack) : console.errorLog(err);
     }
 
     try {
         kernel.run();
     }
     catch (err) {
-        console.kernelError(err);
-        if (err.stack) console.kernelError(err.stack);
+        err && err.stack ? console.kernelError(err.stack) : console.kernelError(err);
     }
 
     if (Memory.stats) Memory.stats.cpu.processUse = _.clone(global.processCost);
