@@ -315,7 +315,10 @@ module.exports = {
             if (Game.creeps[Memory.crp] || global.Mem.p['room:' + room.name].spawnQueue[Memory.crp]) {
                 if (!Game.creeps[Memory.crp]) return;
                 var creep = getCreep(Memory.crp, 'stealEnergy');
-                if (creep == 'dead') Memory.crp = undefined;
+                if (creep == 'dead') {
+                    Memory.crp = undefined;
+                    creep = undefined;
+                }
 
                 creep.talk('stealEnergy');
 
@@ -383,7 +386,10 @@ module.exports = {
             if (Game.creeps[Memory.crp] || global.Mem.p['room:' + nearestRoom.name].spawnQueue[Memory.crp]) {
                 if (!Game.creeps[Memory.crp]) return;
                 var creep = getCreep(Memory.crp, 'claim');
-                if (creep == 'dead') Memory.crp = undefined;
+                if (creep == 'dead') {
+                    Memory.crp = undefined;
+                    creep = undefined;
+                }
                 creep.talk('claim');
 
                 if (creep.pos.roomName != flag.pos.roomName) {
@@ -419,7 +425,10 @@ module.exports = {
             if (Game.creeps[Memory.crp] || global.Mem.p['room:' + nearestRoom.name].spawnQueue[Memory.crp]) {
                 if (!Game.creeps[Memory.crp]) return;
                 var creep = getCreep(Memory.crp, 'claim');
-                if (creep == 'dead') Memory.crp = undefined;
+                if (creep == 'dead') {
+                    Memory.crp = undefined;
+                    creep = undefined;
+                }
                 creep.talk('buildSpawn');
 
                 if (creep.pos.roomName != flag.pos.roomName) {
@@ -1246,7 +1255,10 @@ module.exports = {
 
             if (needEnergy.length > 0 || ((room.storage.store[RESOURCE_LEMERGIUM] || room.terminal.store[RESOURCE_LEMERGIUM]) && (room.storage.store[RESOURCE_OXYGEN] || room.terminal.store[RESOURCE_OXYGEN]))) {
                 var creep = Memory.creep ? getCreep(Memory.creep, 'doLabs') : undefined;
-                if (creep == 'dead') Memory.crp = undefined;
+                if (creep == 'dead') {
+                    Memory.crp = undefined;
+                    creep = undefined;
+                }
 
                 if (creep) {
                     creep.talk('doLabs');
@@ -1361,7 +1373,10 @@ module.exports = {
                 for (let creep_it_it in creeps) {
                     if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
                     let creep = getCreep(creeps[creep_it_it].split(':')[0], 'doHarvest');
-                    if (creep == 'dead') Memory.crp = undefined;
+                    if (creep == 'dead') {
+                        Memory.crp = undefined;
+                        creep = undefined;
+                    }
 
                     if (!creep) {
                         if (!global.Mem.p['room:' + room.name].spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
@@ -1410,7 +1425,10 @@ module.exports = {
 
         harvest: function (Memory, room, creep_it_it) {
             var creep = getCreep(Memory.crps[creep_it_it].split(':')[0], 'doHarvest');
-            if (creep == 'dead') Memory.crp = undefined;
+            if (creep == 'dead') {
+                Memory.crp = undefined;
+                creep = undefined;
+            }
 
             if (!Memory.crps[creep_it_it].split(':')[1]) {
 
@@ -1502,7 +1520,10 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var creep = Memory.creep ? getCreep(Memory.creep, 'fillSpawn') : undefined;
-            if (creep == 'dead') Memory.crp = undefined;
+            if (creep == 'dead') {
+                Memory.crp = undefined;
+                creep = undefined;
+            }
 
             var room = Game.rooms[Memory.rmN];
             if (!room) return {response: 'end'};
@@ -1579,7 +1600,10 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var creep = Memory.creep ? getCreep(Memory.creep, 'fillExt') : undefined;
-            if (creep == 'dead') Memory.crp = undefined;
+            if (creep == 'dead') {
+                Memory.crp = undefined;
+                creep = undefined;
+            }
 
             var room = Game.rooms[Memory.rmN];
             if (!room) return {response: 'end'};
@@ -1646,7 +1670,10 @@ module.exports = {
                 for (let creep_it_it in creeps) {
                     if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
                     let creep = getCreep(creeps[creep_it_it].split(':')[0], 'strgDistr');
-                    if (creep == 'dead') Memory.crp = undefined;
+                    if (creep == 'dead') {
+                        Memory.crp = undefined;
+                        creep = undefined;
+                    }
 
                     if (!creep) {
                         if (!global.Mem.p['room:' + room.name].spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
@@ -1948,7 +1975,10 @@ module.exports = {
              for (let creep_it_it in creeps) {
                  if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
                  let creep = getCreep(creeps[creep_it_it].split(':')[0], 'mine');
-                 if (creep == 'dead') Memory.crp = undefined;
+                 if (creep == 'dead') {
+                     Memory.crp = undefined;
+                     creep = undefined;
+                 }
 
                  if (!creep) {
                      if (!global.Mem.p['room:' + room.name].spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
@@ -2003,7 +2033,10 @@ module.exports = {
                 for (let creep_it_it in creeps) {
                     if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
                     let creep = getCreep(creeps[creep_it_it].split(':')[0], 'iRmHaul');
-                    if (creep == 'dead') Memory.crp = undefined;
+                    if (creep == 'dead') {
+                        Memory.crp = undefined;
+                        creep = undefined;
+                    }
 
                     if (!creep) {
                         if (!global.Mem.p['room:' + room.name].spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
@@ -2067,7 +2100,10 @@ module.exports = {
                 for (let creep_it_it in creeps) {
                     if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
                     let creep = getCreep(creeps[creep_it_it].split(':')[0], 'praiseRC');
-                    if (creep == 'dead') Memory.crp = undefined;
+                    if (creep == 'dead') {
+                        Memory.crp = undefined;
+                        creep = undefined;
+                    }
 
                     if (!creep) {
                         if (!global.Mem.p['room:' + room.name].spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
@@ -2164,7 +2200,10 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var creep = Memory.creep ? getCreep(Memory.creep, 'takeCare') : undefined;
-            if (creep == 'dead') Memory.crp = undefined;
+            if (creep == 'dead') {
+                Memory.crp = undefined;
+                creep = undefined;
+            }
 
             var room = Game.rooms[Memory.rmN];
             if (!room) return {response: 'end'};
