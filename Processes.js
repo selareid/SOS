@@ -12,7 +12,7 @@ function getCreep(name, process) {
     if (!creep.memory.p || !creep.memory.p == process) creep.memory.p = process;
     creep.memory.l = Game.time;
 
-    if (creep.room.storage && creep.ticksToLive <= creep.pos.getRangeTo(creep.room.storage)) {
+    if (process != 'deadCreepHandler' && creep.room.storage && creep.ticksToLive <= creep.pos.getRangeTo(creep.room.storage)) {
         spawnNewProcess('deadCreepHandler', creep.room.name, creep.name);
         return 'dead';
     }
@@ -209,7 +209,7 @@ module.exports = {
                 return;
             }
 
-            var creep = Game.creeps[Memory.creep];
+            var creep = getCreep(Memory.creep, 'deadCreepHandler');
 
             if (!creep || !creep.room.storage) return {response: 'end'};
 
