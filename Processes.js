@@ -48,7 +48,7 @@ function getBodyChart(room) {
             if (!room.memory.hrvstPrts) {
                 var parts = 0;
                 var totalTime = Number.POSITIVE_INFINITY;
-                var time = room.findPath(room.find(FIND_SOURCES)[0].pos, room.find(FIND_SOURCES)[1].pos).length;
+                var time = room.findPath(room.find(FIND_SOURCES)[0].pos, room.find(FIND_SOURCES)[1].pos, {ignoreRoads: true, swampCost: 1, ignoreCreeps: true, maxRooms: 1}).length;
 
                 for (; Math.floor(totalTime) > 300; parts++) {
                     let mine = 3000 / (parts * 2);
