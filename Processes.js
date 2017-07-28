@@ -1952,7 +1952,7 @@ module.exports = {
                             break;
                         }
                     }
-                    else if (room.storage.store[resourceType] && room.storage.store[resourceType]+800 > 5000) {
+                    else if (room.storage.store[resourceType] && room.storage.store[resourceType]+800 > 5000 && room.terminal.store[resourceType] < terminalGoals[resourceType]) {
                         resourceToMove = resourceType;
                         break;
                     }
