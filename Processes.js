@@ -1393,8 +1393,19 @@ module.exports = {
                             if (source) {
                                 if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it, source.id);
 
-                                if (creep.pos.isNearTo(source)) creep.harvest(source);
-                                else creep.moveWithPath(source, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                                if (creep.pos.isNearTo(source)) {
+                                    creep.harvest(source);
+
+                                    if (!Memory[source.id]) Memory[source.id] = creep.pos.x + ',' + creep.pos.y;
+                                }
+                                else {
+                                    var pos = Memory[source.id] ? room.getPositionAt(Memory[source.id].split(',')[0], Memory[source.id].split(',')[1]) : undefined;
+                                    if (pos) creep.moveWithPath(pos, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                                    else {
+                                        creep.moveWithPath(source, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                                        Memory[source.id] = undefined;
+                                    }
+                                }
                             }
                         }
                         else {
