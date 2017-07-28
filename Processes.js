@@ -1399,7 +1399,7 @@ module.exports = {
                                     if (!Memory[source.id]) Memory[source.id] = creep.pos.x + ',' + creep.pos.y;
                                 }
                                 else {
-                                    var pos = Memory[source.id] ? room.getPositionAt(Memory[source.id].split(',')[0], Memory[source.id].split(',')[1]) : undefined;
+                                    var pos = Memory[source.id] ? room.getPositionAt(Number.parseInt(Memory[source.id].split(',')[0]), Number.parseInt(Memory[source.id].split(',')[1])) : undefined;
                                     if (pos) creep.moveWithPath(pos, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                                     else {
                                         creep.moveWithPath(source, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
@@ -2002,8 +2002,9 @@ module.exports = {
                  else if (_.sum(creep.carry) == creep.carryCapacity) Memory.w = 1;
 
                  if (Memory.w == 1) {
-                     if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
-                     else creep.moveWithPath(room.storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                     var putWhere = room.terminal && room.terminal[mineral.mineralType] && room.terminal[mineral.mineralType] < terminalGoals[mineral.mineralType] ? room.terminal : room.storage;
+                     if (creep.pos.isNearTo(putWhere)) creep.transfer(putWhere, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
+                     else creep.moveWithPath(putWhere, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                  }
                  else if (mineral.mineralAmount > 1 && mineral.pos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1) {
                      if (creep.pos.isNearTo(mineral)) {
