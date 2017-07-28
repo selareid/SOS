@@ -373,7 +373,7 @@ module.exports = {
                 var newR = _.min(Game.rooms, (r) => {
                     return r.find(FIND_MY_SPAWNS).length > 0 && r.energyCapacityAvailable >= 550 ? Game.map.getRoomLinearDistance(r.name, flag.pos.roomName) : undefined;
                 });
-                return Memory.nr = newR ? newR.name : undefined;
+                Memory.nr = newR ? newR.name : undefined;
             }
 
             if (Game.creeps[Memory.crp] || global.Mem.p['room:' + nearestRoom.name].spawnQueue[Memory.crp]) {
@@ -412,7 +412,7 @@ module.exports = {
                 var newR = _.max(Game.rooms, (r) => {
                     return r.find(FIND_MY_SPAWNS).length > 0 && Game.map.getRoomLinearDistance(r.name, flag.pos.roomName) < 11 ? r.energyAvailable : 0;
                 });
-                return Memory.nr = newR ? newR.name : undefined;
+                Memory.nr = newR ? newR.name : undefined;
             }
 
             if (Game.creeps[Memory.crp] || global.Mem.p['room:' + nearestRoom.name].spawnQueue[Memory.crp]) {
@@ -1214,7 +1214,7 @@ module.exports = {
 
             if (!flag || flag instanceof Array) {
                 var newFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(' ')[0] == 'lab'})[0];
-                return Memory.flag = newFlag ? newFlag.name : undefined;
+                Memory.flag = newFlag ? newFlag.name : undefined;
             }
 
             var labs = Memory.labs ? _.map(Memory.labs, (id) => {return Game.getObjectById(id)}) : undefined;
@@ -1233,7 +1233,6 @@ module.exports = {
             if (!lab1 || !lab2) {
                 Memory.lab1 = labs[0] ? labs[0].id : undefined;
                 Memory.lab2 = labs[1] ? labs[1].id : undefined;
-                return;
             }
 
             //reactions section
@@ -1359,7 +1358,7 @@ module.exports = {
             if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
             if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
-            if (!creeps) return Memory.crps = [];
+            if (!creeps) Memory.crps = [];
 
             if (creeps.length > 0) {
                 //creep loop
@@ -1371,10 +1370,7 @@ module.exports = {
                         creep = undefined;
                     }
 
-                    if (!creep) {
-                        if (!global.Mem.p['room:' + room.name].spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
-                        return;
-                    }
+                    if (!creep) if (!global.Mem.p['room:' + room.name].spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
 
                     creep.talk('doHarvest');
 
@@ -1652,7 +1648,7 @@ module.exports = {
             var room = Game.rooms[Memory.rmN];
             if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
-            if (!creeps) return Memory.crps = [];
+            if (!creeps) Memory.crps = [];
 
             if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
 
@@ -1972,7 +1968,7 @@ module.exports = {
          if (!mineral || (mineral.mineralAmount < 1 && mineral.ticksToRegeneration > 200 && (!creeps || creeps.length < 1))) return {response: 'end'};
 
          if (!global[room.name]) global[room.name] = {};
-         if (!creeps) return Memory.crps = [];
+         if (!creeps) Memory.crps = [];
 
          if (creeps.length > 0) {
              //creep loop
@@ -2029,7 +2025,7 @@ module.exports = {
             var room = Game.rooms[Memory.rmN];
             if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
-            if (!creeps) return Memory.crps = [];
+            if (!creeps) Memory.crps = [];
             if (!room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0]) return;
 
             if (!room.storage) return this.placeStorage(room);
@@ -2098,7 +2094,7 @@ module.exports = {
             var room = Game.rooms[Memory.rmN];
             if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
-            if (!creeps) return Memory.crps = [];
+            if (!creeps) Memory.crps = [];
 
             if (creeps.length > 0) {
                 //creep loop
