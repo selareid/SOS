@@ -65,6 +65,8 @@ module.exports = () => {
     storageEnergy = 50000;
 
     terminalGoals = {
+        [RESOURCE_ENERGY]: 150000,
+
         [RESOURCE_HYDROGEN]: 6000,
         [RESOURCE_OXYGEN]: 6000,
         [RESOURCE_UTRIUM]: 6000,
