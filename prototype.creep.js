@@ -3,7 +3,7 @@ Creep.prototype.getConsumerEnergy = function (Memory, room = this.room, creep = 
 
     if (storage && storage.store[RESOURCE_ENERGY] > creep.carryCapacity) {
         if (creep.pos.isNearTo(storage)) creep.withdraw(storage, RESOURCE_ENERGY);
-        else creep.travelTo(storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+        else creep.moveWithPath(creep.room.storage, {range: 1, repath: 0.01, maxRooms: 1});
     }
     else {
         var droppedEnergy = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) => r.amount > 20 && r.resourceType == RESOURCE_ENERGY});
@@ -48,13 +48,13 @@ Creep.prototype.getCarrierResources = function (Memory, room = this.room, creep 
 
 function pickFromDroppedEnergy(creep, droppedResource, room=creep.room) {
     if (creep.pickup(droppedResource) == ERR_NOT_IN_RANGE) {
-        creep.travelTo(droppedResource, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+        creep.moveWithPath(droppedResource, {range: 1, repath: 0.01, maxRooms: 1});
     }
 }
 
 function pickFromContainer(creep, container, resourceType = RESOURCE_ENERGY, room=creep.room) {
     if (creep.withdraw(container, resourceType) == ERR_NOT_IN_RANGE) {
-        creep.travelTo(container, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+        creep.moveWithPath(container, {range: 1, repath: 0.01, maxRooms: 1});
     }
 }
 
@@ -64,7 +64,7 @@ function harvestEnergy(creep, room=creep.room) {
     if (!source) creep.runInSquares();
 
     if (creep.pos.isNearTo(source)) creep.harvest(source);
-    else creep.travelTo(source, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+    else creep.moveWithPath(source, {range: 1, repath: 0.01, maxRooms: 1});
 }
 
 Creep.prototype.talk =
