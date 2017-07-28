@@ -13,7 +13,7 @@ function getCreep(name, process) {
     creep.memory.l = Game.time;
 
     if (process != 'deadCreepHandler' && creep.room.storage && creep.ticksToLive <= ((creep.pos.getRangeTo(creep.room.storage)+4)*1.5)) {
-        spawnNewProcess('deadCreepHandler', creep.room.name, creep.name);
+        spawnNewProcess('deadCreepHandler', undefined, creep.name);
         return 'dead';
     }
 
@@ -202,14 +202,7 @@ module.exports = {
     deadCreepHandler: {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
-
-            if (Memory.oNCreation) {
-                Memory.creep = _.clone(Memory.oNCreation);
-                delete Memory.oNCreation;
-                return;
-            }
-
-            var creep = getCreep(Memory.creep, 'deadCreepHandler');
+            var creep = getCreep(Memory.oNCreation, 'deadCreepHandler');
 
             if (!creep || !creep.room.storage) return {response: 'end'};
 
