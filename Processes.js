@@ -1370,7 +1370,10 @@ module.exports = {
                         creep = undefined;
                     }
 
-                    if (!creep) if (!global.Mem.p['room:' + room.name].spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
+                    if (!creep) {
+                        if (!global.Mem.p['room:' + room.name].spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
+                        return;
+                    }
 
                     creep.talk('doHarvest');
 
