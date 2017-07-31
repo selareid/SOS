@@ -195,7 +195,7 @@ module.exports = {
                 });
             });
 
-            return {response: 'idle', time: Game.time + 975 + Math.round(Math.random() * 100)};
+            return {response: 'idle', time: Game.time + 300 + Math.round(Math.random() * 100)};
         }
     },
 
