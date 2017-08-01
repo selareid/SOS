@@ -1950,7 +1950,7 @@ module.exports = {
                             break;
                         }
                     }
-                    else if (room.storage.store[resourceType] && room.storage.store[resourceType]+800 > 5000) {
+                    else if (room.storage.store[resourceType]+800 > 5000) {
                         resourceToMove = resourceType;
                         break;
                     }
