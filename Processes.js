@@ -1802,8 +1802,8 @@ module.exports = {
         linkToStorage: function (Memory, room, creep) {
             if (creep.memory.w == true) {
                 //if carry is full
-                var storage = room.storage;
-                creep.transfer(storage, RESOURCE_ENERGY);
+                var toPut = room.terminal && room.controller.level > 7 && room.storage.store[resourceType]-800 > storageEnergy && room.terminal.store[RESOURCE_ENERGY] < terminalGoals[RESOURCE_ENERGY] ? room.terminal : room.storage;
+                creep.transfer(toPut, RESOURCE_ENERGY);
                 creep.memory.w = false;
             }
             else {
