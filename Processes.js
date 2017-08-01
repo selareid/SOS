@@ -2290,9 +2290,9 @@ module.exports = {
             var structure = Memory.str ? Game.getObjectById(Memory.str) : undefined;
 
             if (!structure || structure.hits >= structure.hitsMax || (structure.structureType == STRUCTURE_RAMPART && structure.hits > (structure.hitsMax * 0.001))) {
-                structure = room.memory.repairQueue && room.memory.repairQueue.length > 0 ? Game.getObjectById(room.memory.repairQueue[0]) : undefined;
+                if (room.memory.repairQueue && room.memory.repairQueue.length > 0) {
+                    structure = Game.getObjectById(room.memory.repairQueue[0]);
 
-                if (structure) {
                     Memory.str = structure.id;
                     room.memory.repairQueue.splice(0, 1);
                 }
