@@ -1737,9 +1737,9 @@ module.exports = {
                             else if (this.pickupInRange(Memory, room, creep) == OK) creep.memory.doing = 'pickupInRange';
                             else if (this.linkToStorage(Memory, room, creep) == OK) creep.memory.doing = 'link';
                             else if (this.fillNuke(Memory, room, creep) == OK) creep.memory.doing = 'fillNuke';
-                            else if (this.fillPowerSpawn(Memory, room, creep) == OK) creep.memory.doing = 'fillPowerSpawn';
                             else if (this.TTS(Memory, room, creep) == OK) creep.memory.doing = 'TTS';
                             else if (this.STT(Memory, room, creep) == OK) creep.memory.doing = 'STT';
+                            else if (this.fillPowerSpawn(Memory, room, creep) == OK) creep.memory.doing = 'fillPowerSpawn';
                         }
                     }
                 }
