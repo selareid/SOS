@@ -106,10 +106,15 @@ module.exports = {
         run: function () {
             Memory.stats = {
                 tick: Game.time,
-                cpu: _.clone(Game.cpu),
                 gcl: Game.gcl,
                 constructionSites: _.size(Game.constructionSites),
                 tokens: Game.resources.token,
+                power: Game.resources[RESOURCE_POWER],
+
+                cpu: {
+                    limit: Game.cpu,
+                    bucket: Game.cpu.bucket
+                },
 
                 memory: {
                     used: RawMemory.get().length
