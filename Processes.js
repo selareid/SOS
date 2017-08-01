@@ -1162,7 +1162,6 @@ module.exports = {
                         if (amountToSend > bestBuy.amount) amountToSend = bestBuy.amount;
                         if (amountToSend * bestBuy.price > Memory.credits) amountToSend = Math.floor(Memory.credits / bestBuy.price);
                         if (amountToSend > room.terminal.storeCapacity - _.sum(room.terminal.store)) amountToSend = room.terminal.storeCapacity - _.sum(room.terminal.store);
-                        if (amountToSend > 350) amountToSend = 350;
 
                         if (amountToSend > 0) {
                             var rsl = Game.market.deal(bestBuy.id, amountToSend, room.name);
