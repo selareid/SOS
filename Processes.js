@@ -2293,7 +2293,7 @@ module.exports = {
                 if (room.memory.repairQueue && room.memory.repairQueue.length > 0) {
                     structure = Game.getObjectById(room.memory.repairQueue[0]);
 
-                    Memory.str = structure.id;
+                    Memory.str = structure ? structure.id : undefined;
                     room.memory.repairQueue.splice(0, 1);
                 }
             }
