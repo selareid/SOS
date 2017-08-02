@@ -1977,7 +1977,7 @@ module.exports = {
          if (!mineral || (mineral.mineralAmount < 1 && mineral.ticksToRegeneration > 200 && (!creeps || creeps.length < 1))) return {response: 'end'};
 
          if (!global[room.name]) global[room.name] = {};
-         if (!creeps) Memory.crps = [];
+         if (!creeps) Memory.crps = []; creeps = Memory.crps;
 
          if (creeps.length > 0) {
              //creep loop
