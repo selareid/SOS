@@ -2103,7 +2103,10 @@ module.exports = {
             var room = Game.rooms[Memory.rmN];
             if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
-            if (!creeps) Memory.crps = [];
+            if (!creeps) {
+                Memory.crps = [];
+                creeps = Memory.crps;
+            }
 
             if (creeps.length > 0) {
                 //creep loop
