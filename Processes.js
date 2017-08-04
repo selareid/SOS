@@ -1204,7 +1204,7 @@ module.exports = {
                     }
             }
 
-            return {response: 'idle', time: Game.time + (34 + (Math.round(Math.random() * 11)))};
+            return {response: 'idle', time: Game.time + (24 + (Math.round(Math.random() * 15)))};
         }
     },
 
