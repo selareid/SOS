@@ -744,7 +744,7 @@ module.exports = {
                     Memory.toDo++;
 
                     if (Memory.ext
-                        && room.getStructures(STRUCTURE_EXTENSION) < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level]) {
+                        && room.getStructures(STRUCTURE_EXTENSION).length < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level]) {
 
                         _.forEach(Memory.ext, (sPos) => {
                             _.forEach(this.extensionStar, (sPosS) => {
