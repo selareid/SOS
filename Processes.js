@@ -2252,7 +2252,7 @@ module.exports = {
                     structure = Game.getObjectById(room.memory.repairQueue[0]);
                     room.memory.repairQueue.splice(0, 1);
                 }
-                    Memory.str = structure && structure.hits >= structure.hitsMax ? structure.id : undefined;
+                    Memory.str = structure && structure.hits < structure.hitsMax ? structure.id : undefined;
             }
 
             return structure;
