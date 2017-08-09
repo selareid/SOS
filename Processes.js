@@ -883,7 +883,7 @@ module.exports = {
                     Memory.toDo = 1;
             }
 
-            return room.controller.level > 1 && room.controller.level < 4 ? {response: 'idle', time: Game.time + 500 + Math.round(Math.random()*57)} : {response: 'idle', time: Game.time + 10000 + Math.round(Math.random()*57)};
+            return room.controller.level > 1 && room.controller.level < 4 ? {response: 'idle', time: Game.time + 500 + Math.round(Math.random()*57)} : {response: 'idle', time: Game.time + 7500 + Math.round(Math.random()*2500)};
         }
     },
 
