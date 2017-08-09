@@ -98,7 +98,6 @@ module.exports = {
             spawnNewProcess('checkCreeps');
             spawnNewProcess('checkGlobalProcesses');
             spawnNewProcess('checkStructRepair');
-            spawnNewProcess('checkRamparts');
         }
     },
 
