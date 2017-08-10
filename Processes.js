@@ -1100,7 +1100,8 @@ module.exports = {
                 case 2:
                     Memory.n++;
                     const arrayOfResourcesNeeded = [RESOURCE_GHODIUM, RESOURCE_LEMERGIUM, RESOURCE_OXYGEN, RESOURCE_POWER];
-                    var resourceToBuy = arrayOfResourcesNeeded[Game.time % arrayOfResourcesNeeded.length];
+
+                    var resourceToBuy = arrayOfResourcesNeeded[Math.floor(Game.time % arrayOfResourcesNeeded.length)];
 
                     var amount = !room.storage.store[resourceToBuy] ? room.terminal.store[resourceToBuy] : !room.terminal.store[resourceToBuy] ? room.terminal.store[resourceToBuy] : room.storage.store[resourceToBuy] + room.terminal.store[resourceToBuy];
 
