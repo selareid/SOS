@@ -1730,8 +1730,6 @@ module.exports = {
                     if (!strucPos.findInRange(room.getStructures(STRUCTURE_RAMPART), 1)[0]) room.createConstructionSite(strucPos.x, strucPos.y, STRUCTURE_RAMPART);
                 }
             }
-
-            _.filter(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_ROAD}, (s) => s.destroy());
         },
 
         pickupInRange: function (Memory, room, creep) {
