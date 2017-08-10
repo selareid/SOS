@@ -862,7 +862,10 @@ module.exports = {
                             }))
                             .concat(_.map(room.find(FIND_FLAGS), (s) => {
                                 return {pos: s.pos, range: Math.round(4 + Math.random() * 2)};
-                            }));
+                            }))
+                            .concat(_.map(Memory.ext, (s) => {
+                                return {pos: room.getPositionAt(s.split(',')[0], s.split(',')[1]), range: 2};
+                            }));;
 
                         var extensionPath = PathFinder.search(new RoomPosition(pos.x, pos.y, room.name), extGoals, {
                             flee: true,
