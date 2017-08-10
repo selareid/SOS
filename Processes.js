@@ -865,7 +865,7 @@ module.exports = {
                             }))
                             .concat(_.map(Memory.ext, (s) => {
                                 return {pos: room.getPositionAt(Number.parseInt(s.split(',')[0]), Number.parseInt(s.split(',')[1])), range: 2};
-                            }));;
+                            }));
 
                         var extensionPath = PathFinder.search(new RoomPosition(pos.x, pos.y, room.name), extGoals, {
                             flee: true,
