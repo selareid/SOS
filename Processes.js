@@ -1728,7 +1728,7 @@ module.exports = {
                 if (_.size(Game.constructionSites) < 100) {
                     let strucPos = new RoomPosition(flag.pos.x + struc.x, flag.pos.y + struc.y, room.name);
 
-                    if (!strucPos.findInRange(room.getStructures(STRUCTURE_RAMPART), 1)[0]) room.createConstructionSite(strucPos.x, strucPos.y, STRUCTURE_RAMPART);
+                    if (!strucPos.findInRange(room.getStructures(STRUCTURE_RAMPART), 0)[0]) room.createConstructionSite(strucPos.x, strucPos.y, STRUCTURE_RAMPART);
                 }
             }
         },
