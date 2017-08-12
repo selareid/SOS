@@ -1598,7 +1598,7 @@ module.exports = {
                 else {
                     var extension;
 
-                    extension = global[room.name].orderedExtension ? global[room.name].orderedExtension[global[room.name].whichExtension] : undefined;
+                    extension = global[room.name].orderedExtension ? Game.getObjectById(global[room.name].orderedExtension[global[room.name].whichExtension]) : undefined;
 
                     if (extension && extension.energy < extension.energyCapacity) {
                         if (creep.pos.isNearTo(extension)) creep.transfer(extension, RESOURCE_ENERGY);
@@ -1606,10 +1606,10 @@ module.exports = {
                     }
                     else {
                         if (!global[room.name].orderedExtension || global[room.name].whichExtension === undefined) {
-                            global[room.name].orderedExtension = _.sortBy(room.getStructures(STRUCTURE_EXTENSION), (e) => {return e.energy < e.energyCapacity ? e.energy: undefined});
+                            global[room.name].orderedExtension = _.map(_.sortBy(room.getStructures(STRUCTURE_EXTENSION), (e) => {return e.energy < e.energyCapacity ? e.energy: undefined}), (e) => e.id);
                             global[room.name].whichExtension = 0;
 
-                            if (global[room.name].orderedExtension[0] && global[room.name].orderedExtension[0].energy == global[room.name].orderedExtension[0].energyCapacity) return {response: 'idle', time: Game.time + 5};
+                            if (Game.getObjectById(global[room.name].orderedExtension[0]) && Game.getObjectById(global[room.name].orderedExtension[0]).energy == Game.getObjectById(global[room.name].orderedExtension[0]).energyCapacity) return {response: 'idle', time: Game.time + 5};
                         }
                         else {
                             global[room.name].orderedExtension.splice(0, 1);
