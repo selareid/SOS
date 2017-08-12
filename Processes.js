@@ -1105,7 +1105,7 @@ module.exports = {
                     var count = -1;
 
                     do {
-                        var keepGoing = false;
+                        var keepGoing = true;
 
                         var resourceToBuy = arrayOfResourcesNeeded[Math.floor(Game.time % arrayOfResourcesNeeded.length)];
 
@@ -1134,10 +1134,10 @@ module.exports = {
                                 if (rsl == OK) {
                                     Memory.creditChange -= amountToSend * bestBuy.price;
                                     Memory.expectedStore += amountToSend;
+                                    keepGoing = false;
                                 }
                             }
                         }
-                        else keepGoing = true;
 
                         count++;
                     }
