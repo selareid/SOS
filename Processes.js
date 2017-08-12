@@ -1100,37 +1100,46 @@ module.exports = {
                 case 2:
                     Memory.n++;
                     const arrayOfResourcesNeeded = [RESOURCE_GHODIUM, RESOURCE_LEMERGIUM, RESOURCE_OXYGEN, RESOURCE_POWER];
+                    var count = -1;
 
-                    var resourceToBuy = arrayOfResourcesNeeded[Math.floor(Game.time % arrayOfResourcesNeeded.length)];
+                    do {
+                        var keepGoing = false;
 
-                    var amount = !room.storage.store[resourceToBuy] ? room.terminal.store[resourceToBuy] : !room.terminal.store[resourceToBuy] ? room.terminal.store[resourceToBuy] : room.storage.store[resourceToBuy] + room.terminal.store[resourceToBuy];
+                        var resourceToBuy = arrayOfResourcesNeeded[Math.floor(Game.time % arrayOfResourcesNeeded.length)];
 
-                    if (Memory.credits > 0 && amount < 2500
-                        && _.sum(room.terminal.store) < room.terminal.storeCapacity) {
-                        var bestBuy = _.min(Game.market.getAllOrders({
-                            resourceType: resourceToBuy,
-                            type: ORDER_SELL
-                        }), (o) => {
-                            if (o.amount >= 10) return o.price;
-                        });
+                        var amount = !room.storage.store[resourceToBuy] ? room.terminal.store[resourceToBuy] : !room.terminal.store[resourceToBuy] ? room.terminal.store[resourceToBuy] : room.storage.store[resourceToBuy] + room.terminal.store[resourceToBuy];
 
-                        var transCost = Game.market.calcTransactionCost(1, room.name, bestBuy.roomName);
+                        if (Memory.credits > 0 && amount < 2500
+                            && _.sum(room.terminal.store) < room.terminal.storeCapacity) {
+                            var bestBuy = _.min(Game.market.getAllOrders({
+                                resourceType: resourceToBuy,
+                                type: ORDER_SELL
+                            }), (o) => {
+                                if (o.amount >= 10) return o.price;
+                            });
 
-                        var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[resourceToBuy] ? room.terminal.store[resourceToBuy] : Math.round((room.terminal.store.energy / 2) / transCost);
-                        if (amountToSend > bestBuy.amount) amountToSend = bestBuy.amount;
-                        if (amountToSend * bestBuy.price > Memory.credits) amountToSend = Math.floor(Memory.credits / bestBuy.price);
-                        if (amountToSend > room.terminal.storeCapacity - _.sum(room.terminal.store)) amountToSend = room.terminal.storeCapacity - _.sum(room.terminal.store);
+                            var transCost = Game.market.calcTransactionCost(1, room.name, bestBuy.roomName);
 
-                        if (amountToSend > 0) {
-                            var rsl = Game.market.deal(bestBuy.id, amountToSend, room.name);
-                            console.terminalLog(room, 'Tried to buy ' + bestBuy.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestBuy.price + ' Result ' + rsl);
+                            var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[resourceToBuy] ? room.terminal.store[resourceToBuy] : Math.round((room.terminal.store.energy / 2) / transCost);
+                            if (amountToSend > bestBuy.amount) amountToSend = bestBuy.amount;
+                            if (amountToSend * bestBuy.price > Memory.credits) amountToSend = Math.floor(Memory.credits / bestBuy.price);
+                            if (amountToSend > room.terminal.storeCapacity - _.sum(room.terminal.store)) amountToSend = room.terminal.storeCapacity - _.sum(room.terminal.store);
 
-                            if (rsl == OK) {
-                                Memory.creditChange -= amountToSend * bestBuy.price;
-                                Memory.expectedStore += amountToSend;
+                            if (amountToSend > 0) {
+                                var rsl = Game.market.deal(bestBuy.id, amountToSend, room.name);
+                                console.terminalLog(room, 'Tried to buy ' + bestBuy.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestBuy.price + ' Result ' + rsl);
+
+                                if (rsl == OK) {
+                                    Memory.creditChange -= amountToSend * bestBuy.price;
+                                    Memory.expectedStore += amountToSend;
+                                }
                             }
                         }
+                        else keepGoing = true;
+
+                        count++;
                     }
+                    while (keepGoing && count < arrayOfResourcesNeeded.length*2);
                     break;
                 default:
                     Memory.n = 1;
