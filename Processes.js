@@ -1467,7 +1467,7 @@ module.exports = {
         },
 
         placeLink: function (source, creep, room = creep.room) {
-            if (_.size(Game.constructionSites) >= 100 || !global[room.name].distrSquareFlag.pos.findInRange(creep.getStructures(STRUCTURE_LINK), 1)[0]) return;
+            if (_.size(Game.constructionSites) >= 100 || !global[room.name].distrSquareFlag.pos.findInRange(room.getStructures(STRUCTURE_LINK), 1)[0]) return;
 
             const opRP = {
                 [TOP]: {d: BOTTOM, x: 0, y: 1},
