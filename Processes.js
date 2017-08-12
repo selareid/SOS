@@ -1598,18 +1598,24 @@ module.exports = {
                 else {
                     var extension;
 
-                    _.forEach(room.getStructures(STRUCTURE_EXTENSION), (s) => {
-                        if (s.energy < s.energyCapacity) {
-                            extension = s;
-                            return false;
-                        }
-                    });
+                    extension = global[room.name].orderedExtension ? global[room.name].orderedExtension[global[room.name].whichExtension] : undefined;
 
-                    if (extension) {
+                    if (extension && extension.energy < extension.energyCapacity) {
                         if (creep.pos.isNearTo(extension)) creep.transfer(extension, RESOURCE_ENERGY);
                         else creep.moveWithPath(extension, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                     }
-                    else if (creep.carry.energy < creep.carryCapacity) Memory.w = 1;
+                    else {
+                        if (!global[room.name].orderedExtension || global[room.name].whichExtension === undefined) {
+                            global[room.name].orderedExtension = _.sortBy(room.getStructures(STRUCTURE_EXTENSION), (e) => {return e.energy < e.energyCapacity ? e.energy: undefined});
+                            global[room.name].whichExtension = 0;
+
+                            if (global[room.name].orderedExtension[0] && global[room.name].orderedExtension[0].energy == global[room.name].orderedExtension[0].energyCapacity) return {response: 'idle', time: Game.time + 5};
+                        }
+                        else {
+                            global[room.name].orderedExtension.splice(0, 1);
+                            global[room.name].whichExtension++;
+                        }
+                    }
                 }
             }
             else {
