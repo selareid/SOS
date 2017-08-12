@@ -1753,7 +1753,7 @@ module.exports = {
             }
 
             //get more creeps
-            if (creeps.length < 1 || Game.creeps[creeps[0]].ticksToLive < 250) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'strgDistr'));
+            if (creeps.length < 1 || (Game.creeps[creeps[0]].ticksToLive < 250 && creeps.length < 2) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'strgDistr'));
         },
 
         structs: [{x: 1, y: 1, s: STRUCTURE_TOWER}, {x: 1, y: 0, s: STRUCTURE_STORAGE}, {x: 1, y: -1, s: STRUCTURE_TERMINAL}, {x: 0, y: -1, s: STRUCTURE_NUKER}, {x: -1, y: -1, s: STRUCTURE_POWER_SPAWN},
