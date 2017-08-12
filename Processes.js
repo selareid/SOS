@@ -503,7 +503,7 @@ module.exports = {
                     if (room.terminal && !processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
 
                     var mineral = room.find(FIND_MINERALS)[0];
-                    if (mineral && ((mineral.mineralAmount > 1 || mineral.ticksToRegeneration < 200) && _.filter(global.Mem.p, (p) => p.rmN == Memory.rmN && p.pN == 'mine').length < 1)) spawnNewProcess('mine', Memory.rmN);
+                    if (mineral && ((mineral.mineralAmount > 1 || mineral.ticksToRegeneration < 200) && !processExists('mine'))) spawnNewProcess('mine', Memory.rmN);
                 }
                 if (!processExists('doHarvest', Memory.rmN)) spawnNewProcess('doHarvest', Memory.rmN);
                 if (!processExists('takeCare', Memory.rmN)) spawnNewProcess('takeCare', Memory.rmN);
