@@ -1979,12 +1979,11 @@ module.exports = {
                  }
                  else if (mineral.mineralAmount > 1 && mineral.pos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1) {
                      if (creep.pos.isNearTo(mineral)) {
-                         if (Game.time % 6 == 0) {
-                             if (creep.harvest(mineral) == ERR_NOT_FOUND) {
-                                 if (mineral.pos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1) room.createConstructionSite(mineral.pos, STRUCTURE_EXTRACTOR);
-                                 creep.memory.t = 'build';
-                             }
+                         if (creep.harvest(mineral) == ERR_NOT_FOUND) {
+                             if (mineral.pos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1) room.createConstructionSite(mineral.pos, STRUCTURE_EXTRACTOR);
+                             creep.memory.t = 'build';
                          }
+                         else return {response: 'idle', time: Game.time + 6};
                      }
                      else creep.moveWithPath(mineral, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                  }
