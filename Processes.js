@@ -1064,7 +1064,7 @@ module.exports = {
             Memory.creditChange = 0;
             Memory.expectedStore = _.clone(currentStore);
 
-            if (room.terminal.store[RESOURCE_ENERGY] < 10000) return;
+            if (room.terminal.store[RESOURCE_ENERGY] < 10000) return {response: 'idle', time: Game.time + (60 + (Math.round(Math.random() * 50)))};
 
             switch (Memory.n) {
                 case 1:
