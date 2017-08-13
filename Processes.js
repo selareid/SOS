@@ -2309,15 +2309,17 @@ module.exports = {
         },
 
         findDefence: function (Memory, room, creep) {
-            var minDefenceLevel = Memory.mdl;
-            if (!Memory.mdl) {
-                Memory.mdl = 100;
-                minDefenceLevel = 100;
+            var structure = Memory.str ? Game.getObjectById(Memory.str) : undefined;
+            var goal = Memory.gl;
+
+            if (!structure || !goal || structure > goal) {
+                structure = _.min(room.getStructures(STRUCTURE_RAMPART).concat(room.getStructures(STRUCTURE_RAMPART)), (s) => s.hits);
+                Memory.gl = structure.hits + 1000;
             }
 
-            var structure = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_RAMPART).concat(room.getStructures(STRUCTURE_WALL)), {filter: (s) => s.hits < minDefenceLevel});
+            Memory.str = structure && structure.hits < structure.hitsMax ? structure.id : undefined;
 
-            return structure ? structure : Memory.mdl = minDefenceLevel + 1000;
+            return structure;
         },
 
         getTowerToRefill: function (Memory, room) {
