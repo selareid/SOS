@@ -1109,7 +1109,7 @@ module.exports = {
 
                         var resourceToBuy = arrayOfResourcesNeeded[Math.floor(Game.time % arrayOfResourcesNeeded.length)];
 
-                        var amount = !room.storage.store[resourceToBuy] ? room.terminal.store[resourceToBuy] : !room.terminal.store[resourceToBuy] ? room.terminal.store[resourceToBuy] : room.storage.store[resourceToBuy] + room.terminal.store[resourceToBuy];
+                        var amount = !room.storage.store[resourceToBuy] ? room.terminal.store[resourceToBuy] ? room.terminal.store[resourceToBuy] : 0: !room.terminal.store[resourceToBuy] ? room.terminal.store[resourceToBuy] : room.storage.store[resourceToBuy] + room.terminal.store[resourceToBuy];
 
                         if (Memory.credits > 0 && amount < 2500
                             && _.sum(room.terminal.store) < room.terminal.storeCapacity) {
@@ -1146,7 +1146,7 @@ module.exports = {
                 case 3:
                     Memory.n++;
 
-                    var amount = !room.storage.store[RESOURCE_POWER] ? room.terminal.store[RESOURCE_POWER] : !room.terminal.store[RESOURCE_POWER] ? room.terminal.store[RESOURCE_POWER] : room.storage.store[RESOURCE_POWER] + room.terminal.store[RESOURCE_POWER];
+                    var amount = !room.storage.store[RESOURCE_POWER] ? room.terminal.store[RESOURCE_POWER] ? room.terminal.store[RESOURCE_POWER] : 0 : !room.terminal.store[RESOURCE_POWER] ? room.terminal.store[RESOURCE_POWER] : room.storage.store[RESOURCE_POWER] + room.terminal.store[RESOURCE_POWER];
 
                     if (Memory.credits > 0 && amount < 2500
                         && _.sum(room.terminal.store) < room.terminal.storeCapacity) {
@@ -1205,7 +1205,7 @@ module.exports = {
                     }
             }
 
-            return {response: 'idle', time: Game.time + (15 + (Math.round(Math.random() * 15)))};
+            return {response: 'idle', time: Game.time + (15 + (Math.round(Math.random() * 10)))};
         }
     },
 
