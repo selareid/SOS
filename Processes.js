@@ -1053,7 +1053,7 @@ module.exports = {
             var room = Game.rooms[Memory.rmN];
             if (!room || !room.terminal || room.controller.level < 8) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
-            if (!Memory.global.Mem.market) Memory.global.Mem.market = {};
+            if (!global.Mem.market) global.Mem.market = {};
             if (!Memory.mineral) Memory.mineral = room.find(FIND_MINERALS)[0] ? room.find(FIND_MINERALS)[0].mineralType : undefined;
             if (Memory.credits === undefined) Memory.credits = 500;
 
@@ -1079,7 +1079,7 @@ module.exports = {
                             if (o.amount >= 10) return o.price
                         });
 
-                        if (!Memory.global.Mem.market[Memory.mineral + '_sell'] || bestBuy.price < global.Mem.market[Memory.mineral + '_sell']) {
+                        if (!global.Mem.market[Memory.mineral + '_sell'] || bestBuy.price < global.Mem.market[Memory.mineral + '_sell']) {
                             var transCost = Game.market.calcTransactionCost(1, room.name, bestBuy.roomName);
 
                             var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[Memory.mineral] ? room.terminal.store[Memory.mineral] : Math.round((room.terminal.store.energy / 2) / transCost);
