@@ -1133,6 +1133,7 @@ module.exports = {
                                 console.terminalLog(room, 'Tried to buy ' + bestBuy.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestBuy.price + ' Result ' + rsl);
 
                                 if (rsl == OK) {
+                                    global.Mem.market[resourceToBuy + '_buy'] = bestBuy.price;
                                     Memory.creditChange -= amountToSend * bestBuy.price;
                                     Memory.expectedStore += amountToSend;
                                     keepGoing = false;
