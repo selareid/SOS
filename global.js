@@ -1,5 +1,7 @@
 module.exports = () => {
 
+    profile = (callback) => {var before = Game.cpu.getUsed(); callback(); return Game.cpu.getUsed()-before;};
+
     isUndefinedOrNull = function (val) {
         return val === undefined || val === null;
     };
