@@ -1053,6 +1053,7 @@ module.exports = {
             var room = Game.rooms[Memory.rmN];
             if (!room || !room.terminal || room.controller.level < 8) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
+            if (!Memory.global.Mem.market) Memory.global.Mem.market = {};
             if (!Memory.mineral) Memory.mineral = room.find(FIND_MINERALS)[0] ? room.find(FIND_MINERALS)[0].mineralType : undefined;
             if (Memory.credits === undefined) Memory.credits = 500;
 
@@ -1078,7 +1079,7 @@ module.exports = {
                             if (o.amount >= 10) return o.price
                         });
 
-                        if (!Memory.sellPrice || bestBuy.price < Memory.sellPrice) {
+                        if (!Memory.global.Mem.market[Memory.mineral + '_sell'] || bestBuy.price < global.Mem.market[Memory.mineral + '_sell']) {
                             var transCost = Game.market.calcTransactionCost(1, room.name, bestBuy.roomName);
 
                             var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[Memory.mineral] ? room.terminal.store[Memory.mineral] : Math.round((room.terminal.store.energy / 2) / transCost);
@@ -1091,7 +1092,7 @@ module.exports = {
                                 console.terminalLog(room, 'Tried to buy ' + bestBuy.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestBuy.price + ' Result ' + rsl);
 
                                 if (rsl == OK) {
-                                    Memory.buyPrice = bestBuy.price;
+                                    global.Mem.market[Memory.mineral + '_buy'] = bestBuy.price;
                                     Memory.creditChange -= amountToSend * bestBuy.price;
                                     Memory.expectedStore += amountToSend;
                                 }
@@ -1152,7 +1153,6 @@ module.exports = {
                         }), (o) => {
                             if (o.amount >= 10) return o.price
                         });
-                        Memory.sellPrice = bestSell.price;
 
                         if (!Memory.buyPrice || bestSell.price > Memory.buyPrice) {
                             var transCost = Game.market.calcTransactionCost(1, room.name, bestSell.roomName);
@@ -1165,6 +1165,7 @@ module.exports = {
                                 console.terminalLog(room, 'Tried to sell ' + bestSell.resourceType + ' Amount ' + amountToSend + ' At Price ' + bestSell.price + ' Result ' + rsl);
 
                                 if (rsl == OK) {
+                                    global.Mem.market[Memory.mineral + '_sell'] = bestSell.price;
                                     Memory.creditChange += amountToSend * bestSell.price;
                                     Memory.expectedStore -= amountToSend;
                                 }
