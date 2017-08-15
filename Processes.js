@@ -585,7 +585,7 @@ module.exports = {
             var sortedCreeps = _.groupBy(room.find(FIND_MY_CREEPS), (creep) => {return creep.memory.p});
 
             for (let group in sortedCreeps) {
-                sortedCreeps[group] = _size(sortedCreeps[group]);
+                sortedCreeps[group] = _.size(sortedCreeps[group]);
             }
 
             global.stats.rooms[room.name].creeps = sortedCreeps;
