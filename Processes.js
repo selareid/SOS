@@ -103,30 +103,29 @@ module.exports = {
 
     doStats: {
         run: function () {
-            Memory.stats = {
-                tick: Game.time,
-                gcl: Game.gcl,
-                constructionSites: _.size(Game.constructionSites),
-                tokens: Game.resources.token,
-                power: Game.resources[RESOURCE_POWER],
+            if (!global.stats) return;
 
-                cpu: {
-                    limit: Game.cpu,
-                    bucket: Game.cpu.bucket
-                },
+            global.stats.tick = Game.time;
+            global.stats.gcl = Game.gcl;
+            global.stats.constructionSites = _.size(Game.constructionSites);
+            global.stats.tokens = Game.resources.token;
+            global.stats.power = Game.resources[RESOURCE_POWER];
 
-                memory: {
-                    used: RawMemory.get().length
-                },
-
-                market: {
-                    credits: Game.market.credits,
-                    num_orders: Game.market.orders ? Object.keys(Game.market.orders).length : 0,
-                }
-
+            global.stats.cpu = {
+                limit: Game.cpu,
+                bucket: Game.cpu.bucket
             };
 
-            return {response: 'idle', time: Game.time + 2 + Math.round(Math.random() * 1)};
+            global.stats.memory = {
+                used: RawMemory.get().length
+            };
+
+            global.stats.market = {
+                credits: Game.market.credits,
+                num_orders: Game.market.orders ? Object.keys(Game.market.orders).length : 0,
+            };
+
+            return {response: 'idle', time: Game.time + 2 + Math.round(Math.random())};
         }
     },
 

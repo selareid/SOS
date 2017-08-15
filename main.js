@@ -24,6 +24,8 @@ module.exports.run = () => {
 
     console.logTickStart();
 
+    global.stats = {};
+
     global.Mem = Memory;
     global.processesRun = 0;
     global.processCost = {};
@@ -44,8 +46,16 @@ module.exports.run = () => {
         err && err.stack ? console.kernelError(err.stack) : console.kernelError(err);
     }
 
-    if (Memory.stats) Memory.stats.cpu.processUse = _.clone(global.processCost);
-    if (Memory.stats) Memory.stats.cpu.getUsed = _.clone(Game.cpu.getUsed());
+    if (global.stats.cpu) {
+        global.stats.cpu.processUse = _.clone(global.processCost);
+        global.stats.cpu.getUsed = _.clone(Game.cpu.getUsed());
+    }
+
+    if (!RawMemory.segments[1]) RawMemory.setActiveSegments([1]);
+    else {
+        RawMemory.segments[1] = JSON.stringify(global.stats);
+    }
+
     console.logTickSummary();
 };
 
