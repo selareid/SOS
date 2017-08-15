@@ -103,8 +103,6 @@ module.exports = {
 
     doStats: {
         run: function () {
-            if (!global.stats) return;
-
             global.stats.tick = Game.time;
             global.stats.gcl = Game.gcl;
             global.stats.constructionSites = _.size(Game.constructionSites);
