@@ -233,8 +233,8 @@ module.exports = {
                 return newFlag ? Memory.f = newFlag.name : 'end';
             }
 
-            var crusher = Game.creeps[Memory.crusher];
-            var healer = Game.creeps[Memory.healer];
+            var crusher = getCreep(Memory.crusher, 'crusher');
+            var healer = getCreep(Memory.healer, 'crusher')
 
             if (!Memory.complete && !healer) Memory.healer = module.exports.room.addToSQ('room:' + room.name, 'healer');
             if (!Memory.complete && !crusher) Memory.crusher = module.exports.room.addToSQ('room:' + room.name, 'crusher');
