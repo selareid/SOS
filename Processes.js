@@ -1685,24 +1685,31 @@ module.exports = {
                         if (creep.memory.w == true) {
                             switch (creep.memory.doing) {
                                 case 'tower':
+                                    creep.talk('Fill Tower');
                                     this.fillTower(Memory, room, creep);
                                     break;
                                 case 'pickupInRange':
+                                    creep.talk('Pick It Up');
                                     this.pickupInRange(Memory, room, creep);
                                     break;
                                 case 'link':
+                                    creep.talk('Link!');
                                     this.linkToStorage(Memory, room, creep);
                                     break;
                                 case 'TTS':
+                                    creep.talk('TTS');
                                     this.TTS(Memory, room, creep);
                                     break;
                                 case 'fillNuke':
+                                    creep.talk('NUKE!');
                                     this.fillNuke(Memory, room, creep);
                                     break;
                                 case 'fillPowerSpawn':
+                                    creep.talk('POWA!');
                                     this.fillPowerSpawn(Memory, room, creep);
                                     break;
                                 case 'STT':
+                                    creep.talk('STT');
                                     this.STT(Memory, room, creep);
                                     break;
                                 default:
