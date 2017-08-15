@@ -522,6 +522,8 @@ module.exports = {
             }
 
             this.spawn(Memory_it);
+            
+            if (Game.cpu.bucket > 5000) this.doStats(room);
         },
 
         addToSQ: function (Memory_it, process, creepMem = {}) {
@@ -569,6 +571,22 @@ module.exports = {
 
             if (Game.creeps[name]) console.logSpawn(room, name + ' ' + nextToSpawn.proc);
             else if (name == -6 || name == -10) delete Memory.spawnQueue[nextToSpawn.name];
+        },
+
+        doStats: function (room) {
+            if (!global.stats.rooms[room.name]) global.stats.rooms[room.name] = {};
+
+            global.stats.rooms[room.name].controller = {
+                level: room.controller.level,
+                ticksToDowngrade: room.controller.ticksToDowngrade,
+                progress: room.controller.progress,
+                progressTotal: room.controller.progressTotal,
+                sign: room.controller.sign
+            };
+
+            global.stats.rooms[room.name].creeps = _.map(_.groupBy(room.find(FIND_MY_CREEPS), (creep) => {return creep.memory.p}), (group) => {return _.size(group)});
+            global.stats.rooms[room.name].storage = room.storage ? room.storage.store : {};
+            global.stats.rooms[room.name].terminal = room.terminal ? room.terminal.store : {};
         }
     },
 

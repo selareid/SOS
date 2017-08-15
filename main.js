@@ -24,7 +24,7 @@ module.exports.run = () => {
 
     console.logTickStart();
 
-    if (!global.stats) global.stats = {};
+    if (!global.stats) global.stats = {rooms: {}};
 
     global.Mem = Memory;
     global.processesRun = 0;
