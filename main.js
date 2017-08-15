@@ -51,7 +51,7 @@ module.exports.run = () => {
         global.stats.cpu.getUsed = _.clone(Game.cpu.getUsed());
     }
 
-    if (!RawMemory.segments[1]) RawMemory.setActiveSegments([1]);
+    if (isUndefinedOrNull(RawMemory.segments[1])) RawMemory.setActiveSegments([1]);
     else {
         RawMemory.segments[1] = JSON.stringify(global.stats);
     }
