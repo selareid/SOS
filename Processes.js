@@ -236,8 +236,8 @@ module.exports = {
             var crusher = getCreep(Memory.crusher, 'crusher');
             var healer = getCreep(Memory.healer, 'crusher')
 
-            if (!Memory.complete && !healer) Memory.healer = module.exports.room.addToSQ('room:' + room.name, 'healer');
-            if (!Memory.complete && !crusher) Memory.crusher = module.exports.room.addToSQ('room:' + room.name, 'crusher');
+            if (!Memory.complete && !healer) Memory.healer = module.exports.room.addToSQ('room:' + room.name, 'healer', {name: Memory.healer});
+            if (!Memory.complete && !crusher) Memory.crusher = module.exports.room.addToSQ('room:' + room.name, 'crusher', {name: Memory.crusher});
 
             if (Memory.complete && !healer && !crusher) {
                 flag.remove();
