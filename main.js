@@ -24,7 +24,7 @@ module.exports.run = () => {
 
     console.logTickStart();
 
-    global.stats = {};
+    if (!global.stats) global.stats = {};
 
     global.Mem = Memory;
     global.processesRun = 0;
@@ -52,7 +52,7 @@ module.exports.run = () => {
     }
 
     if (isUndefinedOrNull(RawMemory.segments[1])) RawMemory.setActiveSegments([1]);
-    else {
+    else if (global.stats) {
         RawMemory.segments[1] = JSON.stringify(global.stats);
     }
 
