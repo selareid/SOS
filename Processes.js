@@ -140,6 +140,12 @@ module.exports = {
                 if (flag && !processExists('stealEnergy')) spawnNewProcess('stealEnergy');
             }());
 
+            (function () {
+                var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'crusher' && Game.rooms[f.name.split(' ')[1]])[0];
+
+                if (flag && !processExists('crusher')) spawnNewProcess('crusher');
+            }());
+
             return {response: 'idle', time: Game.time + 100 + Math.round(Math.random() * 100)};
         }
     },
