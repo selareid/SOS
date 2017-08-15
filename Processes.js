@@ -582,7 +582,13 @@ module.exports = {
                 sign: room.controller.sign
             };
 
-            global.stats.rooms[room.name].creeps = _.map(_.groupBy(room.find(FIND_MY_CREEPS), (creep) => {return creep.memory.p}), (group) => {return _.size(group)});
+            var sortedCreeps = _.groupBy(room.find(FIND_MY_CREEPS), (creep) => {return creep.memory.p});
+
+            for (let group in sortedCreeps) {
+                sortedCreeps[group] = _size(sortedCreeps[group]);
+            }
+
+            global.stats.rooms[room.name].creeps = sortedCreeps;
             global.stats.rooms[room.name].storage = room.storage ? room.storage.store : {};
             global.stats.rooms[room.name].terminal = room.terminal ? room.terminal.store : {};
         }
