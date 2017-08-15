@@ -578,8 +578,7 @@ module.exports = {
                 level: room.controller.level,
                 ticksToDowngrade: room.controller.ticksToDowngrade,
                 progress: room.controller.progress,
-                progressTotal: room.controller.progressTotal,
-                sign: room.controller.sign
+                progressTotal: room.controller.progressTotal
             };
 
             var sortedCreeps = _.groupBy(room.find(FIND_MY_CREEPS), (creep) => {return creep.memory.p});
@@ -591,6 +590,9 @@ module.exports = {
             global.stats.rooms[room.name].creeps = sortedCreeps;
             global.stats.rooms[room.name].storage = room.storage ? room.storage.store : {};
             global.stats.rooms[room.name].terminal = room.terminal ? room.terminal.store : {};
+            
+            global.stats.rooms[room.name].energyAvailable = room.energyAvailable;
+            global.stats.rooms[room.name].energyCapacityAvailable = room.energyCapacityAvailable;
         }
     },
 
