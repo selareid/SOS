@@ -1967,7 +1967,7 @@ module.exports = {
 
                  if (!creep) {
                      if (!global.Mem.p['room:' + room.name].spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
-                     return;
+                     continue;
                  }
 
                  creep.talk('mine');
@@ -2025,7 +2025,7 @@ module.exports = {
 
                     if (!creep) {
                         if (!global.Mem.p['room:' + room.name].spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
-                        return;
+                        continue;
                     }
 
                     creep.talk('iRmHaul');
@@ -2095,7 +2095,7 @@ module.exports = {
 
                     if (!creep) {
                         if (!global.Mem.p['room:' + room.name].spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
-                        return;
+                        continue;
                     }
 
                     creep.talk('praiseRC');
