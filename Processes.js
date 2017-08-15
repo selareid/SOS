@@ -230,7 +230,7 @@ module.exports = {
             if (!Memory.complete && (!flag || !room)) {
                 var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'crusher' && Game.rooms[f.name.split(' ')[1]])[0];
                 Memory.rmN = newFlag ? newFlag.name.split(' ')[1] : undefined;
-                return newFlag ? Memory.f = newFlag.name : 'end';
+                return newFlag ? Memory.f = newFlag.name : {response: 'end'};
             }
 
             var crusher = getCreep(Memory.crusher, 'crusher');
