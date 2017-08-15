@@ -122,8 +122,6 @@ module.exports = {
                 credits: Game.market.credits,
                 num_orders: Game.market.orders ? Object.keys(Game.market.orders).length : 0,
             };
-
-            return {response: 'idle', time: Game.time + 2 + Math.round(Math.random())};
         }
     },
 
