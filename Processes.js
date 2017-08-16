@@ -236,8 +236,8 @@ module.exports = {
             var crusher = getCreep(Memory.crusher, 'crusher');
             var healer = getCreep(Memory.healer, 'crusher')
 
-            if (!Memory.complete && !healer) Memory.healer = module.exports.room.addToSQ('room:' + room.name, 'healer', {name: Memory.healer});
-            if (!Memory.complete && !crusher) Memory.crusher = module.exports.room.addToSQ('room:' + room.name, 'crusher', {name: Memory.crusher});
+            if (!Memory.complete && !healer) Memory.healer = module.exports.room.addToSQ(room.name, 'healer', {name: Memory.healer});
+            if (!Memory.complete && !crusher) Memory.crusher = module.exports.room.addToSQ(room.name, 'crusher', {name: Memory.crusher});
 
             if (Memory.complete && !healer && !crusher) {
                 flag.remove();
@@ -356,7 +356,7 @@ module.exports = {
                     }
                 }
             }
-            else Memory.crp = module.exports.room.addToSQ('room:' + room.name, 'stealEnergy');
+            else Memory.crp = module.exports.room.addToSQ(room.name, 'stealEnergy');
         }
     },
 
@@ -490,7 +490,7 @@ module.exports = {
             var room = Game.rooms[Memory.rmN];
             if (!room) return {response: 'end'};
 
-            if (!Memory.spawnQueue) Memory.spawnQueue = {};
+            if (!room.memory.spawnQueue) room.memory.spawnQueue = {};
 
             if (!global[room.name]) global[room.name] = {};
 
@@ -530,8 +530,9 @@ module.exports = {
             if (Game.cpu.bucket > 5000) this.doStats(room);
         },
 
-        addToSQ: function (Memory_it, process, creepMem = {}) {
-            var Memory = global.Mem.p[Memory_it];
+        addToSQ: function (roomName, process, creepMem = {}) {
+            var room = Game.rooms[roomName];
+            if (!room) throw 'ERROR addToSQ Passed Bad roomName';
 
             while (!creepMem.name || Game.creeps[creepMem.name]) creepMem.name = (Game.time % 1000) + '' + Math.round(Math.random() * 1000);
             creepMem.body = processSpawn.run(Game.rooms[Memory.rmN], _.clone(getBodyChart(Game.rooms[Memory.rmN])[process][0]), _.clone(getBodyChart(Game.rooms[Memory.rmN])[process][1]),
@@ -539,8 +540,8 @@ module.exports = {
 
             creepMem.proc = process;
 
-            if (!Memory.spawnQueue[creepMem.name]) {
-                Memory.spawnQueue[creepMem.name] = creepMem;
+            if (!room.memory.spawnQueue[creepMem.name]) {
+                room.memory.spawnQueue[creepMem.name] = creepMem;
             }
 
             return creepMem.name;
@@ -548,15 +549,14 @@ module.exports = {
 
         spawn: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
+            var room = Game.rooms[Memory.rmN];
 
-            var nextToSpawn = _.sortBy(Memory.spawnQueue, (c) => {
+            var nextToSpawn = _.sortBy(room.memory.spawnQueue, (c) => {
                 return c.proc == 'doHarvest' ? 0 : c.proc == 'fillSpawn' ? 1 : c.proc == 'fillExt' ? 2 : c.proc == 'claim' ? 3 : 4;
             })[0];
 
             if (!nextToSpawn) return;
-            if (Game.creeps[nextToSpawn.name] || !nextToSpawn.body || !nextToSpawn.proc) return delete Memory.spawnQueue[nextToSpawn.name];
-
-            var room = Game.rooms[Memory.rmN];
+            if (Game.creeps[nextToSpawn.name] || !nextToSpawn.body || !nextToSpawn.proc) return delete room.memory.spawnQueue[nextToSpawn.name];
 
             var spawn = room.find(FIND_MY_SPAWNS, {filter: (s) => !s.spawning})[0];
 
@@ -574,7 +574,7 @@ module.exports = {
             var name = spawn.createCreep(nextToSpawn.body.body, nextToSpawn.name, {p: nextToSpawn.proc});
 
             if (Game.creeps[name]) console.logSpawn(room, name + ' ' + nextToSpawn.proc);
-            else if (name == -6 || name == -10) delete Memory.spawnQueue[nextToSpawn.name];
+            else if (name == -6 || name == -10) delete room.memory.spawnQueue[nextToSpawn.name];
         },
 
         doStats: function (room) {
@@ -1320,7 +1320,7 @@ module.exports = {
                     }
                 }
                 else if (needEnergy.length > 0 || !lab1.mineralAmount || !lab2.mineralAmount) {
-                    Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'doLabs', {name: Memory.creep});
+                    Memory.creep = module.exports.room.addToSQ(room.name, 'doLabs', {name: Memory.creep});
                 }
             }
         },
@@ -1422,7 +1422,7 @@ module.exports = {
             }
 
             //get more creeps
-            if (creeps.length < this.getHarvesters(room)) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'doHarvest'));
+            if (creeps.length < this.getHarvesters(room)) Memory.crps.push(module.exports.room.addToSQ(room.name, 'doHarvest'));
         },
 
         getHarvesters: function (room) {
@@ -1559,7 +1559,7 @@ module.exports = {
                 }
             }
             else {
-                Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'fillSpawn', {name: Memory.creep});
+                Memory.creep = module.exports.room.addToSQ(room.name, 'fillSpawn', {name: Memory.creep});
             }
         },
 
@@ -1649,7 +1649,7 @@ module.exports = {
                 }
             }
             else {
-                Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'fillExt', {name: Memory.creep});
+                Memory.creep = module.exports.room.addToSQ(room.name, 'fillExt', {name: Memory.creep});
             }
         }
     },
@@ -1758,7 +1758,7 @@ module.exports = {
             }
 
             //get more creeps
-            if (creeps.length < 1 || (Game.creeps[creeps[0]] && Game.creeps[creeps[0]].ticksToLive < 100 && creeps.length < 2)) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'strgDistr'));
+            if (creeps.length < 1 || (Game.creeps[creeps[0]] && Game.creeps[creeps[0]].ticksToLive < 100 && creeps.length < 2)) Memory.crps.push(module.exports.room.addToSQ(room.name, 'strgDistr'));
         },
 
         structs: [{x: 1, y: 1, s: STRUCTURE_TOWER}, {x: 1, y: 0, s: STRUCTURE_STORAGE}, {x: 1, y: -1, s: STRUCTURE_TERMINAL}, {x: 0, y: -1, s: STRUCTURE_NUKER}, {x: -1, y: -1, s: STRUCTURE_POWER_SPAWN},
@@ -2030,7 +2030,7 @@ module.exports = {
 
          //get more creeps
          if (Game.time % 3 == 0) {
-             if ((mineral.mineralAmount > 1 || mineral.ticksToRegeneration < 200) && creeps.length < 1) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'mine'));
+             if ((mineral.mineralAmount > 1 || mineral.ticksToRegeneration < 200) && creeps.length < 1) Memory.crps.push(module.exports.room.addToSQ(room.name, 'mine'));
          }
      }
     },
@@ -2082,7 +2082,7 @@ module.exports = {
             //get more creeps
             if (Game.time % 3 == 0) {
                 var numberOfCreepsNeeded = this.getNumberOfCarriers(room);
-                if (creeps.length < numberOfCreepsNeeded) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'iRmHaul'));
+                if (creeps.length < numberOfCreepsNeeded) Memory.crps.push(module.exports.room.addToSQ(room.name, 'iRmHaul'));
                 else if (creeps.length == 0 && numberOfCreepsNeeded == 0) return {response: 'end'};
             }
         },
@@ -2158,7 +2158,7 @@ module.exports = {
             }
 
             //get more creeps
-            if (creeps.length < this.getNumberOfUpgraders(room)) Memory.crps.push(module.exports.room.addToSQ('room:' + room.name, 'praiseRC'));
+            if (creeps.length < this.getNumberOfUpgraders(room)) Memory.crps.push(module.exports.room.addToSQ(room.name, 'praiseRC'));
             else if (creeps.length < 1 && this.getNumberOfUpgraders(room) < 1) return {response: 'end'}
         },
 
@@ -2282,7 +2282,7 @@ module.exports = {
         },
         
         getCreep: function (Memory, room) {
-            /*if (room.controller.level > 3)*/ return Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'takeCare', {name: Memory.creep});
+            /*if (room.controller.level > 3)*/ return Memory.creep = module.exports.room.addToSQ(room.name, 'takeCare', {name: Memory.creep});
 
             // var nearestRoom = Game.rooms[Memory.nr];
             // if (!nearestRoom) {
@@ -2291,10 +2291,10 @@ module.exports = {
             //     });
             //     Memory.nr = newR ? newR.name : undefined;
             //
-            //     return Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'takeCare', {name: Memory.creep});
+            //     return Memory.creep = module.exports.room.addToSQ(room.name, 'takeCare', {name: Memory.creep});
             // }
             //
-            // if (nearestRoom.controller.level <= room.controller.level || Game.map.getRoomLinearDistance(room.name, nearestRoom.name) > 10) return Memory.creep = module.exports.room.addToSQ('room:' + room.name, 'takeCare', {name: Memory.creep});
+            // if (nearestRoom.controller.level <= room.controller.level || Game.map.getRoomLinearDistance(room.name, nearestRoom.name) > 10) return Memory.creep = module.exports.room.addToSQ(room.name, 'takeCare', {name: Memory.creep});
             //
             // return Memory.creep = module.exports.room.addToSQ('room:' + nearestRoom.name, 'takeCare', {name: Memory.creep});
         },
