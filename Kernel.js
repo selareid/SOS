@@ -11,7 +11,7 @@ module.exports = {
         //idle processes
         for (let idle_it in Memory.iP) {
             if (!Memory.iP[idle_it] || !Memory.iP[idle_it][0] || !Memory.iP[idle_it][1]) {
-                delete Memory.iP[idle_it];
+                Memory.iP.splice(idle_it, 1);
                 console.logKernel('REMOVE PROCESS ' + idle_it + ' FROM IDLE PROCESSES');
                 continue;
             }
@@ -19,18 +19,14 @@ module.exports = {
             if (Game.time >= Memory.iP[idle_it][0]) {
                 console.logKernel('ADDED PROCESS ' + idle_it + ' BACK TO NORMAL PROCESSES QUEUE');
 
-                Memory.p[idle_it] = _.cloneDeep(Memory.iP[idle_it][1]);
-                delete Memory.iP[idle_it];
+                Memory.p.push(_.cloneDeep(Memory.iP[idle_it][1]));
+                Memory.iP.splice(idle_it, 1);
             }
         }
         //idle processes
 
         //normal processes
         var processes = Memory.p;
-
-        // _.sortBy(processes, (po) => {
-        //     return po.prio;
-        // });
 
         global.processesTotal = _.size(processes);
         global.processesRun = 0;
@@ -46,17 +42,16 @@ module.exports = {
                 && ((Game.cpu.bucket < lowBucketAmount && Game.cpu.limit - Game.cpu.getUsed() < saveBucketLessCPU) || Game.cpu.getUsed() > Game.cpu.limit * 2 || Game.cpu.bucket < 2000)
                 && (!process.avg || Game.cpu.limit - Game.cpu.getUsed() < saveBucketAllowance || Game.cpu.limit - process.avg - Game.cpu.getUsed() < saveBucketAllowance)) {
                 //skip process
-                process.prio++;
                 global.processesSkipped.push(process.pN);
             }
             else {
-                if (!process.pN) process.pN = process_it.split(':')[0];
+                if (!process.pN) return; //Todo add something here
 
                 if (Processes[process.pN.split(':')[0]]) {
                     try {
                         let startCpu = Game.cpu.getUsed();
 
-                        let rsl = Processes[process.pN.split(':')[0]].run(process_it);
+                        let rsl = Processes[process.pN.split(':')[0]].run(process.pN);
 
                         let used = Game.cpu.getUsed()-startCpu;
                         process.avg = process.avg ?  ((process.avg*process.times)+used)/(process.times+1) : used;
@@ -70,18 +65,18 @@ module.exports = {
                         if (rsl) {
                             switch (rsl.response) {
                                 case 'end':
-                                    delete Memory.p[process_it];
+                                    Memory.p.splice(process_it, 1);
                                     break;
                                 case 'idle':
                                     if (rsl.time) {
-                                        Memory.iP[process_it] = [
+                                        Memory.iP.push([
                                             rsl.time,
                                             _.cloneDeep(Memory.p[process_it])
-                                        ];
+                                        ]);
 
                                         console.logKernel('ADDED PROCESS ' + process_it + ' TO IDLE PROCESSES');
 
-                                        delete Memory.p[process_it];
+                                        Memory.p.splice(process_it, 1);
                                     }
                                     break;
                             }
@@ -90,12 +85,10 @@ module.exports = {
                     catch (err) {
                         err && err.stack ? console.processError(err.stack) : console.processError(err);
                     }
-
-                    process.prio = getPrio(process.pN);
                 }
                 else {
-                    console.notify('Removed process ' + process_it + ' due to not existing in Processes');
-                    delete Memory.p[process_it];
+                    console.notify('Removed process ' + process_it + ' : ' + process.pN + ' due to not existing in Processes');
+                    Memory.p.splice(process_it, 1);
                 }
             }
         }

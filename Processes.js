@@ -89,7 +89,7 @@ module.exports = {
     init: {
         run: function () {
             global.Mem.notify = [];
-            global.Mem.p = {};
+            global.Mem.p = [];
             global.Mem.iP = {};
             global.Mem.init = true;
 
@@ -157,11 +157,11 @@ module.exports = {
                 let room = Game.rooms[roomName];
                 if (!room || !room.controller || !room.controller.my || room.find(FIND_MY_SPAWNS).length < 1) continue;
 
-                if (!Memory.p['room:' + roomName]) {
+                if (!processExists('room', room.name)) {
                     _.forEach(room.find(FIND_MY_CREEPS, (c) => {
                         c.suicide();
                     }));
-                    Memory.p['room:' + roomName] = new Process('room', roomName);
+                    spawnNewProcess('room', room.name);
                 }
             }
 
