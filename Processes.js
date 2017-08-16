@@ -535,8 +535,8 @@ module.exports = {
             if (!room) throw 'ERROR addToSQ Passed Bad roomName';
 
             while (!creepMem.name || Game.creeps[creepMem.name]) creepMem.name = (Game.time % 1000) + '' + Math.round(Math.random() * 1000);
-            creepMem.body = processSpawn.run(Game.rooms[Memory.rmN], _.clone(getBodyChart(Game.rooms[Memory.rmN])[process][0]), _.clone(getBodyChart(Game.rooms[Memory.rmN])[process][1]),
-                (process == 'praiseRC' && Game.rooms[Memory.rmN] && Game.rooms[Memory.rmN].controller.level >= 8 ? 15 : _.clone(getBodyChart(Game.rooms[Memory.rmN])[process][2])));
+            creepMem.body = processSpawn.run(Game.rooms[roomName], _.clone(getBodyChart(Game.rooms[roomName])[process][0]), _.clone(getBodyChart(Game.rooms[roomName])[process][1]),
+                (process == 'praiseRC' && Game.rooms[roomName] && Game.rooms[roomName].controller.level >= 8 ? 15 : _.clone(getBodyChart(Game.rooms[roomName])[process][2])));
 
             creepMem.proc = process;
 
