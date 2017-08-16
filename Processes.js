@@ -1690,7 +1690,7 @@ module.exports = {
                     }
 
                     if (!creep) {
-                        if (!global.Mem.p['room:' + room.name].spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
+                        if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
                         continue;
                     }
 
@@ -2000,7 +2000,7 @@ module.exports = {
                  }
 
                  if (!creep) {
-                     if (!global.Mem.p['room:' + room.name].spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
+                     if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
                      continue;
                  }
 
