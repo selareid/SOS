@@ -28,9 +28,9 @@ module.exports = {
         //normal processes
         var processes = Memory.p;
 
-        _.sortBy(processes, (po) => {
-            return po.prio;
-        });
+        // _.sortBy(processes, (po) => {
+        //     return po.prio;
+        // });
 
         global.processesTotal = _.size(processes);
         global.processesRun = 0;
