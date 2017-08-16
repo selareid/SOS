@@ -110,7 +110,7 @@ module.exports = {
             global.stats.power = Game.resources[RESOURCE_POWER];
 
             global.stats.cpu = {
-                limit: Game.cpu,
+                limit: Game.cpu.limit,
                 bucket: Game.cpu.bucket
             };
 
