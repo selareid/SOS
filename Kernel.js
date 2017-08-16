@@ -51,7 +51,7 @@ module.exports = {
                     try {
                         let startCpu = Game.cpu.getUsed();
 
-                        let rsl = Processes[process.pN.split(':')[0]].run(process.pN);
+                        let rsl = Processes[process.pN].run(process_it);
 
                         let used = Game.cpu.getUsed()-startCpu;
                         process.avg = process.avg ?  ((process.avg*process.times)+used)/(process.times+1) : used;
