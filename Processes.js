@@ -90,7 +90,7 @@ module.exports = {
         run: function () {
             global.Mem.notify = [];
             global.Mem.p = [];
-            global.Mem.iP = {};
+            global.Mem.iP = [];
             global.Mem.init = true;
 
             spawnNewProcess('doStats');
