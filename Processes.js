@@ -1626,24 +1626,15 @@ module.exports = {
                     creep.getConsumerEnergy(Memory, room);
                 }
                 else {
-                    var extension;
-
-                    extension = global[room.name].orderedExtension ? Game.getObjectById(global[room.name].orderedExtension[global[room.name].whichExtension]) : undefined;
+                    var extension = Game.getObjectById(Memory.ext);
 
                     if (extension && extension.energy < extension.energyCapacity) {
                         if (creep.pos.isNearTo(extension)) creep.transfer(extension, RESOURCE_ENERGY);
                         else creep.moveWithPath(extension, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                     }
                     else {
-                        if (!global[room.name].orderedExtension || global[room.name].whichExtension === undefined) {
-                            global[room.name].orderedExtension = _.map(_.sortBy(room.getStructures(STRUCTURE_EXTENSION), (e) => {return e.energy < e.energyCapacity ? e.energy: undefined}), (e) => e.id);
-                            global[room.name].whichExtension = 0;
-
-                            if (Game.getObjectById(global[room.name].orderedExtension[0]) && Game.getObjectById(global[room.name].orderedExtension[0]).energy == Game.getObjectById(global[room.name].orderedExtension[0]).energyCapacity) return {response: 'idle', time: Game.time + 5};
-                        }
-                        else {
-                            global[room.name].orderedExtension.splice(0, 1);
-                            global[room.name].whichExtension++;
+                        for (let ext of room.getStructures(STRUCTURE_EXTENSION)) {
+                            if (ext.energy < ext.energyCapacity) Memory.ext = ext.id;
                         }
                     }
                 }
