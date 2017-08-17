@@ -9,7 +9,7 @@ module.exports = () => {
     Process = class {
         constructor(processType, roomName, object) {
             this.pN = processType;
-            this.prio = getPrio(processType);
+            // this.prio = getPrio(processType); Todo here
             this.rmN = roomName;
             if (object) this.oNCreation = object;
         }
@@ -17,30 +17,23 @@ module.exports = () => {
 
     getPrio = function(process) {
         switch (process) {
-            case 'doStats': return 0;
-            case 'doTowers': return 0;
-
-            case 'checkRooms': return 1;
-
-            case 'checkCreeps': return 2;
-            case 'room': return 2;
-
-            case 'doHarvest': return 3;
-            case 'fillSpawn': return 3;
-            case 'fillExt': return 3;
-            case 'strgDistr': return 3;
-
-            case 'praiseRC': return 5;
-            case 'takeCare': return 5;
-
-            case 'checkGlobalProcesses': return 11;
-            case 'doTerminal': return 11;
-            case 'doPowerProc': return 11;
-            case 'placeTowers': return 11;
-            case 'placeExtensions': return 12;
-            case 'buildRoads': return 12;
-
-            default: return 10;
+            case 'doStats': return 20;
+            case 'checkRooms': return 11;
+            case 'checkCreeps': return 10;
+            case 'doTowers': return 255;
+            case 'doHarvest': return 4;
+            case 'fillSpawn': return 4;
+            case 'strgDistr': return 5;
+            case 'praiseRC': return 3;
+            case 'takeCare': return 3;
+            case 'room': return 10;
+            case 'checkGlobalProcesses': return -5;
+            case 'doTerminal': return -5;
+            case 'doPowerProc': return -10;
+            case 'placeTowers': return -10;
+            case 'placeExtensions': return -10;
+            case 'buildRoads': return -10;
+            default: return 0;
         }
     };
 
@@ -50,23 +43,7 @@ module.exports = () => {
     };
 
     spawnNewProcess = function(processType, roomName, oNCreation) {
-        var newProcess = new Process(processType, roomName, oNCreation);
-        global.Mem.p.splice(_.sortedIndex(global.Mem.p, newProcess, 'prio'), 0, newProcess);
-    };
-
-    reinsertProcess = function(process_it, prio, process = global.Mem.p[process_it]) {
-        switch (prio) {
-            case 1:
-                if (process.prio) process.prio++;
-                else process.prio = getPrio(process.pN);
-                break;
-            default:
-                if (getPrio(process.pN) === process.prio) return;
-                process.prio = getPrio(process.pN);
-        }
-
-        global.Mem.p.splice(_.sortedIndex(global.Mem.p, process, 'prio'), 0, process);
-        global.Mem.p.splice(process_it, 1);
+        global.Mem.p.push(new Process(processType, roomName, oNCreation));
     };
 
     makeid = function ()
