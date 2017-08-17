@@ -18,8 +18,8 @@ module.exports = {
 
             if (Game.time >= Memory.iP[idle_it][0]) {
                 console.logKernel('ADDED PROCESS ' + idle_it + ' BACK TO NORMAL PROCESSES QUEUE');
-
-                Memory.p.push(_.cloneDeep(Memory.iP[idle_it][1]));
+                
+                Memory.p.splice(_.sortedIndex(Memory.p, Memory.iP[idle_it][1], 'prio'), 0, _.cloneDeep(Memory.iP[idle_it][1]));
                 Memory.iP.splice(idle_it, 1);
             }
         }
@@ -43,6 +43,8 @@ module.exports = {
                 && (!process.avg || Game.cpu.limit - Game.cpu.getUsed() < saveBucketAllowance || Game.cpu.limit - process.avg - Game.cpu.getUsed() < saveBucketAllowance)) {
                 //skip process
                 global.processesSkipped.push(process.pN);
+
+                reinsertProcess(process_it, 1);
             }
             else {
                 if (!process.pN) return; //Todo add something here
@@ -51,17 +53,24 @@ module.exports = {
                     try {
                         let startCpu = Game.cpu.getUsed();
 
-                        let rsl = Processes[process.pN].run(process_it);
+                        let rsl = Processes[process.pN].run(process_it); //run process here and get result
 
+                        //cpu average
                         let used = Game.cpu.getUsed()-startCpu;
                         process.avg = process.avg ?  ((process.avg*process.times)+used)/(process.times+1) : used;
                         process.times = process.times ? process.times+1 : 1;
+                        //cpu average
 
+                        //stats
                         global.processCost[process.pN] = global.processCost[process.pN] ? global.processCost[process.pN]+used : Game.cpu.getUsed()-startCpu;
 
                         global.processesRun++;
                         global.processesRunName.push(process.pN);
+                        //stats
 
+                        let reinsert = true;
+
+                        //do stuff with result
                         if (rsl) {
                             switch (rsl.response) {
                                 case 'end':
@@ -69,6 +78,10 @@ module.exports = {
                                     break;
                                 case 'idle':
                                     if (rsl.time) {
+                                        reinsert = false;
+
+                                        process.prio = getPrio(process.pN);
+
                                         Memory.iP.push([
                                             rsl.time,
                                             _.cloneDeep(Memory.p[process_it])
@@ -81,6 +94,9 @@ module.exports = {
                                     break;
                             }
                         }
+                        //do stuff with result
+
+                        if (reinsert) reinsertProcess(process_it, 0);
                     }
                     catch (err) {
                         err && err.stack ? console.processError(err.stack) : console.processError(err);
