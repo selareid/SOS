@@ -1234,8 +1234,8 @@ module.exports = {
             var lab2 = Game.getObjectById(Memory.lab2);
 
             if (!lab1 || !lab2) {
-                Memory.lab1 = labs[0] ? labs[0].id : undefined;
-                Memory.lab2 = labs[1] ? labs[1].id : undefined;
+                Memory.lab1 = labs[0] ? labs[0].id : undefined; lab1 = Game.getObjectById(Memory.lab1);
+                Memory.lab2 = labs[1] ? labs[1].id : undefined; lab2 = Game.getObjectById(Memory.lab2);
             }
 
             //reactions section
