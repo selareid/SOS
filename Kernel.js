@@ -12,12 +12,12 @@ module.exports = {
         for (let idle_it in Memory.iP) {
             if (!Memory.iP[idle_it] || !Memory.iP[idle_it][0] || !Memory.iP[idle_it][1]) {
                 Memory.iP.splice(idle_it, 1);
-                console.logKernel('REMOVE PROCESS ' + idle_it + ' FROM IDLE PROCESSES');
+                console.logKernel('REMOVE PROCESS ' + Memory.iP[idle_it][1] + ' FROM IDLE PROCESSES');
                 continue;
             }
 
             if (Game.time >= Memory.iP[idle_it][0]) {
-                console.logKernel('ADDED PROCESS ' + idle_it + ' BACK TO NORMAL PROCESSES QUEUE');
+                console.logKernel('ADDED PROCESS ' + Memory.iP[idle_it][1] + ' BACK TO NORMAL PROCESSES QUEUE');
 
                 Memory.pQ.push(Memory.iP[idle_it][1]);
                 Memory.iP.splice(idle_it, 1);
