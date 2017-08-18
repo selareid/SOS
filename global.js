@@ -44,7 +44,7 @@ module.exports = () => {
 
     spawnNewProcess = function(processType, roomName, oNCreation) {
         do {
-            var tag = processType + ' ' + Math.round(Math.random() * 1000);
+            var tag = processType + '-' + Math.round(Math.random() * 1000);
         }
         while (Memory.p[tag]);
 
