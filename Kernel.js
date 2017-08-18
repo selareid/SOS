@@ -37,7 +37,7 @@ module.exports = {
             let processTag = processQueue[processQueueIndex];
             let process = Memory.p[processTag];
 
-            if (!process) console.logKernel('SKIPPED PROCESS ' + processTag + ' DUE TO IT NOT EXISTING IN Memory.p'); continue;
+            if (!process) console.kernelError('SKIPPED PROCESS ' + processTag + ' DUE TO IT NOT EXISTING IN Memory.p'); continue;
 
             // Object.setPrototypeOf(process, Process);
 
