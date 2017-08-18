@@ -216,7 +216,7 @@ module.exports = {
 
             if (_.sum(creep.carry) == 0) return creep.suicide();
 
-            if (creep.pos.isNearTo(creep.room.storage)) creep.transfer(creep.room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
+            if (creep.pos.isNearTo(creep.room.storage)) creep.transfer(creep.room.storage, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
             else creep.moveWithPath(creep.room.storage, {range: 1, repath: 0.01, maxRooms: 1});
         }
     },
@@ -1272,7 +1272,7 @@ module.exports = {
                             }
                         }
                         else if (creep.memory.w == 2) {
-                            if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
+                            if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
                             else creep.moveWithPath(room.storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                         }
                         else {
@@ -1307,7 +1307,7 @@ module.exports = {
                             }
                         }
                         else if (creep.memory.w == 2) {
-                            if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
+                            if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
                             else creep.moveWithPath(room.storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                         }
                         else {
@@ -1781,7 +1781,7 @@ module.exports = {
             if (creep.memory.w == true) {
                 //if carry is full
                 var storage = room.storage;
-                creep.transfer(storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
+                creep.transfer(storage, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
             }
             else {
                 //if carry is empty
@@ -1938,7 +1938,7 @@ module.exports = {
             if (!room.terminal) return 'no structure';
 
             if (creep.memory.w == true) {
-                creep.transfer(room.terminal, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
+                creep.transfer(room.terminal, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
             }
             else {
                 var resourceToMove;
@@ -2001,7 +2001,7 @@ module.exports = {
 
                  if (Memory.w == 1) {
                      var putWhere = room.terminal && room.terminal[mineral.mineralType] && room.terminal[mineral.mineralType] < terminalGoals[mineral.mineralType] ? room.terminal : room.storage;
-                     if (creep.pos.isNearTo(putWhere)) creep.transfer(putWhere, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
+                     if (creep.pos.isNearTo(putWhere)) creep.transfer(putWhere, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
                      else creep.moveWithPath(putWhere, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                  }
                  else if (mineral.mineralAmount > 1 && mineral.pos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1) {
@@ -2061,7 +2061,7 @@ module.exports = {
                         creep.getCarrierResources(Memory);
                     }
                     else if (room.storage) {
-                        if (creep.pos.isNearTo(room.storage.pos)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Math.random() * Object.keys(creep.carry).length)]);
+                        if (creep.pos.isNearTo(room.storage.pos)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
                         else creep.moveWithPath(room.storage, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                     }
 
