@@ -89,7 +89,8 @@ module.exports = {
     init: {
         run: function () {
             global.Mem.notify = [];
-            global.Mem.p = [];
+            global.Mem.p = {};
+            global.Mem.pQ = [];
             global.Mem.iP = [];
             global.Mem.init = true;
 
@@ -312,7 +313,7 @@ module.exports = {
                 return newFlag ? Memory.f = newFlag.name : 'end';
             }
 
-            if (Game.creeps[Memory.crp] || global.Mem.p['room:' + room.name].spawnQueue[Memory.crp]) {
+            if (Game.creeps[Memory.crp] || room.memory.spawnQueue[Memory.crp]) {
                 if (!Game.creeps[Memory.crp]) return;
                 var creep = getCreep(Memory.crp, 'stealEnergy');
                 if (creep == 'dead') {
@@ -383,7 +384,7 @@ module.exports = {
                 Memory.nr = newR ? newR.name : undefined;
             }
 
-            if (Game.creeps[Memory.crp] || global.Mem.p['room:' + nearestRoom.name].spawnQueue[Memory.crp]) {
+            if (Game.creeps[Memory.crp] || nearestRoom.memory.spawnQueue[Memory.crp]) {
                 if (!Game.creeps[Memory.crp]) return;
                 var creep = getCreep(Memory.crp, 'claim');
                 if (creep == 'dead') {
@@ -422,7 +423,7 @@ module.exports = {
                 Memory.nr = newR ? newR.name : undefined;
             }
 
-            if (Game.creeps[Memory.crp] || global.Mem.p['room:' + nearestRoom.name].spawnQueue[Memory.crp]) {
+            if (Game.creeps[Memory.crp] || nearestRoom.memory.spawnQueue[Memory.crp]) {
                 if (!Game.creeps[Memory.crp]) return;
                 var creep = getCreep(Memory.crp, 'claim');
                 if (creep == 'dead') {
@@ -540,9 +541,7 @@ module.exports = {
 
             creepMem.proc = process;
 
-            if (!room.memory.spawnQueue[creepMem.name]) {
-                room.memory.spawnQueue[creepMem.name] = creepMem;
-            }
+            if (!room.memory.spawnQueue[creepMem.name]) room.memory.spawnQueue[creepMem.name] = creepMem;
 
             return creepMem.name;
         },
@@ -1362,7 +1361,7 @@ module.exports = {
             if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
             if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
-            if (!creeps) Memory.crps = [];
+            if (!creeps) Memory.crps = []; creeps = Memory.crps;
 
             if (creeps.length > 0) {
                 //creep loop
@@ -1464,7 +1463,7 @@ module.exports = {
 
             var link = Game.getObjectById(srcId).pos.findClosestByRange(_.map(global[room.name].sourcelinks, (s) => Game.getObjectById(s)));
 
-            if (link) {
+            if (link && link.pos.getRangeTo(creep) < 3) {
                 if (creep.pos.isNearTo(link.pos)) creep.transfer(link, RESOURCE_ENERGY);
                  else creep.moveWithPath(link, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
             }
@@ -1653,7 +1652,7 @@ module.exports = {
             var room = Game.rooms[Memory.rmN];
             if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
-            if (!creeps) Memory.crps = [];
+            if (!creeps) Memory.crps = []; creeps = Memory.crps;
 
             if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
 
@@ -2034,7 +2033,7 @@ module.exports = {
             var room = Game.rooms[Memory.rmN];
             if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
-            if (!creeps) Memory.crps = [];
+            if (!creeps) Memory.crps = []; creeps = Memory.crps;
             if (!room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0]) return;
 
             if (!room.storage) return this.placeStorage(room);
@@ -2049,7 +2048,7 @@ module.exports = {
                     }
 
                     if (!creep) {
-if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
+                        if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
                         continue;
                     }
 
@@ -2119,7 +2118,7 @@ if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
                     }
 
                     if (!creep) {
-if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
+                        if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
                         continue;
                     }
 

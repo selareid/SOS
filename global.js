@@ -9,7 +9,7 @@ module.exports = () => {
     Process = class {
         constructor(processType, roomName, object) {
             this.pN = processType;
-            // this.prio = getPrio(processType); Todo here
+            this.prio = getPrio(processType);
             this.rmN = roomName;
             if (object) this.oNCreation = object;
         }
@@ -38,12 +38,14 @@ module.exports = () => {
     };
 
     processExists = function(processType, roomName) {
-        return roomName ? _.filter(global.Mem.p, (p) => p.rmN == roomName && p.pN == processType).length > 0 || _.filter(global.Mem.iP, (p) => p[1].rmN == roomName && p[1].pN == processType).length > 0
-            : _.filter(global.Mem.p, (p) => p.pN == processType).length > 0 || _.filter(global.Mem.iP, (p) => p[1].pN == processType).length > 0;
+        return roomName ? _.filter(global.Mem.p, (p) => p.rmN == roomName && p.pN == processType).length > 0
+            : _.filter(global.Mem.p, (p) => p.pN == processType).length > 0;
     };
 
     spawnNewProcess = function(processType, roomName, oNCreation) {
-        global.Mem.p.push(new Process(processType, roomName, oNCreation));
+        var tag = processType + ' ' + Math.round(Math.random()*1000);
+        global.Mem.p[tag] = new Process(processType, roomName, oNCreation);
+        global.Mem.pQ.push(tag);
     };
 
     makeid = function ()

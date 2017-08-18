@@ -19,22 +19,23 @@ module.exports = {
             if (Game.time >= Memory.iP[idle_it][0]) {
                 console.logKernel('ADDED PROCESS ' + idle_it + ' BACK TO NORMAL PROCESSES QUEUE');
 
-                Memory.p.push(_.cloneDeep(Memory.iP[idle_it][1]));
+                Memory.p.push(Memory.iP[idle_it][1]);
                 Memory.iP.splice(idle_it, 1);
             }
         }
         //idle processes
 
         //normal processes
-        var processes = Memory.p;
+        var processQueue = Memory.pQ;
 
-        global.processesTotal = _.size(processes);
+        global.processesTotal = processQueue.length;
         global.processesRun = 0;
         global.processesSkipped = [];
         global.processesRunName = [];
 
-        for (let process_it in processes) {
-            let process = processes[process_it];
+        for (let processQueueIndex in processQueue) {
+            let processTag = processQueue[processQueueIndex];
+            let process = Memory.p[processTag];
 
             // Object.setPrototypeOf(process, Process);
 
@@ -47,11 +48,11 @@ module.exports = {
             else {
                 if (!process.pN) return; //Todo add something here
 
-                if (Processes[process.pN.split(':')[0]]) {
+                if (Processes[process.pN.split(':')]) {
                     try {
                         let startCpu = Game.cpu.getUsed();
 
-                        let rsl = Processes[process.pN].run(process_it);
+                        let rsl = Processes[process.pN].run(processTag);
 
                         let used = Game.cpu.getUsed()-startCpu;
                         process.avg = process.avg ?  ((process.avg*process.times)+used)/(process.times+1) : used;
@@ -65,18 +66,19 @@ module.exports = {
                         if (rsl) {
                             switch (rsl.response) {
                                 case 'end':
-                                    Memory.p.splice(process_it, 1);
+                                    delete Memory.p[processTag];
+                                    Memory.p.splice(processQueueIndex, 1);
                                     break;
                                 case 'idle':
                                     if (rsl.time) {
                                         Memory.iP.push([
                                             rsl.time,
-                                            _.cloneDeep(Memory.p[process_it])
+                                            processTag
                                         ]);
 
-                                        console.logKernel('ADDED PROCESS ' + process_it + ' TO IDLE PROCESSES');
+                                        console.logKernel('ADDED PROCESS ' + processTag + ' TO IDLE PROCESSES');
 
-                                        Memory.p.splice(process_it, 1);
+                                        Memory.pQ.splice(processQueueIndex, 1);
                                     }
                                     break;
                             }
@@ -87,8 +89,9 @@ module.exports = {
                     }
                 }
                 else {
-                    console.notify('Removed process ' + process_it + ' : ' + process.pN + ' due to not existing in Processes');
-                    Memory.p.splice(process_it, 1);
+                    console.notify('Removed process ' + processTag + ' : ' + process.pN + ' due to not existing in Processes');
+                    delete Memory.p[processTag];
+                    Memory.p.splice(processQueueIndex, 1);
                 }
             }
         }
