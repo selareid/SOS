@@ -43,7 +43,11 @@ module.exports = () => {
     };
 
     spawnNewProcess = function(processType, roomName, oNCreation) {
-        var tag = processType + ' ' + Math.round(Math.random()*1000);
+        do {
+            var tag = processType + ' ' + Math.round(Math.random() * 1000);
+        }
+        while (Memory.p[tag]);
+
         global.Mem.p[tag] = new Process(processType, roomName, oNCreation);
         global.Mem.pQ.push(tag);
     };

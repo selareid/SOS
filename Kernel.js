@@ -69,7 +69,7 @@ module.exports = {
                             switch (rsl.response) {
                                 case 'end':
                                     delete Memory.p[processTag];
-                                    Memory.p.splice(processQueueIndex, 1);
+                                    Memory.pQ.splice(processQueueIndex, 1);
                                     break;
                                 case 'idle':
                                     if (rsl.time) {
@@ -93,7 +93,7 @@ module.exports = {
                 else {
                     console.notify('Removed process ' + processTag + ' : ' + process.pN + ' due to not existing in Processes');
                     delete Memory.p[processTag];
-                    Memory.p.splice(processQueueIndex, 1);
+                    Memory.pQ.splice(processQueueIndex, 1);
                 }
             }
         }
