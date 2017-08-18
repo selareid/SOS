@@ -19,7 +19,7 @@ module.exports = {
             if (Game.time >= Memory.iP[idle_it][0]) {
                 console.logKernel('ADDED PROCESS ' + idle_it + ' BACK TO NORMAL PROCESSES QUEUE');
 
-                Memory.p.push(Memory.iP[idle_it][1]);
+                Memory.pQ.push(Memory.iP[idle_it][1]);
                 Memory.iP.splice(idle_it, 1);
             }
         }
