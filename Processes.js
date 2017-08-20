@@ -1868,7 +1868,7 @@ module.exports = {
                             break;
                         }
                     }
-                    else if (!room.storage.store[resourceType] || room.storage.store[resourceType]+800 < 5000) {
+                    else if (room.terminal.store[resourceType]+800 > terminalGoals[resourceType]) {
                         resourceToMove = resourceType;
                         break;
                     }
@@ -1898,7 +1898,7 @@ module.exports = {
                             break;
                         }
                     }
-                    else if (room.storage.store[resourceType]-800 > 5000) {
+                    else if (room.terminal.store[resourceType]-800 < terminalGoals[resourceType]) {
                         resourceToMove = resourceType;
                         break;
                     }
