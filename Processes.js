@@ -1131,8 +1131,7 @@ module.exports = {
 
                         var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[order.resourceType] ? room.terminal.store[order.resourceType] : Math.round((room.terminal.store.energy / 2) / transCost);
                         if (amountToSend > order.amount) amountToSend = order.amount;
-                        if (amountToSend * order.price > Memory.credits) amountToSend = Math.floor(Memory.credits / order.price);
-                        if (amountToSend > room.terminal.storeCapacity - _.sum(room.terminal.store)) amountToSend = room.terminal.storeCapacity - _.sum(room.terminal.store);
+                        if (amountToSend > room.terminal.store[order.resourceType]) amountToSend = room.terminal.store[order.resourceType];
 
                         if (amountToSend > 0) {
                             var rsl = Game.market.deal(order.id, amountToSend, room.name);
