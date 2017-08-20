@@ -2241,11 +2241,10 @@ module.exports = {
             var structure = Memory.str ? Game.getObjectById(Memory.str) : undefined;
 
             if (!structure || structure.structureType == STRUCTURE_WALL || structure.hits >= structure.hitsMax || (structure.structureType == STRUCTURE_RAMPART && structure.hits > RAMPART_DECAY_AMOUNT*RAMPART_DECAY_TIME)) {
-                if (room.memory.repairQueue && room.memory.repairQueue.length > 0) {
-                    structure = Game.getObjectById(room.memory.repairQueue[0]);
-                    room.memory.repairQueue.splice(0, 1);
-                }
-                    Memory.str = structure && structure.hits < structure.hitsMax ? structure.id : undefined;
+                structure = Game.getObjectById(room.memory.repairQueue[0]);
+                if (room.memory.repairQueue && room.memory.repairQueue.length > 0)room.memory.repairQueue.splice(0, 1);
+
+                Memory.str = structure && structure.hits < structure.hitsMax ? structure.id : undefined;
             }
 
             return structure;
