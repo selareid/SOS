@@ -32,7 +32,10 @@ module.exports.run = () => {
 
     try {
         (() => {
-            if (Game.time % 11 == 0) for (let creep_it in Memory.creeps) if (!Game.creeps[creep_it]) delete Memory.creeps[creep_it];
+            if (Game.time % 11 == 0) {
+                for (let creep_it in Memory.creeps) if (!Game.creeps[creep_it]) delete Memory.creeps[creep_it];
+                for (let flag_it in Memory.flags) if (!Game.flags[flag_it]) delete Memory.flags[flag_it];
+            }
         })();
     }
     catch (err) {
