@@ -1096,8 +1096,8 @@ module.exports = {
             };
             else if (room.terminal.cooldown) return {response: 'idle', time: Game.time + room.terminal.cooldown};
 
-            for (var orderIndex in Memory.market) {
-                var order = Game.market.getOrderById(Memory.market[orderIndex]);
+            for (var orderIndex in global.Mem.market) {
+                var order = Game.market.getOrderById(global.Mem.market[orderIndex]);
 
                 if (!order || order.amount < 10) continue;
 
