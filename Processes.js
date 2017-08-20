@@ -197,8 +197,8 @@ module.exports = {
 
                 _.forEach(room.find(FIND_STRUCTURES), (structure) => {
                     if ((structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_RAMPART && structure.hits < (structure.hitsMax * 0.5)
-                        || (structure.structureType == STRUCTURE_RAMPART && structure.hits < (structure.hitsMax * 0.001)))
-                        && (structure.structureType != STRUCTURE_CONTAINER || !structure.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => structure.structureType == STRUCTURE_LINK}))
+                        || (structure.structureType == STRUCTURE_RAMPART && structure.hits < RAMPART_DECAY_AMOUNT*RAMPART_DECAY_TIME))
+                        && (structure.structureType != STRUCTURE_CONTAINER || !structure.pos.findInRange(room.getStructures(STRUCTURE_LINK), 3))
                         && !structure.room.memory.repairQueue.includes(structure.id)) structure.room.memory.repairQueue.push(structure.id);
                 });
             });
