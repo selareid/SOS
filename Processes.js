@@ -1113,7 +1113,7 @@ module.exports = {
                         if (amountToSend > room.terminal.storeCapacity - _.sum(room.terminal.store)) amountToSend = room.terminal.storeCapacity - _.sum(room.terminal.store);
                         if (terminalGoals[order.resourceType] && amountToSend + room.terminal.store[order.resourceType] > terminalGoals[order.resourceType]) amountToSend = terminalGoals[order.resourceType] - room.terminal.store[order.resourceType];
 
-                        if (amountToSend > 0) {
+                        if (amountToSend) {
                             var rsl = Game.market.deal(order.id, amountToSend, room.name);
                             console.terminalLog(room, 'Tried to buy ' + order.resourceType + ' Amount ' + amountToSend + ' At Price ' + order.price + ' Result ' + rsl);
 
@@ -1125,7 +1125,7 @@ module.exports = {
                         }
                         break;
                     case ORDER_BUY: //you sell
-                        if (room.terminal.store[order.resourceType] < 10) continue;
+                        if (!room.terminal.store[order.resourceType] || room.terminal.store[order.resourceType] < 10) continue;
 
                         var transCost = Game.market.calcTransactionCost(1, room.name, order.roomName);
 
@@ -1133,9 +1133,9 @@ module.exports = {
                         if (amountToSend > order.amount) amountToSend = order.amount;
                         if (amountToSend > room.terminal.store[order.resourceType]) amountToSend = room.terminal.store[order.resourceType];
 
-                        if (amountToSend > 0) {
+                        if (amountToSend) {
                             var rsl = Game.market.deal(order.id, amountToSend, room.name);
-                            console.terminalLog(room, 'Tried to buy ' + order.resourceType + ' Amount ' + amountToSend + ' At Price ' + order.price + ' Result ' + rsl);
+                            console.terminalLog(room, 'Tried to sell ' + order.resourceType + ' Amount ' + amountToSend + ' At Price ' + order.price + ' Result ' + rsl);
 
                             if (rsl == OK) {
                                 Memory.creditChange -= amountToSend * order.price;
