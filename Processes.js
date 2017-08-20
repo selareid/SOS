@@ -2240,7 +2240,7 @@ module.exports = {
         findStructureToRepair: function (Memory, room, creep) {
             var structure = Memory.str ? Game.getObjectById(Memory.str) : undefined;
 
-            if (!structure || structure.hits >= structure.hitsMax || (structure.structureType == STRUCTURE_RAMPART && structure.hits > (structure.hitsMax * 0.001))) {
+            if (!structure || structure.structureType == STRUCTURE_WALL || structure.hits >= structure.hitsMax || (structure.structureType == STRUCTURE_RAMPART && structure.hits > (structure.hitsMax * 0.001))) {
                 if (room.memory.repairQueue && room.memory.repairQueue.length > 0) {
                     structure = Game.getObjectById(room.memory.repairQueue[0]);
                     room.memory.repairQueue.splice(0, 1);
@@ -2252,7 +2252,7 @@ module.exports = {
         },
 
         findDefence: function (Memory, room, creep) {
-            var structure = Memory.str ? Game.getObjectById(Memory.str) : undefined;
+            var structure = Memory.strD ? Game.getObjectById(Memory.strD) : undefined;
             var goal = Memory.gl;
 
             if (!structure || !goal || structure > goal) {
@@ -2260,7 +2260,7 @@ module.exports = {
                 Memory.gl = structure.hits + 1000;
             }
 
-            Memory.str = structure && structure.hits < structure.hitsMax ? structure.id : undefined;
+            Memory.strD = structure && structure.hits < structure.hitsMax ? structure.id : undefined;
 
             return structure;
         },
