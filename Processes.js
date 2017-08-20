@@ -936,7 +936,7 @@ module.exports = {
                     if (!room.find(FIND_SOURCES)[1]) break;
 
                     var structure = room.find(FIND_SOURCES)[0];
-                    _.forEach(room.find(FIND_SOURCES)[1].pos.findPathTo(structure, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
+                    _.forEach(room.find(FIND_SOURCES)[1].pos.findPathTo(structure, {range: 2, ignoreCreeps: true, ignoreRoads: false, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
                         if (_.size(Game.constructionSites) < 100) {
                             if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]
                                 && _.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_TERRAIN), (s) => s == 'swamp')[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
@@ -946,7 +946,7 @@ module.exports = {
                 case 2:
                     Memory.nb++;
                     _.forEach(room.find(FIND_SOURCES), (structure) => {
-                        _.forEach(storageFlag.pos.findPathTo(structure, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
+                        _.forEach(storageFlag.pos.findPathTo(structure, {range: 2, ignoreCreeps: true, ignoreRoads: false, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
                             if (_.size(Game.constructionSites) < 100) {
                                 if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]
                                     && _.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_TERRAIN), (s) => s == 'swamp')[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
@@ -958,7 +958,7 @@ module.exports = {
                     Memory.nb++;
                     _.forEach(room.find(FIND_MY_STRUCTURES), (structure) => {
                         if (structure.structureType == STRUCTURE_EXTENSION) {
-                            _.forEach(storageFlag.pos.findPathTo(structure, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
+                            _.forEach(storageFlag.pos.findPathTo(structure, {range: 2, ignoreCreeps: true, ignoreRoads: false, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
                                 if (_.size(Game.constructionSites) < 100) {
                                     if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
                                 }
@@ -970,7 +970,7 @@ module.exports = {
                     Memory.nb++;
                     if (room.controller.level < 5) return;
                     var mineral = room.find(FIND_MINERALS)[0];
-                    _.forEach(storageFlag.pos.findPathTo(mineral, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
+                    _.forEach(storageFlag.pos.findPathTo(mineral, {range: 2, ignoreCreeps: true, ignoreRoads: false, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
                             if (_.size(Game.constructionSites) < 100) {
                                 if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
                             }
@@ -979,7 +979,7 @@ module.exports = {
                 default:
                     Memory.nb = 0;
                     if (room.controller.level < 4) return;
-                    _.forEach(storageFlag.pos.findPathTo(spawnFlag, {range: 2, ignoreCreeps: true, ignoreRoads: true, plainCost: 1, swampCost: 1}), (pathData) => {
+                    _.forEach(storageFlag.pos.findPathTo(spawnFlag, {range: 2, ignoreCreeps: true, ignoreRoads: false, plainCost: 1, swampCost: 1}), (pathData) => {
                         if (_.size(Game.constructionSites) < 100) {
                             if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
                         }
