@@ -1,3 +1,4 @@
+require('prototype.room-position');
 require('prototype.room');
 require('prototype.creep');
 require('pathing');
