@@ -1073,6 +1073,8 @@ module.exports = {
     },
     
     doTerminal: {
+        maxCreditLoss: 5000,
+
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
@@ -1080,15 +1082,6 @@ module.exports = {
             if (!room || !room.terminal || room.controller.level < 8) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
             if (!global.Mem.market) global.Mem.market = {};
-            if (isUndefinedOrNull(Memory.credits)) Memory.credits = 500;
-
-            var currentStore = _.sum(room.terminal.store);
-            if (Memory.expectedStore != currentStore) {
-                Memory.credits += Memory.creditChange * 0.9;
-            }
-
-            Memory.creditChange = 0;
-            Memory.expectedStore = _.clone(currentStore);
 
             if (room.terminal.store[RESOURCE_ENERGY] < 10000) return {
                 response: 'idle',
@@ -1103,13 +1096,13 @@ module.exports = {
 
                 switch (order.type) {
                     case ORDER_SELL: //you buy
-                        if (Memory.credits < 1 || (terminalGoals[order.resourceType] && room.terminal.store[order.resourceType] > terminalGoals[order.resourceType])) continue;
+                        if (terminalGoals[order.resourceType] && room.terminal.store[order.resourceType] > terminalGoals[order.resourceType]) continue;
 
                         var transCost = Game.market.calcTransactionCost(1, room.name, order.roomName);
 
                         var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[order.resourceType] ? room.terminal.store[order.resourceType] : Math.round((room.terminal.store.energy / 2) / transCost);
                         if (amountToSend > order.amount) amountToSend = order.amount;
-                        if (amountToSend * order.price > Memory.credits) amountToSend = Math.floor(Memory.credits / order.price);
+                        if (amountToSend * order.price > this.maxCreditLoss) amountToSend = Math.floor(this.maxCreditLoss / order.price);
                         if (amountToSend > room.terminal.storeCapacity - _.sum(room.terminal.store)) amountToSend = room.terminal.storeCapacity - _.sum(room.terminal.store);
                         if (terminalGoals[order.resourceType] && amountToSend + room.terminal.store[order.resourceType] > terminalGoals[order.resourceType]) amountToSend = terminalGoals[order.resourceType] - room.terminal.store[order.resourceType];
 
@@ -1117,11 +1110,7 @@ module.exports = {
                             var rsl = Game.market.deal(order.id, amountToSend, room.name);
                             console.terminalLog(room, 'Tried to buy ' + order.resourceType + ' Amount ' + amountToSend + ' At Price ' + order.price + ' Result ' + rsl);
 
-                            if (rsl == OK) {
-                                Memory.creditChange -= amountToSend * order.price;
-                                Memory.expectedStore += amountToSend;
-                                break;
-                            }
+                            if (rsl == OK) break;
                         }
                         break;
                     case ORDER_BUY: //you sell
@@ -1137,11 +1126,7 @@ module.exports = {
                             var rsl = Game.market.deal(order.id, amountToSend, room.name);
                             console.terminalLog(room, 'Tried to sell ' + order.resourceType + ' Amount ' + amountToSend + ' At Price ' + order.price + ' Result ' + rsl);
 
-                            if (rsl == OK) {
-                                Memory.creditChange -= amountToSend * order.price;
-                                Memory.expectedStore += amountToSend;
-                                break;
-                            }
+                            if (rsl == OK)    break;
                         }
                         break;
 
