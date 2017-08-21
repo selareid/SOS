@@ -132,7 +132,6 @@ Creep.prototype.hasActiveBodyparts = function (type) {
 
 Object.defineProperty(RoomPosition.prototype, 'adjacentExtensionsNeedEnergy', {
     get: function() {
-        // this if statement is to prevent an obscure bug that can be caused by the screeps profiler.
         if (!this || !this.roomName || !Game.rooms[this.roomName]) return [];
 
         var room = Game.rooms[this.roomName];
@@ -158,8 +157,7 @@ Object.defineProperty(RoomPosition.prototype, 'adjacentExtensionsNeedEnergy', {
 
         return extensions;
     },
-
-    writable: false,
+    
     enumerable: false,
     configurable: false
 });
