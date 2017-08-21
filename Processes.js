@@ -2250,10 +2250,10 @@ module.exports = {
 
             if (!structure || !goal || structure > goal) {
                 structure = _.min(room.getStructures(STRUCTURE_RAMPART).concat(room.getStructures(STRUCTURE_RAMPART)), (s) => s.hits);
-                Memory.gl = structure.hits + 1000;
+                Memory.gl = structure.hits + 1000 > structure.hitsMax ? structure.hitsMax : structure.hits + 1000;
             }
 
-            Memory.strD = structure && structure.hits < structure.hitsMax ? structure.id : undefined;
+            Memory.strD = structure && structure.hits < goal ? structure.id : undefined;
 
             return structure;
         },

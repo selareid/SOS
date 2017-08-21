@@ -157,7 +157,7 @@ Object.defineProperty(RoomPosition.prototype, 'adjacentExtensionsNeedEnergy', {
 
         return extensions;
     },
-    
+
     enumerable: false,
     configurable: false
 });
