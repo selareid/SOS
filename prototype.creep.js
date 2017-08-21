@@ -130,12 +130,13 @@ Creep.prototype.hasActiveBodyparts = function (type) {
     return false;
 };
 
-RoomPosition.prototype.findNearby = function (structureType, filter) {
+RoomPosition.prototype.findNearbyStructure = function (structureType, filter) {
     if (!this || !this.roomName || !Game.rooms[this.roomName]) return [];
 
     var room = Game.rooms[this.roomName];
 
-    var positions = [room.getPositionAt(this.x, + this.y-1),
+    var positions = [this,
+        room.getPositionAt(this.x, + this.y-1),
         room.getPositionAt(this.x, + this.y+1),
         room.getPositionAt(this.x-1, + this.y),
         room.getPositionAt(this.x+1, + this.y),
