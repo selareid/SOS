@@ -1568,7 +1568,7 @@ module.exports = {
                     if (extension && extension.energy < extension.energyCapacity) {
                         if (creep.pos.isNearTo(extension)) creep.transfer(extension, RESOURCE_ENERGY);
                         else {
-                            var nearbyExtensions = creep.pos.adjacentExtensionsNeedEnergy;
+                            var nearbyExtensions = creep.pos.findNearby(STRUCTURE_EXTENSION, (s) => s.energy < s.energyCapacity);
                             if (!nearbyExtensions || nearbyExtensions.length < 1) creep.moveWithPath(extension, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                             else creep.transfer(nearbyExtensions[0], RESOURCE_ENERGY);
                         }

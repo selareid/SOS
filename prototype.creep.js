@@ -130,34 +130,29 @@ Creep.prototype.hasActiveBodyparts = function (type) {
     return false;
 };
 
-Object.defineProperty(RoomPosition.prototype, 'adjacentExtensionsNeedEnergy', {
-    get: function() {
-        if (!this || !this.roomName || !Game.rooms[this.roomName]) return [];
+RoomPosition.prototype.findNearby = function (structureType, filter) {
+    if (!this || !this.roomName || !Game.rooms[this.roomName]) return [];
 
-        var room = Game.rooms[this.roomName];
+    var room = Game.rooms[this.roomName];
 
-        var positions = [room.getPositionAt(this.x, + this.y-1),
-            room.getPositionAt(this.x, + this.y+1),
-            room.getPositionAt(this.x-1, + this.y),
-            room.getPositionAt(this.x+1, + this.y),
-            room.getPositionAt(this.x-1, + this.y-1),
-            room.getPositionAt(this.x+1, + this.y-1),
-            room.getPositionAt(this.x+1, + this.y+1),
-            room.getPositionAt(this.x-1, + this.y+1)];
+    var positions = [room.getPositionAt(this.x, + this.y-1),
+        room.getPositionAt(this.x, + this.y+1),
+        room.getPositionAt(this.x-1, + this.y),
+        room.getPositionAt(this.x+1, + this.y),
+        room.getPositionAt(this.x-1, + this.y-1),
+        room.getPositionAt(this.x+1, + this.y-1),
+        room.getPositionAt(this.x+1, + this.y+1),
+        room.getPositionAt(this.x-1, + this.y+1)];
 
-        var extensions = [];
+    var structures = [];
 
-        for (let position of positions) {
-            if (!position) continue;
+    for (let position of positions) {
+        if (!position) continue;
 
-            var extension = _.filter(position.lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_EXTENSION && s.energy < s.energyCapacity)[0];
+        var structure = _.filter(position.lookFor(LOOK_STRUCTURES), (s) => s.structureType == structureType && filter(s))[0];
 
-            if (extension) extensions.push(extension);
-        }
+        if (structure) structures.push(structure);
+    }
 
-        return extensions;
-    },
-
-    enumerable: false,
-    configurable: false
-});
+    return structures;
+};
