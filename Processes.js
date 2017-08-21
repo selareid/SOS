@@ -1079,7 +1079,7 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room || !room.terminal || room.controller.level < 8) return {response: 'end'};
+            if (!room || !room.storage || !room.terminal || room.controller.level < 8) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
             if (!global.Mem.market) global.Mem.market = {};
 
@@ -1097,7 +1097,7 @@ module.exports = {
 
                     switch (order.type) {
                         case ORDER_SELL: //you buy
-                            if (terminalGoals[order.resourceType] && room.terminal.store[order.resourceType] > terminalGoals[order.resourceType]) continue;
+                            if (!room.storage.store[order.resourceType] || room.storage.store[order.resourceType] > 1000) continue;
 
                             var transCost = Game.market.calcTransactionCost(1, room.name, order.roomName);
 
@@ -1105,7 +1105,7 @@ module.exports = {
                             if (amountToSend > order.amount) amountToSend = order.amount;
                             if (amountToSend * order.price > this.maxCreditLoss) amountToSend = Math.floor(this.maxCreditLoss / order.price);
                             if (amountToSend > room.terminal.storeCapacity - _.sum(room.terminal.store)) amountToSend = room.terminal.storeCapacity - _.sum(room.terminal.store);
-                            if (terminalGoals[order.resourceType] && amountToSend + room.terminal.store[order.resourceType] > terminalGoals[order.resourceType]) amountToSend = terminalGoals[order.resourceType] - room.terminal.store[order.resourceType];
+                            if (terminalGoals[order.resourceType] && amountToSend + room.terminal.store[order.resourceType] > terminalGoals[order.resourceType]+1000) amountToSend = terminalGoals[order.resourceType]+1000 - room.terminal.store[order.resourceType];
 
                             if (amountToSend) {
                                 var rsl = Game.market.deal(order.id, amountToSend, room.name);
