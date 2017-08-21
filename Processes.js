@@ -1101,7 +1101,7 @@ module.exports = {
 
                     switch (order.type) {
                         case ORDER_SELL: //you buy
-                            if (!room.storage.store[order.resourceType] || room.storage.store[order.resourceType] > 1000) continue;
+                            if (room.storage.store[order.resourceType] && room.storage.store[order.resourceType] > 1000) continue;
 
                             var transCost = Game.market.calcTransactionCost(1, room.name, order.roomName);
 
