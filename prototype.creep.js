@@ -150,7 +150,8 @@ RoomPosition.prototype.findNearbyStructure = function (structureType, filter) {
     for (let position of positions) {
         if (!position) continue;
 
-        var structure = _.filter(position.lookFor(LOOK_STRUCTURES), (s) => s.structureType == structureType && (!filter || filter(s)))[0];
+        var structure;
+        structure = _.filter(position.lookFor(LOOK_STRUCTURES), (s) => s.structureType == structureType && (!filter || !filter instanceof Function || (s)))[0];
 
         if (structure) structures.push(structure);
     }
