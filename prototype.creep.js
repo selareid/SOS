@@ -129,3 +129,37 @@ Creep.prototype.hasActiveBodyparts = function (type) {
     }
     return false;
 };
+
+Object.defineProperty(RoomPosition.prototype, 'adjacentExtensionsNeedEnergy', {
+    get: function() {
+        // this if statement is to prevent an obscure bug that can be caused by the screeps profiler.
+        if (!this || !this.roomName || !Game.rooms[this.roomName]) return [];
+
+        var room = Game.rooms[this.roomName];
+
+        var positions = [room.getPositionAt(this.x, + this.y-1),
+            room.getPositionAt(this.x, + this.y+1),
+            room.getPositionAt(this.x-1, + this.y),
+            room.getPositionAt(this.x+1, + this.y),
+            room.getPositionAt(this.x-1, + this.y-1),
+            room.getPositionAt(this.x+1, + this.y-1),
+            room.getPositionAt(this.x+1, + this.y+1),
+            room.getPositionAt(this.x-1, + this.y+1)];
+
+        var extensions = [];
+
+        for (let position of positions) {
+            if (!position) continue;
+
+            var extension = _.filter(position.lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_EXTENSION && s.energy < s.energyCapacity)[0];
+
+            if (extension) extensions.push(extension);
+        }
+
+        return extensions;
+    },
+
+    writable: false,
+    enumerable: false,
+    configurable: false
+});
