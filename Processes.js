@@ -1701,20 +1701,21 @@ module.exports = {
                 if (_.size(Game.constructionSites) < 100
                     && CONTROLLER_STRUCTURES[struc.s][room.controller.level] > room.getStructures(struc.s).length) {
                     let strucPos = new RoomPosition(flag.pos.x + struc.x, flag.pos.y + struc.y, room.name);
+                    let lookAt = strucPos.lookFor(LOOK_STRUCTURES);
 
-                    if (!strucPos.findInRange(room.getStructures(struc.s), 1)[0]) room.createConstructionSite(strucPos.x, strucPos.y, struc.s);
+                    if (_.filter(lookAt, (s) => s.structureType == struc.s)[0]) room.createConstructionSite(strucPos.x, strucPos.y, struc.s);
+                    if (_.filter(lookAt, (s) => s.structureType == STRUCTURE_ROAD)[0]) _.filter(lookAt, (s) => s.structureType == STRUCTURE_ROAD)[0].destroy();
                 }
             }
-
-            _.filter(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_ROAD}, (s) => s.destroy());
         },
 
         placeRamparts: function (room, flag) {
             for (let struc of this.structs) {
                 if (_.size(Game.constructionSites) < 100) {
                     let strucPos = new RoomPosition(flag.pos.x + struc.x, flag.pos.y + struc.y, room.name);
+                    let lookAt = strucPos.lookFor(LOOK_STRUCTURES);
 
-                    if (!strucPos.findInRange(room.getStructures(STRUCTURE_RAMPART), 0)[0]) room.createConstructionSite(strucPos.x, strucPos.y, STRUCTURE_RAMPART);
+                    if (_.filter(lookAt, (s) => s.structureType == STRUCTURE_RAMPART)) room.createConstructionSite(strucPos.x, strucPos.y, STRUCTURE_RAMPART);
                 }
             }
         },
