@@ -1109,7 +1109,7 @@ module.exports = {
                             if (amountToSend > order.amount) amountToSend = order.amount;
                             if (amountToSend * order.price > this.maxCreditLoss) amountToSend = Math.floor(this.maxCreditLoss / order.price);
                             if (amountToSend > room.terminal.storeCapacity - _.sum(room.terminal.store)) amountToSend = room.terminal.storeCapacity - _.sum(room.terminal.store);
-                            if (terminalGoals[order.resourceType] && amountToSend + room.terminal.store[order.resourceType] > terminalGoals[order.resourceType]+1000) amountToSend = terminalGoals[order.resourceType]+1000 - room.terminal.store[order.resourceType];
+                            if (terminalGoals[order.resourceType] && amountToSend + (room.terminal.store[order.resourceType] ? room.terminal.store[order.resourceType] : 0) > terminalGoals[order.resourceType]+1000) amountToSend = terminalGoals[order.resourceType]+1000 - (room.terminal.store[order.resourceType] ? room.terminal.store[order.resourceType] : 0);
 
                             if (amountToSend) {
                                 var rsl = Game.market.deal(order.id, amountToSend, room.name);
