@@ -1,3 +1,5 @@
 RoomPosition.prototype.findNearbyStructure = function (structureType, filter) {
-    return [];
+    if (!this.room) return [];
+    
+    return this.findInRange(this.room.getStructures(structureType), 1, filter);
 };
