@@ -1574,7 +1574,7 @@ module.exports = {
                     creep.getConsumerEnergy(Memory, room);
                 }
                 else {
-                    var extension = Game.getObjectById(Memory.ext);
+                    var extension = Game.getObjectById(creep.memory.ext);
 
                     if (extension && extension.energy < extension.energyCapacity) {
                         if (creep.pos.isNearTo(extension)) creep.transfer(extension, RESOURCE_ENERGY);
@@ -1588,7 +1588,7 @@ module.exports = {
                     }
                     else {
                         for (let ext of room.getStructures(STRUCTURE_EXTENSION)) {
-                            if (ext.energy < ext.energyCapacity) Memory.ext = ext.id;
+                            if (ext.energy < ext.energyCapacity) creep.memory.ext = ext.id;
                         }
                     }
                 }
