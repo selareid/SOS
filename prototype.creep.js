@@ -67,6 +67,7 @@ function harvestEnergy(creep, room=creep.room) {
     else creep.moveWithPath(source, {range: 1, repath: 0.01, maxRooms: 1});
 }
 
+//String.fromCodePoint('0x1F602')
 Creep.prototype.talk =
     function (message, public = true) {
         if (Game.cpu.bucket > 9000) this.say(message, public);
