@@ -1048,8 +1048,8 @@ module.exports = {
             var links = room.getStructures(STRUCTURE_LINK);
 
             if (global[randomHash] && (!global[randomHash].sl || !Memory.lt || Game.time - Memory.lt > 101)) {
-                global[randomHash].sl = storageFlag.pos.findNearbyStructure(STRUCTURE_LINK)[0]
-                    ? storageFlag.pos.findNearbyStructure(STRUCTURE_LINK)[0].id : undefined;
+                global[randomHash].sl = storageFlag.pos.findInRange(room.getStructures(STRUCTURE_LINK), 1)[0]
+                    ? storageFlag.pos.findInRange(room.getStructures(STRUCTURE_LINK), 1)[0].id : undefined;
                 Memory.lt = Game.time;
             }
 
@@ -1408,8 +1408,8 @@ module.exports = {
             }
             else {
                 var container = Game.getObjectById(srcId)
-                    ? Game.getObjectById(srcId).pos.findNearbyStructure(STRUCTURE_CONTAINER, 1, (s) => s.store.energy < s.storeCapacity)[0]
-                    : creep.pos.findNearbyStructure(STRUCTURE_CONTAINER, (s) => s.store.energy < s.storeCapacity)[0];
+                    ? Game.getObjectById(srcId).pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 1, (s) => s.store.energy < s.storeCapacity)[0]
+                    : creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 1, (s) => s.store.energy < s.storeCapacity)[0];
 
                 if (container) {
                     if (creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -1427,14 +1427,14 @@ module.exports = {
                 }
                 else {
                     var src = Game.getObjectById(srcId);
-                    if (_.size(Game.constructionSites) < 100 && src && creep.pos.isNearTo(src) && creep.pos.findNearbyStructure(STRUCTURE_CONTAINER).length < 1
+                    if (_.size(Game.constructionSites) < 100 && src && creep.pos.isNearTo(src) && creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 1).length < 1
                         && creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1).length < 1) room.createConstructionSite(creep.pos.x, creep.pos.y, STRUCTURE_CONTAINER)
                 }
             }
         },
 
         placeLink: function (source, creep, room = creep.room) {
-            if (_.size(Game.constructionSites) >= 100 || !global[room.name].distrSquareFlag.pos.findNearbyStructure(STRUCTURE_LINK)[0]) return;
+            if (_.size(Game.constructionSites) >= 100 || !global[room.name].distrSquareFlag.pos.findInRange(room.getStructures(STRUCTURE_LINK), 1)[0]) return;
 
             const opRP = {
                 [TOP]: {d: BOTTOM, x: 0, y: 1},
@@ -1601,7 +1601,7 @@ module.exports = {
             if (!room.storage || !flag) return;
             if (!global[room.name]) global[room.name] = {};
             if (!Game.getObjectById(Memory.link)) {
-                var link = flag.pos.findNearbyStructure(STRUCTURE_LINK)[0];
+                var link = flag.pos.findInRange(room.getStructures(STRUCTURE_LINK), 1)[0];
                 Memory.link = link ? link.id : undefined;
 
                 if (!link && Game.time % 101 == 0) return this.placeStrucs(room, flag);
@@ -1768,7 +1768,7 @@ module.exports = {
         fillTower: function (Memory, room, creep) {
 
             if (!Game.getObjectById(Memory.tower)) {
-                var fnd = creep.pos.findNearbyStructure(STRUCTURE_TOWER)[0];
+                var fnd = creep.pos.findInRange(room.getStructures(STRUCTURE_TOWER, 1))[0];
                 Memory.tower = fnd ? fnd.id : undefined;
             }
                 
@@ -2125,7 +2125,7 @@ module.exports = {
             }
 
             if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
-                if (room.controller) global[randomHash].l = room.controller.pos.findNearbyStructure(STRUCTURE_LINK)[0];
+                if (room.controller) global[randomHash].l = room.controller.pos.findInRange(room.getStructures(STRUCTURE_LINK), 1)[0];
                 Memory.lt = Game.time;
             }
 
