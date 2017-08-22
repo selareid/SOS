@@ -529,7 +529,7 @@ module.exports = {
 
             this.spawn(Memory_it);
             
-            if (Game.cpu.bucket > 5000) this.doStats(room);
+            // if (Game.cpu.bucket > 5000) this.doStats(room);
         },
 
         addToSQ: function (roomName, process, creepMem = {}) {
