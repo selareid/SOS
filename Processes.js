@@ -1545,17 +1545,27 @@ module.exports = {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
-            var creep = Memory.creep ? getCreep(Memory.creep, 'fillExt') : undefined;
-            if (creep == 'dead') {
-                Memory.crp = undefined;
-                creep = undefined;
-            }
-
+            var creeps = Memory.crps ? Memory.crps : undefined;
             var room = Game.rooms[Memory.rmN];
             if (!room) return {response: 'end'};
+            if (!creeps) Memory.crps = [];
+            creeps = Memory.crps;
             if (!global[room.name]) global[room.name] = {};
 
-            if (creep) {
+            //creep loop
+            for (let creep_it_it in creeps) {
+                if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
+                let creep = getCreep(creeps[creep_it_it].split(':')[0], 'fillExt');
+                if (creep == 'dead') {
+                    Memory.crp = undefined;
+                    creep = undefined;
+                }
+
+                if (!creep) {
+                    if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
+                    continue;
+                }
+
                 creep.talk('fillExt');
                 if (creep.carry.energy == 0) Memory.w = 1;
                 else if (creep.carry.energy == creep.carryCapacity) Memory.w = 0;
@@ -1569,7 +1579,11 @@ module.exports = {
                     if (extension && extension.energy < extension.energyCapacity) {
                         if (creep.pos.isNearTo(extension)) creep.transfer(extension, RESOURCE_ENERGY);
                         else {
-                            creep.moveWithPath(extension, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                            creep.moveWithPath(extension, {
+                                obstacles: getObstacles(room),
+                                repath: 0.01,
+                                maxRooms: 1
+                            });
                         }
                     }
                     else {
@@ -1578,10 +1592,15 @@ module.exports = {
                         }
                     }
                 }
+
             }
-            else {
-                Memory.creep = module.exports.room.addToSQ(room.name, 'fillExt', {name: Memory.creep});
-            }
+
+            if (creeps.length < this.getCreepAmount(room)) Memory.crps.push(module.exports.room.addToSQ(room.name, 'fillExt'));
+        },
+
+        getCreepAmount: function (room) {
+            if (!room || !room.controller || room.controller.level >= 7) return 1;
+            else return 2;
         }
     },
     
