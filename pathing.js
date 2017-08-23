@@ -19,9 +19,9 @@ function getCostMatrix (roomName) {
         }
     });
 
-    room.find(FIND_CREEPS).forEach(function(creep) {
-            costs.set(creep.pos.x, creep.pos.y, 0xff);
-    });
+    // room.find(FIND_CREEPS).forEach(function(creep) {
+    //         costs.set(creep.pos.x, creep.pos.y, 0xff);
+    // });
 
     global[room.name].CostMatrixCount = Game.time + 75;
     global[room.name].CostMatrix = costs;
