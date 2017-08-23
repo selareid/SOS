@@ -1,39 +1,3 @@
-// Creep.prototype.moveWithPath =
-//     function (dest, opts = {range: 1, maxRooms: 1, obstacles: getObstacles(this.room)}) {
-//         try {
-//             if (dest.pos) dest = dest.pos;
-//
-//             if (!global[this.room.name]) global[this.room.name] = {};
-//             if (!global[this.room.name].paths) global[this.room.name].paths = {};
-//
-//             var thisPosName = (this.pos.x * 100 + this.pos.y).toString(36);
-//             var destPosName = (dest.x * 100 + dest.y).toString(36);
-//             var roomTag = this.pos.roomName + dest.roomName;
-//
-//             if (this.memory.path && this.memory.path.split(',')[2] == destPosName) thisPosName = this.memory.path.split(',')[1];
-//
-//             if (global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName]) {
-//                 var rsl = this.moveByPath(global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName]);
-//                 this.memory.goto++;
-//
-//                 if (rsl == ERR_NOT_FOUND || !global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName][this.memory.goto + 1]) {
-//                     delete this.memory.goto;
-//                     delete this.memory.path;
-//                 }
-//             }
-//             else {
-//                 global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName] = this.pos.findPathTo(dest, opts);
-//
-//                 this.moveByPath(global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName]);
-//                 this.memory.goto = 1;
-//                 this.memory.path = roomTag + ',' + thisPosName + ',' + destPosName;
-//             }
-//         }
-//         catch (err) {
-//             err && err.stack ? console.pathError(err.stack) : console.pathError(err);
-//         }
-//     };
-
 function getCostMatrix (roomName) {
     var room = Game.rooms[roomName];
     if (!room) return;
@@ -80,7 +44,7 @@ RoomPosition.prototype.customFindPathTo = function (dest, opts) {
 Creep.prototype.customMoveByPath = function (path) {
     this.memory.goto = this.memory.goto && this.pos.getRangeTo(path[this.memory.goto + 1]) <= 1 ? this.memory.goto + 1 : 0;
 
-    if (this.pos.x * 100 + this.pos.y == this.memory.lastPos) this.memory.SPC = this.memory.SPC ? this.memory.SPC+1 : 1;
+    if (this.pos.x * 100 + this.pos.y == this.memory.lastPos) this.memory.SPC = this.memory.SPC ? this.memory.SPC + 1 : 1;
 
     if (!path[this.memory.goto] || (this.memory.SPC >= 3 && this.fatigue == 0)) {
         delete this.memory.SPC;
@@ -96,38 +60,36 @@ Creep.prototype.customMoveByPath = function (path) {
 
 Creep.prototype.moveWithPath =
     function (dest, opts = {}) {
-        var beforeCPU = Game.cpu.getUsed();
         try {
-            if (!dest instanceof RoomPosition) return ERR_INVALID_ARGS;
-            if (dest.pos) dest = dest.pos;
+            (() => {
+                if (!dest instanceof RoomPosition) return ERR_INVALID_ARGS;
+                if (dest.pos) dest = dest.pos;
 
-            if (!global[this.room.name]) global[this.room.name] = {};
-            if (!global[this.room.name].paths) global[this.room.name].paths = {};
+                if (!global[this.room.name]) global[this.room.name] = {};
+                if (!global[this.room.name].paths) global[this.room.name].paths = {};
 
-            var thisPosName = (this.pos.x * 100 + this.pos.y).toString(36);
-            var destPosName = (dest.x * 100 + dest.y).toString(36);
-            var roomTag = this.pos.roomName + dest.roomName;
+                var thisPosName = (this.pos.x * 100 + this.pos.y).toString(36);
+                var destPosName = (dest.x * 100 + dest.y).toString(36);
+                var roomTag = this.pos.roomName + dest.roomName;
 
-            if (this.memory.path && this.memory.path.split(',')[2] == destPosName) thisPosName = this.memory.path.split(',')[1];
+                if (this.memory.path && this.memory.path.split(',')[2] == destPosName) thisPosName = this.memory.path.split(',')[1];
 
-            if (global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName]) {
-                var rsl = this.customMoveByPath(global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName]);
+                if (global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName]) {
+                    var rsl = this.customMoveByPath(global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName]);
 
-                if (rsl == 'failed') {
-                    delete this.memory.path;
+                    if (rsl == 'failed') {
+                        delete this.memory.path;
+                    }
                 }
-            }
-            else {
-                global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName] = this.pos.customFindPathTo(dest, opts);
+                else {
+                    global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName] = this.pos.customFindPathTo(dest, opts);
 
-                this.customMoveByPath(global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName]);
-                this.memory.path = roomTag + ',' + thisPosName + ',' + destPosName;
-            }
+                    this.customMoveByPath(global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName]);
+                    this.memory.path = roomTag + ',' + thisPosName + ',' + destPosName;
+                }
+            })();
         }
         catch (err) {
             err && err.stack ? console.pathError(err.stack) : console.pathError(err);
         }
-
-        Memory.newpathingCPU = Memory.newpathingCPU ? Memory.newpathingCPU + (Game.cpu.getUsed()-beforeCPU) : Game.cpu.getUsed()-beforeCPU;
-        Memory.newtimesRun = Memory.newtimesRun ? Memory.newtimesRun+1 : 1;
     };
