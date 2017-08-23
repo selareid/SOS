@@ -96,7 +96,7 @@ Creep.prototype.moveWithPath =
                 if (!global[this.room.name].paths) global[this.room.name].paths = {};
 
                 var thisPosName = encodeChar(this.pos.x.toString() + this.pos.y.toString());
-                var destPosName = encodeChar(dest.pos.x.toString() + dest.pos.y.toString());
+                var destPosName = encodeChar(dest.x.toString() + dest.y.toString());
                 var roomTag = this.pos.roomName + dest.roomName;
 
                 if (this.memory.path && this.memory.path.split(',')[2] == destPosName) thisPosName = this.memory.path.split(',')[1];
