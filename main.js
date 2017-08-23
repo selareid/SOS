@@ -48,7 +48,9 @@ module.exports.run = () => {
     catch (err) {
         err && err.stack ? console.kernelError(err.stack) : console.kernelError(err);
     }
-
+    
+    if (Game.time % 13 == 0) Memory.market = {};
+    
     if (global.stats.cpu) {
         global.stats.cpu.processUse = _.clone(global.processCost);
         global.stats.cpu.getUsed = _.clone(Game.cpu.getUsed());
