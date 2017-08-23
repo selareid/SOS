@@ -575,7 +575,7 @@ module.exports = {
 
             if (Game.creeps[name]) {
                 console.logSpawn(room, name + ' ' + nextToSpawn.proc);
-                room.memory.FE = true;
+                room.memory.FE = false;
             }
             else if (name == -6 || name == -10) delete room.memory.spawnQueue[nextToSpawn.name];
         },
