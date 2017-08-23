@@ -1,3 +1,29 @@
+const HIGH_MASK = 0x8000;
+/* eslint-disable no-bitwise*/
+
+/**
+ *
+ * @param {int} value, needs to be lower than {HIGH_MASK}, as it will be or-ed to avoid unavailable char values
+ * @returns {string} a char on which {decodeChar} will return the original value
+ */
+function encodeChar(value) {
+    if (HIGH_MASK === value & HIGH_MASK) {
+        throw new Error('attempt to encode too high value' + value);
+    }
+
+    return String.fromCharCode(value | HIGH_MASK);
+}
+
+/**
+ *
+ * @param {string} char 1 char string
+ * @returns {number} the value previously encoded using {encodeChar}
+ */
+function decodeChar(char) {
+    return char.charCodeAt(0) & (~HIGH_MASK);
+}
+
+
 function getCostMatrix (roomName) {
     var room = Game.rooms[roomName];
     if (!room) return;
@@ -44,7 +70,7 @@ RoomPosition.prototype.customFindPathTo = function (dest, opts) {
 Creep.prototype.customMoveByPath = function (path) {
     this.memory.goto = !isUndefinedOrNull(this.memory.goto) && this.pos.isEqualTo(path[this.memory.goto]) ? this.memory.goto + 1 : 0;
 
-    if (this.pos.x * 100 + this.pos.y == this.memory.lastPos) this.memory.SPC = this.memory.SPC ? this.memory.SPC + 1 : 1;
+    if (encodeChar(this.pos.x * 100 + this.pos.y) == this.memory.lastPos) this.memory.SPC = this.memory.SPC ? this.memory.SPC + 1 : 1;
     else this.memory.SPC = 0;
 
     if (!path[this.memory.goto] || (this.memory.SPC >= 3 && this.fatigue == 0)) {
@@ -55,7 +81,7 @@ Creep.prototype.customMoveByPath = function (path) {
         return 'failed';
     }
 
-    this.memory.lastPos = this.pos.x * 100 + this.pos.y;
+    this.memory.lastPos = encodeChar(this.pos.x * 100 + this.pos.y);
     this.move(this.pos.getDirectionTo(path[this.memory.goto]));
 };
 
@@ -69,8 +95,8 @@ Creep.prototype.moveWithPath =
                 if (!global[this.room.name]) global[this.room.name] = {};
                 if (!global[this.room.name].paths) global[this.room.name].paths = {};
 
-                var thisPosName = (this.pos.x * 100 + this.pos.y).toString(36);
-                var destPosName = (dest.x * 100 + dest.y).toString(36);
+                var thisPosName = encodeChar(this.pos.x.toString() + this.pos.y.toString());
+                var destPosName = encodeChar(dest.pos.x.toString() + dest.pos.y.toString());
                 var roomTag = this.pos.roomName + dest.roomName;
 
                 if (this.memory.path && this.memory.path.split(',')[2] == destPosName) thisPosName = this.memory.path.split(',')[1];
