@@ -42,7 +42,7 @@ RoomPosition.prototype.customFindPathTo = function (dest, opts) {
 };
 
 Creep.prototype.customMoveByPath = function (path) {
-    this.memory.goto = this.memory.goto && this.pos.isEqualTo(path[this.memory.goto]) ? this.memory.goto + 1 : 0;
+    this.memory.goto = !isUndefinedOrNull(this.memory.goto) && this.pos.isEqualTo(path[this.memory.goto]) ? this.memory.goto + 1 : 0;
 
     if (this.pos.x * 100 + this.pos.y == this.memory.lastPos) this.memory.SPC = this.memory.SPC ? this.memory.SPC + 1 : 1;
 
