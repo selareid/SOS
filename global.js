@@ -3,7 +3,7 @@ module.exports = () => {
     profile = (callback) => {var before = Game.cpu.getUsed(); callback(); return Game.cpu.getUsed()-before;};
 
     isUndefinedOrNull = function (val) {
-        return val === undefined || val === null;
+        return val == undefined;
     };
 
     Process = class {
@@ -64,7 +64,7 @@ module.exports = () => {
     };
 
     getObstacles = function (room) {
-        return global[room.name].distrSquareFlag ? [global[room.name].distrSquareFlag, {pos: room.getPositionAt(global[room.name].distrSquareFlag.pos.x, global[room.name].distrSquareFlag.pos.y+1)}].concat(room.find(FIND_MY_SPAWNS)) : room.find(FIND_MY_SPAWNS);
+        return global[room.name] && global[room.name].distrSquareFlag ? [global[room.name].distrSquareFlag, {pos: room.getPositionAt(global[room.name].distrSquareFlag.pos.x, global[room.name].distrSquareFlag.pos.y+1)}].concat(room.getStructures(STRUCTURE_SPAWN)) : room.getStructures(STRUCTURE_SPAWN);
     };
 
     storageEnergy = 50000;
