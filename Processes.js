@@ -1334,7 +1334,7 @@ module.exports = {
                                 }
                                 else {
                                     var pos = Memory[source.id] ? room.getPositionAt(Number.parseInt(Memory[source.id].split(',')[0]), Number.parseInt(Memory[source.id].split(',')[1])) : undefined;
-                                    if (pos) creep.moveWithPath(pos, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
+                                    if (pos) creep.moveWithPath(pos, {range: 0, obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                                     else {
                                         creep.moveWithPath(source, {obstacles: getObstacles(room), repath: 0.01, maxRooms: 1});
                                         Memory[source.id] = undefined;
