@@ -2276,5 +2276,130 @@ module.exports = {
 
             return tower && tower.energy < tower.energyCapacity ? tower : undefined;
         }
+    },
+
+    remoteMine: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            var room = Game.rooms[Memory.rmN];
+            if (!room) return {response: 'end'};
+            if (!global[room.name]) global[room.name] = {};
+            var rooms = room.memory.remotes;
+            if (!rooms || !rooms instanceof Array) {
+                room.memory.remotes = [];
+                return {response: 'end'};
+            }
+
+            //claimer
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //TODO
+            //claimer
+
+            //haulers
+            var haulers = Memory.haulers ? Memory.haulers : undefined;
+            if (!haulers) {
+                Memory.haulers = [];
+                haulers = Memory.haulers;
+            }
+
+            //creep loop
+            if (haulers.length > 0) {
+                for (let creep_it_it in haulers) {
+                    if (typeof haulers[creep_it_it] == 'number') haulers[creep_it_it] = haulers[creep_it_it].toString();
+                    let creep = getCreep(haulers[creep_it_it].split(':')[0], 'remoteMine');
+                    if (creep == 'dead') {
+                        Memory.crp = undefined;
+                        creep = undefined;
+                    }
+
+                    if (!creep) {
+                        if (!room.memory.spawnQueue[haulers[creep_it_it]]) haulers.splice(creep_it_it, 1);
+                        continue;
+                    }
+
+                    creep.talk('hauler');
+
+                    if (creep.carry.energy == 0) creep.memory.goingHome = false;
+                    else if (_.sum(creep.carry) == creep.carryCapacity) creep.memory.goingHome = true;
+
+                    if (creep.memory.goingHome) {
+                        var thingToGoTo = room.storage ? room.storage : room.getStructures(STRUCTURE_SPAWN)[0];
+
+                        if (creep.pos.roomName == room.name) {
+                            if (creep.pos.isNearTo(thingToGoTo)) creep.transfer(thingToGoTo, RESOURCE_ENERGY);
+                            else creep.moveWithPath(thingToGoTo);
+                        }
+                        else {
+                            if (creep.room.controller && creep.room.controller.my && CONTROLLER_DOWNGRADE[creep.room.controller.level]*0.75 < creep.room.controller.ticksToDowngrade) {
+                                if (creep.getRangeTo(creep.room.controller) > 3) creep.moveWithPath(creep.room.controller, {range :3});
+                                else creep.upgradeController(creep.room.controller);
+                            }
+                            else creep.moveWithPath(thingToGoTo);
+                        }
+                    }
+                    else {
+                        if (!creep.memory.RTGT) creep.memory.RTGT = rooms[Math.floor(Math.random() * rooms.length)];
+
+                        if (creep.pos.roomName == creep.memory.RTGT) {
+
+                        }
+                        else if (Game.rooms[creep.memory.RTGT]) {
+                            var resource = Game.getObjectById(creep.memory.resource) ? Game.getObjectById(creep.memory.resource) : undefined;
+
+                            if (!resource) {
+                                resource = Game.rooms[creep.memory.RTGT].find(FIND_DROPPED_RESOURCES, {filter: (r) => r.resourceType == RESOURCE_ENERGY})[0];
+                                creep.memory.resource = resource.id;
+                            }
+
+                            if (!resource) creep.memory.RTGT = undefined;
+
+                            creep.moveWithPath(resource)
+                        }
+                        else creep.memory.RTGT = undefined;
+                    }
+                }
+            }
+            if (haulers.length < this.getNumberOfHaulers(room)) Memory.haulers.push(module.exports.room.addToSQ(room.name, 'hauler'));
+            //haulers
+        },
+
+        getNumberOfHaulers: function (room) {
+            return room.memory.remotes ? room.memory.remotes.length : 0;
+        }
     }
 };
