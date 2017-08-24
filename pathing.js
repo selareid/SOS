@@ -99,20 +99,29 @@ Creep.prototype.moveWithPath =
                 var destPosName = encodeChar(dest.x.toString() + dest.y.toString());
                 var roomTag = this.pos.roomName + dest.roomName;
 
+                var has = {
+                    range: !isUndefinedOrNull(opts.range) ? encodeChar(opts.range) : 'd',
+                    obstacles: !isUndefinedOrNull(opts.obstacles) ? opts.obstacles : 'd',
+                    plainCost: !isUndefinedOrNull(opts.plainCost) ? encodeChar(opts.plainCost) : 'd',
+                    swampCost: !isUndefinedOrNull(opts.swampCost) ? encodeChar(opts.swampCost) : 'd'
+                };
+
+                var optsTag = has.range + has.obstacles + has.plainCost + has.swampCost;
+
                 if (this.memory.path && this.memory.path.split(',')[2] == destPosName) thisPosName = this.memory.path.split(',')[1];
 
-                if (global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName]) {
-                    var rsl = this.customMoveByPath(global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName]);
+                if (global[this.room.name].paths[roomTag+thisPosName+destPosName+optsTag]) {
+                    var rsl = this.customMoveByPath(global[this.room.name].paths[roomTag+thisPosName+destPosName+optsTag]);
 
                     if (rsl == 'failed') {
                         delete this.memory.path;
                     }
                 }
                 else {
-                    global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName] = this.pos.customFindPathTo(dest, opts);
+                    global[this.room.name].paths[roomTag+thisPosName+destPosName+optsTag] = this.pos.customFindPathTo(dest, opts);
 
-                    this.customMoveByPath(global[this.room.name].paths[roomTag + ',' + thisPosName + ',' + destPosName]);
-                    this.memory.path = roomTag + ',' + thisPosName + ',' + destPosName;
+                    this.customMoveByPath(global[this.room.name].paths[roomTag+thisPosName+destPosName+optsTag]);
+                    this.memory.path = roomTag+thisPosName+destPosName+optsTag;
                 }
             })();
         }
