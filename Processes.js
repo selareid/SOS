@@ -931,7 +931,7 @@ module.exports = {
             var costMatrix = this.getCostMatrix(room.name, storageFlag, spawnFlag);
 
             switch (Memory.nb) {
-                case 3:
+                case 2:
                     Memory.nb++;
 
                     if (!room.find(FIND_SOURCES)[1]) break;
@@ -944,7 +944,7 @@ module.exports = {
                         }
                     });
                     break;
-                case 2:
+                case 1:
                     Memory.nb++;
                     _.forEach(room.find(FIND_SOURCES), (structure) => {
                         _.forEach(storageFlag.pos.findPathTo(structure, {range: 2, ignoreCreeps: true, ignoreRoads: false, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
@@ -953,18 +953,6 @@ module.exports = {
                                     && _.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_TERRAIN), (s) => s == 'swamp')[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
                             }
                         });
-                    });
-                    break;
-                case 1:
-                    Memory.nb++;
-                    _.forEach(room.find(FIND_MY_STRUCTURES), (structure) => {
-                        if (structure.structureType == STRUCTURE_EXTENSION) {
-                            _.forEach(storageFlag.pos.findPathTo(structure, {range: 2, ignoreCreeps: true, ignoreRoads: false, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
-                                if (_.size(Game.constructionSites) < 100) {
-                                    if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
-                                }
-                            });
-                        }
                     });
                     break;
                 case 0:
@@ -1596,7 +1584,9 @@ module.exports = {
                     }
                 }
 
-            }
+                if (creep.fatigue > 0 && creep.pos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1
+                    && _.filter(creep.pos.lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD).length < 1 && _.size(Game.constructionSites) < 99) creep.room.createConstructionSite(creep.pos, STRUCTURE_ROAD);
+
 
             if (creeps.length < this.getCreepAmount(room)) Memory.crps.push(module.exports.room.addToSQ(room.name, 'fillExt'));
         },
