@@ -1480,7 +1480,7 @@ module.exports = {
                 else {
                     if (!creep.pos.isEqualTo(flag.pos)) creep.moveWithPath(flag, {range: 0, repath: 0.01, maxRooms: 1});
                     else if (room.find(FIND_MY_SPAWNS)[Game.time % room.find(FIND_MY_SPAWNS).length].energy < SPAWN_ENERGY_CAPACITY) creep.transfer(room.find(FIND_MY_SPAWNS)[Game.time % room.find(FIND_MY_SPAWNS).length], RESOURCE_ENERGY);
-                    else if (creep.ticksToLive < 1250 && !room.find(FIND_MY_SPAWNS)[Game.time % room.find(FIND_MY_SPAWNS).length].spawning && room.find(FIND_MY_SPAWNS)[Game.time % room.find(FIND_MY_SPAWNS).length].energy >= 300) room.find(FIND_MY_SPAWNS)[Game.time % room.find(FIND_MY_SPAWNS).length].renewCreep(creep);
+                    // else if (creep.ticksToLive < 1250 && !room.find(FIND_MY_SPAWNS)[Game.time % room.find(FIND_MY_SPAWNS).length].spawning && room.find(FIND_MY_SPAWNS)[Game.time % room.find(FIND_MY_SPAWNS).length].energy >= 300) room.find(FIND_MY_SPAWNS)[Game.time % room.find(FIND_MY_SPAWNS).length].renewCreep(creep);
                     else if (creep.carry.energy < creep.carryCapacity) Memory.w = 1;
                 }
             }
