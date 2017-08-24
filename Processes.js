@@ -1588,7 +1588,8 @@ module.exports = {
                     && _.filter(creep.pos.lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD).length < 1 && _.size(Game.constructionSites) < 99) creep.room.createConstructionSite(creep.pos, STRUCTURE_ROAD);
 
 
-            if (creeps.length < this.getCreepAmount(room)) Memory.crps.push(module.exports.room.addToSQ(room.name, 'fillExt'));
+                if (creeps.length < this.getCreepAmount(room)) Memory.crps.push(module.exports.room.addToSQ(room.name, 'fillExt'));
+            }
         },
 
         getCreepAmount: function (room) {
@@ -1596,7 +1597,7 @@ module.exports = {
             else return 2;
         }
     },
-    
+
     strgDistr: {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
@@ -1766,7 +1767,7 @@ module.exports = {
 
                 if (storageLink && storageLink.energy > 0) {
                     var link = _.filter(room.getStructures(STRUCTURE_LINK), (s) => s.energy < 50 && s.id != storageLink.id && !s.pos.findInRange(FIND_SOURCES, 3)[0])[0];
-                    
+
                     if (room.storage.store.energy <= 1000 || !link) {
                         creep.memory.w = true;
                         creep.withdraw(storageLink, RESOURCE_ENERGY);
@@ -1776,14 +1777,14 @@ module.exports = {
                 else return 'no structure'
             }
         },
-        
+
         fillTower: function (Memory, room, creep) {
 
             if (!Game.getObjectById(Memory.tower)) {
                 var fnd = creep.pos.findInRange(room.getStructures(STRUCTURE_TOWER, 1))[0];
                 Memory.tower = fnd ? fnd.id : undefined;
             }
-                
+
             var tower = Game.getObjectById(Memory.tower) && Game.getObjectById(Memory.tower).energy < Game.getObjectById(Memory.tower).energyCapacity ? Game.getObjectById(Memory.tower) : undefined;
             if (!tower) {
                 creep.memory.w = false;
@@ -2224,7 +2225,7 @@ module.exports = {
             }
             else this.getCreep(Memory, room);
         },
-        
+
         getCreep: function (Memory, room) {
             /*if (room.controller.level > 3)*/ return Memory.creep = module.exports.room.addToSQ(room.name, 'takeCare', {name: Memory.creep});
 
