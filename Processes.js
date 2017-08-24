@@ -1565,7 +1565,9 @@ module.exports = {
                     var extension = Game.getObjectById(creep.memory.ext);
 
                     if (extension && extension.energy < extension.energyCapacity) {
-                        if (creep.pos.isNearTo(extension)) creep.transfer(extension, RESOURCE_ENERGY);
+                        if (creep.pos.isNearTo(extension)) {
+                            creep.transfer(extension, RESOURCE_ENERGY);
+                        }
                         else {
                             creep.moveWithPath(extension, {
                                 obstacles: getObstacles(room),
@@ -1584,9 +1586,8 @@ module.exports = {
                     }
                 }
 
-                if (creep.fatigue > 0 && creep.pos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1
+                if (creep.fatigue > 0 && creep.pos.findInRange(room.getStructures(STRUCTURE_EXTENSION), 1).length > 0 && creep.pos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1
                     && _.filter(creep.pos.lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD).length < 1 && _.size(Game.constructionSites) < 99) creep.room.createConstructionSite(creep.pos, STRUCTURE_ROAD);
-
             }
 
             if (creeps.length < this.getCreepAmount(room)) Memory.crps.push(module.exports.room.addToSQ(room.name, 'fillExt'));
