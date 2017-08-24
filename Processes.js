@@ -573,10 +573,7 @@ module.exports = {
 
             var name = spawn.createCreep(nextToSpawn.body.body, nextToSpawn.name, {p: nextToSpawn.proc});
 
-            if (Game.creeps[name]) {
-                console.logSpawn(room, name + ' ' + nextToSpawn.proc);
-                room.memory.FE = false;
-            }
+            if (Game.creeps[name]) console.logSpawn(room, name + ' ' + nextToSpawn.proc);
             else if (name == -6 || name == -10) delete room.memory.spawnQueue[nextToSpawn.name];
         },
 
@@ -1576,7 +1573,7 @@ module.exports = {
                 if (Memory.w == 1) {
                     creep.getConsumerEnergy(Memory, room);
                 }
-                else if (!room.memory.FE) {
+                else {
                     var extension = Game.getObjectById(creep.memory.ext);
 
                     if (extension && extension.energy < extension.energyCapacity) {
@@ -1596,8 +1593,6 @@ module.exports = {
                                 break;
                             }
                         }
-
-                        if (!creep.memory.ext) room.memory.FE = true;
                     }
                 }
 
