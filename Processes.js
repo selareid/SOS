@@ -1105,7 +1105,7 @@ module.exports = {
 
                                 if (rsl == OK) return;
                             }
-                            break;
+                            return {response: 'idle', time: Game.time + 10};
                         case ORDER_BUY: //you sell
                             if (!room.terminal.store[order.resourceType] || room.terminal.store[order.resourceType] < 10) continue;
 
@@ -1121,14 +1121,14 @@ module.exports = {
 
                                 if (rsl == OK) return;
                             }
-                            break;
+                            return {response: 'idle', time: Game.time + 10};
 
                     }
 
                 }
             })();
 
-            return {response: 'idle', time: Game.time + 4};
+            return {response: 'idle', time: Game.time + 7};
         }
     },
 
@@ -1322,7 +1322,7 @@ module.exports = {
                                 }
                                 else {
                                     var pos = Memory[source.id] ? room.getPositionAt(Number.parseInt(Memory[source.id].split(',')[0]), Number.parseInt(Memory[source.id].split(',')[1])) : undefined;
-                                    if (pos) creep.moveWithPath(pos, {range: 0, repath: 0.01, maxRooms: 1});
+                                    if (pos) creep.moveWithPath(pos, {range: 0, repath: 0.01, maxRooms: 1, Memory: Memory});
                                     else {
                                         creep.moveWithPath(source, {repath: 0.01, maxRooms: 1});
                                         Memory[source.id] = undefined;
