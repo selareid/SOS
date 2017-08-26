@@ -780,12 +780,13 @@ module.exports = {
             for (let structureType in this.buildings) {
                 for (let posXYRAW of this.buildings[structureType]) {
                     let posXY = {x: flag.pos.x+posXYRAW.x, y: flag.pos.y+posXYRAW.y};
-                    
+
                     if (amountToBuild <= 0) return {response: 'idle', time: Game.time + 101};
                     if (room.getStructures(structureType) >= CONTROLLER_STRUCTURES[structureType][room.controller.level]) break;
 
                     if (room.lookForAt(LOOK_STRUCTURES, posXY.x, posXY.y).length < 1) {
                         room.createConstructionSite(posXY.x, posXY.y, structureType);
+                        console.roomLog(room, 'Places Construcion Site ' + structureType + ' At ' + posXY.x + ' ' + posXY.y);
                         amountToBuild--;
                     }
                 }
