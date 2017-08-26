@@ -756,7 +756,11 @@ module.exports = {
     },
 
     placeExtensions: {
-        extensionStar: [{x: 0, y: 1}, {x: 0, y: -1}, {x: 1, y: 0}, {x: -1, y: 0}, {x: 0, y: 0}],
+        buildings:{
+            "extension":{"pos":[{"x":4,"y":0},{"x":5,"y":0},{"x":6,"y":0},{"x":3,"y":1},{"x":4,"y":1},{"x":6,"y":1},{"x":7,"y":1},{"x":2,"y":2},{"x":3,"y":2},{"x":5,"y":2},{"x":7,"y":2},{"x":8,"y":2},{"x":1,"y":3},{"x":2,"y":3},{"x":4,"y":3},{"x":5,"y":3},{"x":6,"y":3},{"x":8,"y":3},{"x":9,"y":3},{"x":0,"y":4},{"x":1,"y":4},{"x":3,"y":4},{"x":4,"y":4},{"x":5,"y":4},{"x":7,"y":4},{"x":9,"y":4},{"x":10,"y":4},{"x":2,"y":5},{"x":3,"y":5},{"x":4,"y":5},{"x":6,"y":5},{"x":7,"y":5},{"x":8,"y":5},{"x":0,"y":6},{"x":1,"y":6},{"x":3,"y":6},{"x":5,"y":6},{"x":6,"y":6},{"x":7,"y":6},{"x":9,"y":6},{"x":10,"y":6},{"x":1,"y":7},{"x":2,"y":7},{"x":4,"y":7},{"x":5,"y":7},{"x":6,"y":7},{"x":8,"y":7},{"x":9,"y":7},{"x":2,"y":8},{"x":3,"y":8},{"x":5,"y":8},{"x":7,"y":8},{"x":8,"y":8},{"x":3,"y":9},{"x":4,"y":9},{"x":6,"y":9},{"x":7,"y":9},{"x":4,"y":10},{"x":5,"y":10},{"x":6,"y":10}]},
+            "road":{"pos":[{"x":5,"y":1},{"x":4,"y":2},{"x":6,"y":2},{"x":3,"y":3},{"x":7,"y":3},{"x":2,"y":4},{"x":6,"y":4},{"x":8,"y":4},{"x":1,"y":5},{"x":9,"y":5},{"x":2,"y":6},{"x":4,"y":6},{"x":8,"y":6},{"x":3,"y":7},{"x":7,"y":7},{"x":4,"y":8},{"x":6,"y":8},{"x":5,"y":9}]},
+            "link":{"pos":[{"x":5,"y":5}]},
+            "container":{"pos":[{"x":6,"y":4},{"x":4,"y":6}]}},
 
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
@@ -765,108 +769,69 @@ module.exports = {
             if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
 
+            var flag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'extensionFlag'})[0];
+            if (!flag) this.placeFlag(room);
 
 
+            return {response: 'idle', time: Game.time + 5}; //TODO
+        },
 
+        placeFlag: function (room) {
+            const freeRange = 10;
+            var bestPos;
 
-                        _.forEach(path.path, (pathData) => {
-                            room.visual.circle(pathData.x, pathData.y, {radius: 0.3});
-                        });
+            for (let x = 1; x < 40; x++) {
+                for (let y = 1; y < 40; y++) {
+                    let structures = _.filter(room.lookForAtArea(LOOK_STRUCTURES, y, x, y + freeRange, x + freeRange, true), (s) => s.structureType != STRUCTURE_EXTENSION && s.structureType != STRUCTURE_ROAD);
+                    if (structures.length > 0) continue;
 
-                        if (path.path) {
+                    let flags = room.lookForAtArea(LOOK_FLAGS, y, x, y + freeRange, x + freeRange, true);
+                    if (flags.length > 0) continue;
 
+                    let terrain = _.filter(room.lookForAtArea(LOOK_TERRAIN, y, x, y + freeRange, x + freeRange, true), (p) => p.type == 'terrain' && p.terrain == 'wall');
+                    if (terrain.length > 0) continue;
 
-                            var pos = path.path[path.path.length - 1];
+                    let goodPos = new RoomPosition(x, y, room.name);
 
-                            var extGoals = [{
-                                pos: new RoomPosition(pos.x, pos.y, room.name),
-                                range: Math.round(2 + Math.random() * 5)
-                            }].concat(_.map(room.find(FIND_STRUCTURES), (s) => {
-                                return {pos: s.pos, range: Math.round(1 + Math.random())};
-                            }))
-                                .concat(_.map(room.find(FIND_CONSTRUCTION_SITES), (s) => {
-                                    return {pos: s.pos, range: Math.round(1 + Math.random())};
-                                }))
-                                .concat(_.map(room.find(FIND_SOURCES), (s) => {
-                                    return {pos: s.pos, range: 3};
-                                }))
-                                .concat(_.map(room.find(FIND_MINERALS), (s) => {
-                                    return {pos: s.pos, range: 2};
-                                }))
-                                .concat(_.map(room.find(FIND_CREEPS), (s) => {
-                                    return {pos: s.pos, range: 1};
-                                }))
-                                .concat(_.map(room.find(FIND_FLAGS), (s) => {
-                                    return {pos: s.pos, range: Math.round(4 + Math.random() * 2)};
-                                }));
+                    let toSource = [];
+                    let toController;
 
-                            var extensionPath = PathFinder.search(new RoomPosition(pos.x, pos.y, room.name), extGoals, {
-                                flee: true,
-                                swampCost: 1,
-                                plainCost: 1,
-                                maxRooms: 1
-                            });
+                    _.forEach(room.find(FIND_SOURCES), (s) => {
+                        toSource.push(room.findPath(goodPos, s.pos, {ignoreCreeps: true, ignoreRoads: true, maxRooms: 1}).length);
+                    });
 
-                            _.forEach(extensionPath.path, (pathData) => {
-                                room.visual.circle(pathData.x, pathData.y, extStyle);
-                            });
+                    toController = room.findPath(goodPos, room.controller.pos, {ignoreCreeps: true, ignoreRoads: true, maxRooms: 1}).length;
 
-                            var toAdd = extensionPath.path[Math.floor(Math.random() * extensionPath.path.length)];
+                    let cnt = 0;
 
-                            Memory.ext = [toAdd.x + ',' + toAdd.y];
+                    if (!bestPos) {
+                        bestPos = {
+                            x: goodPos.x,
+                            y: goodPos.y,
+                            c: toController,
+                            s: toSource
                         }
-
                     }
-                    else if (Memory.ext.length*5 < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][8]) {
 
-                        var extPos = Memory.ext[Math.round(Math.random() * Memory.ext.length)];
-                        if (!extPos) return;
-                        var pos = {x: extPos.split(',')[0], y: extPos.split(',')[1]};
-
-                        var extGoals = [{
-                            pos: new RoomPosition(pos.x, pos.y, room.name),
-                            range: Math.round(2 + Math.random() * 5)
-                        }].concat(_.map(room.find(FIND_STRUCTURES), (s) => {
-                            return {pos: s.pos, range: Math.round(1 + Math.random())};
-                        }))
-                            .concat(_.map(room.find(FIND_CONSTRUCTION_SITES), (s) => {
-                                return {pos: s.pos, range: Math.round(1 + Math.random())};
-                            }))
-                            .concat(_.map(room.find(FIND_SOURCES), (s) => {
-                                return {pos: s.pos, range: 3};
-                            }))
-                            .concat(_.map(room.find(FIND_MINERALS), (s) => {
-                                return {pos: s.pos, range: 2};
-                            }))
-                            .concat(_.map(room.find(FIND_CREEPS), (s) => {
-                                return {pos: s.pos, range: 1};
-                            }))
-                            .concat(_.map(room.find(FIND_FLAGS), (s) => {
-                                return {pos: s.pos, range: Math.round(4 + Math.random() * 2)};
-                            }))
-                            .concat(_.map(Memory.ext, (s) => {
-                                return {pos: room.getPositionAt(Number.parseInt(s.split(',')[0]), Number.parseInt(s.split(',')[1])), range: 2};
-                            }));
-
-                        var extensionPath = PathFinder.search(new RoomPosition(pos.x, pos.y, room.name), extGoals, {
-                            flee: true,
-                            swampCost: 1,
-                            plainCost: 1,
-                            maxRooms: 1
-                        });
-
-                        _.forEach(extensionPath.path, (pathData) => {
-                            if (Memory.ext.length < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][8]
-                                && Math.round(Math.random() * 3) > 1 && !Memory.ext.includes(pathData.x + ',' + pathData.y)) {
-                                room.visual.circle(pathData.x, pathData.y, extStyle);
-                                Memory.ext.push(pathData.x + ',' + pathData.y)
-                            }
-                        });
+                    for (let foo in toSource) {
+                        if (bestPos.s[foo] > toSource[foo]) cnt++;
                     }
-                    Memory.toDo = 1;
+
+                    if (cnt >= 2 || (cnt >= 1 && toController <= bestPos.c) || toController*2 <= bestPos.c) {
+                        bestPos = {
+
+                            x: goodPos.x,
+                            y: goodPos.y,
+                            c: toController,
+                            s: toSource
+                        }
+                    }
+                }
             }
 
-            return room.controller.level > 1 && room.controller.level < 4 ? {response: 'idle', time: Game.time + 500 + Math.round(Math.random()*57)} : {response: 'idle', time: Game.time + 7500 + Math.round(Math.random()*2500)};
+            room.createFlag(bestPos.x, bestPos.y, 'extensionFlag:' + room.name, COLOR_YELLOW, COLOR_ORANGE);
+
+            console.notify('Places extension flag,\nROOM: ' + room.name + '\nAt Position: ' + bestPos.x + ' ' + bestPos.y);
         }
     },
 
