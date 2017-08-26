@@ -778,7 +778,9 @@ module.exports = {
             var amountToBuild = 100 - _.size(Game.constructionSites);
 
             for (let structureType in this.buildings) {
-                for (let posXY of this.buildings[structureType]) {
+                for (let posXYRAW of this.buildings[structureType]) {
+                    let posXY = {x: flag.pos.x+posXYRAW.x, y: flag.pos.y+posXYRAW.y};
+                    
                     if (amountToBuild <= 0) return {response: 'idle', time: Game.time + 101};
                     if (room.getStructures(structureType) >= CONTROLLER_STRUCTURES[structureType][room.controller.level]) break;
 
