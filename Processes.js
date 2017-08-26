@@ -765,55 +765,9 @@ module.exports = {
             if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
 
-            switch (Memory.toDo) {
-                case 1:
-                    Memory.toDo++;
 
-                    if (Memory.ext
-                        && room.getStructures(STRUCTURE_EXTENSION).length < CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level]) {
 
-                        _.forEach(Memory.ext, (sPos) => {
-                            _.forEach(this.extensionStar, (sPosS) => {
-                                var extensionPos = new RoomPosition(Number.parseInt(sPos.split(',')[0])+sPosS.x, Number.parseInt(sPos.split(',')[1])+sPosS.y, room.name);
 
-                                if (extensionPos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1 && extensionPos.lookFor(LOOK_STRUCTURES).length < 1) room.createConstructionSite(extensionPos, STRUCTURE_EXTENSION);
-                            });
-                        });
-                    }
-                    break;
-                default:
-                    var spawnFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'fillSpawn'})[0];
-                    var storageFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
-                    if (!spawnFlag || !storageFlag) return;
-
-                    var extStyle = {radius: 0.3, fill: '#FF0000'};
-
-                    if (!Memory.ext) {
-                        var goals = [].concat(_.map(room.find(FIND_STRUCTURES), (s) => {
-                            return {pos: s.pos, range: Math.round(1 + Math.random())};
-                        }))
-                            .concat(_.map(room.find(FIND_CONSTRUCTION_SITES), (s) => {
-                                return {pos: s.pos, range: Math.round(1 + Math.random())};
-                            }))
-                            .concat(_.map(room.find(FIND_SOURCES), (s) => {
-                                return {pos: s.pos, range: 3};
-                            }))
-                            .concat(_.map(room.find(FIND_MINERALS), (s) => {
-                                return {pos: s.pos, range: 2};
-                            }))
-                            .concat(_.map(room.find(FIND_CREEPS), (s) => {
-                                return {pos: s.pos, range: 1};
-                            }))
-                            .concat(_.map(room.find(FIND_FLAGS), (s) => {
-                                return {pos: s.pos, range: Math.round(4 + Math.random() * 2)};
-                            }));
-
-                        var path = PathFinder.search(storageFlag.pos, goals, {
-                            flee: true,
-                            swampCost: 1,
-                            plainCost: 1,
-                            maxRooms: 1
-                        });
 
                         _.forEach(path.path, (pathData) => {
                             room.visual.circle(pathData.x, pathData.y, {radius: 0.3});
