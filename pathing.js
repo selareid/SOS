@@ -49,9 +49,9 @@ function getCostMatrix (roomName) {
             costs.set(creep.pos.x, creep.pos.y, 15);
     });
 
-    // room.find(FIND_CREEPS).forEach(function(creep) {
-    //         costs.set(creep.pos.x, creep.pos.y, 0xff);
-    // });
+    room.find(FIND_CREEPS).forEach(function(creep) {
+        if (creep.memory && creep.memory.p == 'takeCare') costs.set(creep.pos.x, creep.pos.y, 0xff);
+    });
 
     global[room.name].CostMatrixCount = Game.time + 75;
     global[room.name].CostMatrix = costs;
@@ -114,18 +114,18 @@ Creep.prototype.moveWithPath =
 
                 if (this.memory.path && this.memory.path.split(',')[2] == destPosName) thisPosName = this.memory.path.split(',')[1];
 
-                if ((opts.Memory && opts.Memory[roomTag+thisPosName+destPosName+optsTag]) || global[this.room.name].paths[roomTag+thisPosName+destPosName+optsTag]) {
-                    var rsl = this.customMoveByPath(opts.Memory ? opts.Memory[roomTag+thisPosName+destPosName+optsTag] : global[this.room.name].paths[roomTag+thisPosName+destPosName+optsTag]);
+                if (/*(opts.Memory && opts.Memory[roomTag+thisPosName+destPosName+optsTag]) || */global[this.room.name].paths[roomTag+thisPosName+destPosName+optsTag]) {
+                    var rsl = this.customMoveByPath(/*opts.Memory ? opts.Memory[roomTag+thisPosName+destPosName+optsTag] : */global[this.room.name].paths[roomTag+thisPosName+destPosName+optsTag]);
 
                     if (rsl == 'failed') {
                         delete this.memory.path;
                     }
                 }
                 else {
-                    if (!opts.Memory) global[this.room.name].paths[roomTag+thisPosName+destPosName+optsTag] = this.pos.customFindPathTo(dest, opts);
-                    else opts.Memory[roomTag+thisPosName+destPosName+optsTag] = this.pos.customFindPathTo(dest, opts);
+                    /*if (!opts.Memory) */global[this.room.name].paths[roomTag+thisPosName+destPosName+optsTag] = this.pos.customFindPathTo(dest, opts);
+                    //else opts.Memory[roomTag+thisPosName+destPosName+optsTag] = this.pos.customFindPathTo(dest, opts);
 
-                    this.customMoveByPath(opts.Memory ? opts.Memory[roomTag+thisPosName+destPosName+optsTag] : global[this.room.name].paths[roomTag+thisPosName+destPosName+optsTag]);
+                    this.customMoveByPath(/*opts.Memory ? opts.Memory[roomTag+thisPosName+destPosName+optsTag] : */global[this.room.name].paths[roomTag+thisPosName+destPosName+optsTag]);
                     this.memory.path = roomTag+thisPosName+destPosName+optsTag;
                 }
             })();

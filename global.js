@@ -64,6 +64,7 @@ module.exports = () => {
     };
 
     getObstacles = function (room) {
+        if (!room) return [];
         return global[room.name] && global[room.name].distrSquareFlag ? [global[room.name].distrSquareFlag, {pos: room.getPositionAt(global[room.name].distrSquareFlag.pos.x, global[room.name].distrSquareFlag.pos.y+1)}].concat(room.getStructures(STRUCTURE_SPAWN)) : room.getStructures(STRUCTURE_SPAWN);
     };
 
