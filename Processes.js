@@ -1247,7 +1247,7 @@ module.exports = {
 
                     if (room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.p && c.memory.p != 'doHarvest'}).length >= 1) {
 
-                        if (room.controller.level >= 7) {
+                        if (room.energyCapacityAvailable >= 2200) {
                             var source = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
 
                             if (source) {
