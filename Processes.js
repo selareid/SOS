@@ -757,10 +757,10 @@ module.exports = {
 
     placeExtensions: {
         buildings:{
-            "extension":{"pos":[{"x":4,"y":0},{"x":5,"y":0},{"x":6,"y":0},{"x":3,"y":1},{"x":4,"y":1},{"x":6,"y":1},{"x":7,"y":1},{"x":2,"y":2},{"x":3,"y":2},{"x":5,"y":2},{"x":7,"y":2},{"x":8,"y":2},{"x":1,"y":3},{"x":2,"y":3},{"x":4,"y":3},{"x":5,"y":3},{"x":6,"y":3},{"x":8,"y":3},{"x":9,"y":3},{"x":0,"y":4},{"x":1,"y":4},{"x":3,"y":4},{"x":4,"y":4},{"x":5,"y":4},{"x":7,"y":4},{"x":9,"y":4},{"x":10,"y":4},{"x":2,"y":5},{"x":3,"y":5},{"x":4,"y":5},{"x":6,"y":5},{"x":7,"y":5},{"x":8,"y":5},{"x":0,"y":6},{"x":1,"y":6},{"x":3,"y":6},{"x":5,"y":6},{"x":6,"y":6},{"x":7,"y":6},{"x":9,"y":6},{"x":10,"y":6},{"x":1,"y":7},{"x":2,"y":7},{"x":4,"y":7},{"x":5,"y":7},{"x":6,"y":7},{"x":8,"y":7},{"x":9,"y":7},{"x":2,"y":8},{"x":3,"y":8},{"x":5,"y":8},{"x":7,"y":8},{"x":8,"y":8},{"x":3,"y":9},{"x":4,"y":9},{"x":6,"y":9},{"x":7,"y":9},{"x":4,"y":10},{"x":5,"y":10},{"x":6,"y":10}]},
-            "road":{"pos":[{"x":5,"y":1},{"x":4,"y":2},{"x":6,"y":2},{"x":3,"y":3},{"x":7,"y":3},{"x":2,"y":4},{"x":6,"y":4},{"x":8,"y":4},{"x":1,"y":5},{"x":9,"y":5},{"x":2,"y":6},{"x":4,"y":6},{"x":8,"y":6},{"x":3,"y":7},{"x":7,"y":7},{"x":4,"y":8},{"x":6,"y":8},{"x":5,"y":9}]},
-            "link":{"pos":[{"x":5,"y":5}]},
-            "container":{"pos":[{"x":6,"y":4},{"x":4,"y":6}]}},
+            [STRUCTURE_EXTENSION]:[{"x":4,"y":0},{"x":5,"y":0},{"x":6,"y":0},{"x":3,"y":1},{"x":4,"y":1},{"x":6,"y":1},{"x":7,"y":1},{"x":2,"y":2},{"x":3,"y":2},{"x":5,"y":2},{"x":7,"y":2},{"x":8,"y":2},{"x":1,"y":3},{"x":2,"y":3},{"x":4,"y":3},{"x":5,"y":3},{"x":6,"y":3},{"x":8,"y":3},{"x":9,"y":3},{"x":0,"y":4},{"x":1,"y":4},{"x":3,"y":4},{"x":4,"y":4},{"x":5,"y":4},{"x":7,"y":4},{"x":9,"y":4},{"x":10,"y":4},{"x":2,"y":5},{"x":3,"y":5},{"x":4,"y":5},{"x":6,"y":5},{"x":7,"y":5},{"x":8,"y":5},{"x":0,"y":6},{"x":1,"y":6},{"x":3,"y":6},{"x":5,"y":6},{"x":6,"y":6},{"x":7,"y":6},{"x":9,"y":6},{"x":10,"y":6},{"x":1,"y":7},{"x":2,"y":7},{"x":4,"y":7},{"x":5,"y":7},{"x":6,"y":7},{"x":8,"y":7},{"x":9,"y":7},{"x":2,"y":8},{"x":3,"y":8},{"x":5,"y":8},{"x":7,"y":8},{"x":8,"y":8},{"x":3,"y":9},{"x":4,"y":9},{"x":6,"y":9},{"x":7,"y":9},{"x":4,"y":10},{"x":5,"y":10},{"x":6,"y":10}],
+            [STRUCTURE_ROAD]:[{"x":5,"y":1},{"x":4,"y":2},{"x":6,"y":2},{"x":3,"y":3},{"x":7,"y":3},{"x":2,"y":4},{"x":6,"y":4},{"x":8,"y":4},{"x":1,"y":5},{"x":9,"y":5},{"x":2,"y":6},{"x":4,"y":6},{"x":8,"y":6},{"x":3,"y":7},{"x":7,"y":7},{"x":4,"y":8},{"x":6,"y":8},{"x":5,"y":9}],
+            [STRUCTURE_LINK]:[{"x":5,"y":5}],
+            [STRUCTURE_CONTAINER]:[{"x":6,"y":4},{"x":4,"y":6}]},
 
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
@@ -770,10 +770,26 @@ module.exports = {
             if (!global[room.name]) global[room.name] = {};
 
             var flag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'extensionFlag'})[0];
-            if (!flag) this.placeFlag(room);
+            if (!flag) {
+                this.placeFlag(room);
+                return {response: 'idle', time: Game.time + 5};
+            }
 
+            var amountToBuild = 100 - _.size(Game.constructionSites);
 
-            return {response: 'idle', time: Game.time + 5}; //TODO
+            for (let structureType in this.buildings) {
+                for (let posXY of this.buildings[structureType]) {
+                    if (amountToBuild <= 0) return {response: 'idle', time: Game.time + 101};
+                    if (room.getStructures(structureType) >= CONTROLLER_STRUCTURES[structureType][room.controller.level]) break;
+
+                    if (room.lookForAt(LOOK_STRUCTURES, posXY.x, posXY.y).length < 1) {
+                        room.createConstructionSite(posXY.x, posXY.y, structureType);
+                        amountToBuild--;
+                    }
+                }
+            }
+
+            return room.controller.level < 8 ? {response: 'idle', time: Game.time + Math.round((room.controller.progressTotal/room.controller.progress)*100)} : {response: 'idle', time: Game.time + 10001};;
         },
 
         placeFlag: function (room) {
