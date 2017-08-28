@@ -97,6 +97,13 @@ Creep.prototype.customMoveByPath = function (path) {
         return 'failed';
     }
 
+    if (this.memory.SPC >= 2 && this.fatigue == 0 && path[this.memory.goto].lookFor(LOOK_CREEPS).length > 0) {
+        var badCreep = path[this.memory.goto].lookFor(LOOK_CREEPS)[0];
+        if (badCreep.my) {
+            badCreep.move(badCreep.pos.getDirectionTo(this.pos));
+        }
+    }
+
     this.memory.lastPos = encodeChar(this.pos.x * 100 + this.pos.y);
     this.move(this.pos.getDirectionTo(path[this.memory.goto]));
 };
