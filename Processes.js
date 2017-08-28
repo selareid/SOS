@@ -1496,6 +1496,13 @@ module.exports = {
 
                 if (room.controller.level < 6 || !room.extensionFlag || !extensionLink) this.notCoolVersion(Memory, room, creep);
                 else if (creep.pos.getRangeTo(extensionLink) > 4) creep.moveWithPath(extensionLink);
+                else if (creep.carry.energy < creep.carryCapacity && creep.pos.getRangeTo(extensionLink) <= 1) {
+                    creep.withdraw(extensionLink, RESOURCE_ENERGY);
+                }
+                else if (room.energyAvailable == room.energyCapacityAvailable && creep.pos.getRangeTo(extensionLink) <= 1) {
+                    var container = creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 0);
+                    if (container) creep.transfer(container, RESOURCE_ENERGY);
+                }
                 else {
                     if (!creep.memory.moving || !this.path[creep.memory.moving]) {
                         creep.memory.moving = 0;
@@ -1508,7 +1515,6 @@ module.exports = {
                     if (badCreeps[0] && badCreeps[0].my) badCreeps[0].move(badCreeps[0].pos.getDirectionTo(creep.pos));
                     creep.memory.moving++;
 
-                    if (creep.carry.energy < creep.carryCapacity && creep.pos.getRangeTo(extensionLink) <= 1) creep.withdraw(extensionLink, RESOURCE_ENERGY);
                     //else if (creep.carry.energy > 0 && creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 1)[0]) {} TODO HERE
 
                     if (creep.carry.energy > 0) creep.transfer(creep.pos.findInRange(room.getStructures(STRUCTURE_EXTENSION), 1, {filter: (s) => s.energy < s.energyCapacity})[0], RESOURCE_ENERGY);
