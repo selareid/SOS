@@ -10,7 +10,7 @@ module.exports = {
 
         //normal processes
 
-        global.processesTotal = processQueue.length;
+        global.processesTotal = 0;
         global.processesRun = 0;
         global.processesSkipped = [];
         global.processesRunName = [];
@@ -28,6 +28,7 @@ module.exports = {
             if (!queues[Memory.p[processIndex].queue]) queues[Memory.p[processIndex].queue] = [];
 
             queues[Memory.p[processIndex].queue].push(processIndex)
+            global.processesTotal++;
         }
 
 
