@@ -1507,7 +1507,7 @@ module.exports = {
                     if (creep.carry.energy < creep.carryCapacity && creep.pos.getRangeTo(extensionLink) <= 1) creep.withdraw(extensionLink, RESOURCE_ENERGY);
                     //else if (creep.carry.energy > 0 && creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 1)[0]) {} TODO HERE
 
-                    if (creep.carry.energy > 0) creep.transfer(creep.pos.findInRange(room.getStructures(STRUCTURE_EXTENSION), 1)[0], RESOURCE_ENERGY);
+                    if (creep.carry.energy > 0) creep.transfer(creep.pos.findInRange(room.getStructures(STRUCTURE_EXTENSION), 1, {filter: (s) => s.energy < s.energyCapacity})[0], RESOURCE_ENERGY);
                 }
             }
 
