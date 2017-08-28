@@ -1458,6 +1458,8 @@ module.exports = {
     },
 
     fillExt: {
+        path:[{"x":5,"y":1},{"x":4,"y":2},{"x":6,"y":2},{"x":3,"y":3},{"x":7,"y":3},{"x":2,"y":4},{"x":8,"y":4},{"x":1,"y":5},{"x":9,"y":5},{"x":2,"y":6},{"x":8,"y":6},{"x":3,"y":7},{"x":7,"y":7},{"x":4,"y":8},{"x":6,"y":8},{"x":5,"y":9}],
+
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
@@ -1483,38 +1485,20 @@ module.exports = {
                 }
 
                 creep.talk('fillExt');
-                if (creep.carry.energy == 0) Memory.w = 1;
-                else if (creep.carry.energy == creep.carryCapacity) Memory.w = 0;
 
-                if (Memory.w == 1) {
-                    creep.getConsumerEnergy(Memory, room);
-                }
+                var extensionLink = room.extensionFlag ? _.filter(room.getPositionAt(room.extensionFlag.pos.x + 5, room.extensionFlag.pos.y + 5).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_LINK)[0] : room.extensionFlag;
+
+                if (room.controller.level < 6 || !room.extensionFlag || !extensionLink) this.notCoolVersion(Memory, room, creep);
+                else if (creep.pos.getRangeTo(extensionLink) > 4) creep.moveWithPath(extensionLink);
                 else {
-                    var extension = Game.getObjectById(creep.memory.ext);
+                    if (!creep.memory.moving || !this.path[creep.memory.moving]) creep.memory.moving = 0;
 
-                    if (extension && extension.energy < extension.energyCapacity) {
-                        if (creep.pos.isNearTo(extension)) {
-                            creep.transfer(extension, RESOURCE_ENERGY);
-                        }
-                        else {
-                            creep.moveWithPath(extension, {
-                                obstacles: getObstacles(room),
-                                repath: 0.01,
-                                maxRooms: 1
-                            });
-                        }
-                    }
-                    else {
-                        for (let ext of room.getStructures(STRUCTURE_EXTENSION)) {
-                            if (ext.energy < ext.energyCapacity) {
-                                creep.memory.ext = ext.id;
-                                break;
-                            }
-                        }
-                    }
+                    creep.move(room.getPositionAt(room.extensionFlag.pos.x + this.path[creep.memory.moving].x, room.extensionFlag.pos.y + this.path[creep.memory.moving].y));
+                    creep.memory.moving++;
+
+                    if (creep.carry.energy < creep.carryCapacity && creep.pos.getRangeTo(extensionLink) <= 1) creep.withdraw(extensionLink, RESOURCE_ENERGY);
+                    //else if (creep.carry.energy > 0 && creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 1)[0]) {} TODO HERE
                 }
-
-
             }
 
             if (creeps.length < this.getCreepAmount(room)) Memory.crps.push(module.exports.room.addToSQ(room.name, 'fillExt'));
@@ -1523,6 +1507,39 @@ module.exports = {
         getCreepAmount: function (room) {
             if (!room || !room.controller || room.controller.level >= 7) return 1;
             else return 2;
+        },
+
+        notCoolVersion: function (Memory, room, creep) {
+            if (creep.carry.energy == 0) Memory.w = 1;
+            else if (creep.carry.energy == creep.carryCapacity) Memory.w = 0;
+
+            if (Memory.w == 1) {
+                creep.getConsumerEnergy(Memory, room);
+            }
+            else {
+                var extension = Game.getObjectById(creep.memory.ext);
+
+                if (extension && extension.energy < extension.energyCapacity) {
+                    if (creep.pos.isNearTo(extension)) {
+                        creep.transfer(extension, RESOURCE_ENERGY);
+                    }
+                    else {
+                        creep.moveWithPath(extension, {
+                            obstacles: getObstacles(room),
+                            repath: 0.01,
+                            maxRooms: 1
+                        });
+                    }
+                }
+                else {
+                    for (let ext of room.getStructures(STRUCTURE_EXTENSION)) {
+                        if (ext.energy < ext.energyCapacity) {
+                            creep.memory.ext = ext.id;
+                            break;
+                        }
+                    }
+                }
+            }
         }
     },
 
