@@ -981,7 +981,7 @@ module.exports = {
             });
             
             
-            if (link && storageLink.energy >= storageLink.energyCapacity-1 && (!room.storage || room.storage.store.energy > 1000)) {
+            if (link && storageLink.energy >= storageLink.energyCapacity-100 && (!room.storage || room.storage.store.energy > 1000)) {
                 storageLink.transferEnergy(link);
             }
         }
