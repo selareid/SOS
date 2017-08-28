@@ -33,7 +33,8 @@ module.exports = {
 
 
         for (let queue of queues) {
-            for (let processTag of queue) {
+            for (let processTag_it in queue) {
+                let processTag = queue[processTag_it]
                 let process = Memory.p[processTag];
 
                 // Object.setPrototypeOf(process, Process);
