@@ -1497,13 +1497,22 @@ module.exports = {
                 if (room.controller.level < 6 || !room.extensionFlag || !extensionLink) this.notCoolVersion(Memory, room, creep);
                 else if (creep.pos.getRangeTo(extensionLink) > 4) creep.moveWithPath(extensionLink);
                 else {
-                    if (!creep.memory.moving || !this.path[creep.memory.moving]) creep.memory.moving = 0;
+                    if (!creep.memory.moving || !this.path[creep.memory.moving]) {
+                        for (let pathXY_it of this.path) {
+                            let pathXY = this.path[pathXY_it];
+                            if (room.getPositionAt(pathXY.x, pathXY.y).isEqualTo(creep.pos)) {
+                                creep.memory.moving = pathXY_it;
+                                break;
+                            }
+                        }
+
+                    }
 
                     var newPos = room.getPositionAt(room.extensionFlag.pos.x + this.path[creep.memory.moving].x, room.extensionFlag.pos.y + this.path[creep.memory.moving].y);
 
                     creep.move(creep.pos.getDirectionTo(newPos));
                     var badCreeps = newPos.lookFor(LOOK_CREEPS);
-                    if (badCreeps[0] && badCreeps[0].my) badCreeps[0].move(badCreeps[0].pos.getDirectionTo(creep.pos))
+                    if (badCreeps[0] && badCreeps[0].my) badCreeps[0].move(badCreeps[0].pos.getDirectionTo(creep.pos));
                     creep.memory.moving++;
 
                     if (creep.carry.energy < creep.carryCapacity && creep.pos.getRangeTo(extensionLink) <= 1) creep.withdraw(extensionLink, RESOURCE_ENERGY);
