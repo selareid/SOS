@@ -1501,7 +1501,11 @@ module.exports = {
                 else {
                     if (!creep.memory.moving || !this.path[creep.memory.moving]) creep.memory.moving = 0;
 
-                    creep.move(room.getPositionAt(room.extensionFlag.pos.x + this.path[creep.memory.moving].x, room.extensionFlag.pos.y + this.path[creep.memory.moving].y));
+                    var newPos = room.getPositionAt(room.extensionFlag.pos.x + this.path[creep.memory.moving].x, room.extensionFlag.pos.y + this.path[creep.memory.moving].y);
+
+                    creep.move(creep.pos.getDirectionTo(newPos));
+                    var badCreeps = newPos.lookFor(LOOK_CREEPS);
+                    if (badCreeps[0] && badCreeps[0].my) badCreeps[0].move(badCreeps[0].pos.getDirectionTo(creep.pos))
                     creep.memory.moving++;
 
                     if (creep.carry.energy < creep.carryCapacity && creep.pos.getRangeTo(extensionLink) <= 1) creep.withdraw(extensionLink, RESOURCE_ENERGY);
