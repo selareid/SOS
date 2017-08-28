@@ -1498,14 +1498,7 @@ module.exports = {
                 else if (creep.pos.getRangeTo(extensionLink) > 4) creep.moveWithPath(extensionLink);
                 else {
                     if (!creep.memory.moving || !this.path[creep.memory.moving]) {
-                        for (let pathXY_it in this.path) {
-                            let pathXY = this.path[pathXY_it];
-                            if (room.getPositionAt(room.extensionFlag.pos.x +pathXY.x, room.extensionFlag.pos.y +pathXY.y).isEqualTo(creep.pos)) {
-                                creep.memory.moving = this.path[pathXY_it+1] ? pathXY_it+1 : 0;
-                                break;
-                            }
-                        }
-
+                        creep.memory.moving = 0;
                     }
 
                     var newPos = room.getPositionAt(room.extensionFlag.pos.x + this.path[creep.memory.moving].x, room.extensionFlag.pos.y + this.path[creep.memory.moving].y);
