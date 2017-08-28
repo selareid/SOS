@@ -25,7 +25,7 @@ const defaultBodyChart = {
     doHarvest: [[WORK, MOVE, MOVE, CARRY], [], 5],
     praiseRC: [[WORK, CARRY, MOVE], []],
     mine: [[WORK, CARRY, MOVE, MOVE], []],
-    strgDistr: [[CARRY, CARRY, MOVE], [], 8],
+    strgDistr: [[CARRY], [MOVE], 16],
     fillSpawn: [[CARRY, CARRY, MOVE], [], 6],
     fillExt: [[CARRY, CARRY, MOVE], []],
     iRmHaul: [[CARRY, CARRY, MOVE], []],
@@ -1729,7 +1729,7 @@ module.exports = {
                 var storageLink = Game.getObjectById(Memory.link);
 
                 if (storageLink && storageLink.energy > 0) {
-                    var link = _.filter(room.getStructures(STRUCTURE_LINK), (s) => s.energy < 50 && s.id != storageLink.id && !s.pos.findInRange(FIND_SOURCES, 3)[0])[0];
+                    var link = _.filter(room.getStructures(STRUCTURE_LINK), (s) => s.energy < 100 && s.id != storageLink.id && !s.pos.findInRange(FIND_SOURCES, 3)[0])[0];
 
                     if (room.storage.store.energy <= 1000 || !link) {
                         creep.memory.w = true;
