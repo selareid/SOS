@@ -1501,7 +1501,7 @@ module.exports = {
                         creep.memory.moving = 0;
                     }
 
-                    var newPos = room.getPositionAt(room.extensionFlag.pos.x + this.path[creep.memory.moving].x, room.extensionFlag.pos.y + this.path[creep.memory.moving].y);
+                    var newPos = room.getPositionAt(creep.pos.x + this.path[creep.memory.moving].x, creep.pos.y + this.path[creep.memory.moving].y);
 
                     creep.move(creep.pos.getDirectionTo(newPos));
                     var badCreeps = newPos.lookFor(LOOK_CREEPS);
