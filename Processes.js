@@ -24,7 +24,7 @@ function getCreep(name, process) {
 const defaultBodyChart = {
     doHarvest: [[WORK, MOVE, MOVE, CARRY], [], 5],
     praiseRC: [[WORK, CARRY, MOVE], []],
-    mine: [[WORK, CARRY, MOVE], []],
+    mine: [[WORK, CARRY, MOVE, MOVE], []],
     strgDistr: [[CARRY, CARRY, MOVE], [], 8],
     fillSpawn: [[CARRY, CARRY, MOVE], [], 6],
     fillExt: [[CARRY, CARRY, MOVE], []],
@@ -869,7 +869,7 @@ module.exports = {
             var costMatrix = this.getCostMatrix(room.name, storageFlag, spawnFlag);
 
             switch (Memory.nb) {
-                case 2:
+                case 1:
                     Memory.nb++;
 
                     if (!room.find(FIND_SOURCES)[1]) break;
@@ -882,7 +882,7 @@ module.exports = {
                         }
                     });
                     break;
-                case 1:
+                case 0:
                     Memory.nb++;
                     _.forEach(room.find(FIND_SOURCES), (structure) => {
                         _.forEach(storageFlag.pos.findPathTo(structure, {range: 2, ignoreCreeps: true, ignoreRoads: false, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
@@ -892,16 +892,6 @@ module.exports = {
                             }
                         });
                     });
-                    break;
-                case 0:
-                    Memory.nb++;
-                    if (room.controller.level < 5) return;
-                    var mineral = room.find(FIND_MINERALS)[0];
-                    _.forEach(storageFlag.pos.findPathTo(mineral, {range: 2, ignoreCreeps: true, ignoreRoads: false, plainCost: 1, swampCost: 1, costCallback: costMatrix}), (pathData) => {
-                            if (_.size(Game.constructionSites) < 100) {
-                                if (!_.filter(new RoomPosition(pathData.x, pathData.y, room.name).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_ROAD)[0]) room.createConstructionSite(pathData.x, pathData.y, STRUCTURE_ROAD);
-                            }
-                        });
                     break;
                 default:
                     Memory.nb = 0;
