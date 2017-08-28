@@ -550,7 +550,7 @@ module.exports = {
             var room = Game.rooms[Memory.rmN];
 
             var nextToSpawn = _.sortBy(room.memory.spawnQueue, (c) => {
-                return c.proc == 'doHarvest' ? 0 : c.proc == 'fillSpawn' ? 1 : c.proc == 'fillExt' ? 2 : c.proc == 'claim' ? 3 : 4;
+                return c.proc == 'doHarvest' ? 0 : c.proc == 'fillSpawn' ? 1 : c.proc == 'strgDistr' ? 2 : c.proc == 'fillExt' ? 3 : c.proc == 'claim' ? 4 : 5;
             })[0];
 
             if (!nextToSpawn) return;
