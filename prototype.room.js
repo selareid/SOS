@@ -16,3 +16,16 @@ Room.prototype.getStructures =
         var needed = _.compact(_.map(global[this.name].structures.structures[structureType], (s) => Game.getObjectById(s)));
         return filter ? _.filter(needed, filter) : needed;
     };
+
+Object.defineProperty(Room.prototype, 'extensionFlag', {
+    get: function() {
+        if (Game.flags[this.flagName]) return Game.flags[this.flagName];
+
+        var flag = this.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'extensionFlag'})[0];
+
+        this.flagName = flag ? flag.name : undefined;
+        return flag || undefined;
+    },
+    enumerable: false,
+    configurable: false
+});

@@ -769,7 +769,7 @@ module.exports = {
             if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
 
-            var flag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'extensionFlag'})[0];
+            var flag = room.extensionFlag;
             if (!flag) {
                 this.placeFlag(room);
                 return {response: 'idle', time: Game.time + 5};
