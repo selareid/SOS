@@ -1498,7 +1498,7 @@ module.exports = {
                 else if (creep.pos.getRangeTo(extensionLink) > 4) creep.moveWithPath(extensionLink);
                 else {
                     if (!creep.memory.moving || !this.path[creep.memory.moving]) {
-                        for (let pathXY_it of this.path) {
+                        for (let pathXY_it in this.path) {
                             let pathXY = this.path[pathXY_it];
                             if (room.getPositionAt(pathXY.x, pathXY.y).isEqualTo(creep.pos)) {
                                 creep.memory.moving = pathXY_it;
