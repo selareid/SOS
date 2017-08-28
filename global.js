@@ -9,31 +9,39 @@ module.exports = () => {
     Process = class {
         constructor(processType, roomName, object) {
             this.pN = processType;
-            this.prio = getPrio(processType);
+            this.queue = getQueue(processType);
             this.rmN = roomName;
             if (object) this.oNCreation = object;
         }
     };
 
-    getPrio = function(process) {
+    getQueue = function(process) {
         switch (process) {
-            case 'doStats': return 20;
-            case 'checkRooms': return 11;
-            case 'checkCreeps': return 10;
-            case 'doTowers': return 255;
-            case 'doHarvest': return 4;
-            case 'fillSpawn': return 4;
-            case 'strgDistr': return 5;
-            case 'praiseRC': return 3;
-            case 'takeCare': return 3;
-            case 'room': return 10;
-            case 'checkGlobalProcesses': return -5;
-            case 'doTerminal': return -5;
-            case 'doPowerProc': return -10;
-            case 'placeTowers': return -10;
-            case 'placeExtensions': return -10;
-            case 'buildRoads': return -10;
-            default: return 0;
+            case 'doStats': return 0;
+            case 'doTowers': return 0;
+
+            case 'checkRooms': return 1;
+
+            case 'checkCreeps': return 2;
+
+            case 'room': return 3;
+            case 'doHarvest': return 3;
+            case 'fillSpawn': return 3;
+
+            case 'strgDistr': return 4;
+
+            case 'praiseRC': return 5;
+            case 'takeCare': return 5;
+
+            case 'checkGlobalProcesses': return 9;
+            case 'doTerminal': return 9;
+
+            case 'doPowerProc': return 10;
+            case 'placeTowers': return 10;
+            case 'placeExtensions': return 10;
+            case 'buildRoads': return 10;
+
+            default: return 5;
         }
     };
 
@@ -49,7 +57,6 @@ module.exports = () => {
         while (Memory.p[tag]);
 
         global.Mem.p[tag] = new Process(processType, roomName, oNCreation);
-        global.Mem.pQ.push(tag);
     };
 
     makeid = function ()
