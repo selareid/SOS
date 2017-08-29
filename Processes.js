@@ -45,29 +45,29 @@ function getBodyChart(room) {
         if (room.find(FIND_MY_CONSTRUCTION_SITES).length < 1) newChart['takeCare'][2] = 5;
         newChart['fillSpawn'][2] = room.find(FIND_MY_SPAWNS).length*3;
 
-        if (room.controller.level >= 7 && room.find(FIND_SOURCES).length >= 2) {
-            if (!room.memory.hrvstPrts) {
-                var parts = 0;
-                var totalTime = Number.POSITIVE_INFINITY;
-                var time = room.findPath(room.find(FIND_SOURCES)[0].pos, room.find(FIND_SOURCES)[1].pos, {ignoreRoads: true, swampCost: 1, ignoreCreeps: true, maxRooms: 1}).length;
-
-                for (; Math.floor(totalTime) > 300; parts++) {
-                    let mine = 3000 / (parts * 2);
-
-                    totalTime = Math.floor((mine * 2) + (time * 2));
-                }
-
-                room.memory.hrvstPrts = parts;
-                newChart['doHarvest'][2] = parts;
-                newChart['doHarvest'][1] = [MOVE, CARRY];
-                newChart['doHarvest'][0] = [WORK, MOVE];
-            }
-            else {
-                newChart['doHarvest'][2] = room.memory.hrvstPrts;
-                newChart['doHarvest'][1] = [MOVE, CARRY];
-                newChart['doHarvest'][0] = [WORK, MOVE];
-            }
-        }
+        // if (room.controller.level >= 7 && room.find(FIND_SOURCES).length >= 2) {
+        //     if (!room.memory.hrvstPrts) {
+        //         var parts = 0;
+        //         var totalTime = Number.POSITIVE_INFINITY;
+        //         var time = room.findPath(room.find(FIND_SOURCES)[0].pos, room.find(FIND_SOURCES)[1].pos, {ignoreRoads: true, swampCost: 1, ignoreCreeps: true, maxRooms: 1}).length;
+        //
+        //         for (; Math.floor(totalTime) > 300; parts++) {
+        //             let mine = 3000 / (parts * 2);
+        //
+        //             totalTime = Math.floor((mine * 2) + (time * 2));
+        //         }
+        //
+        //         room.memory.hrvstPrts = parts;
+        //         newChart['doHarvest'][2] = parts;
+        //         newChart['doHarvest'][1] = [MOVE, CARRY];
+        //         newChart['doHarvest'][0] = [WORK, MOVE];
+        //     }
+        //     else {
+        //         newChart['doHarvest'][2] = room.memory.hrvstPrts;
+        //         newChart['doHarvest'][1] = [MOVE, CARRY];
+        //         newChart['doHarvest'][0] = [WORK, MOVE];
+        //     }
+        // }
     }
 
     return newChart;
@@ -1235,31 +1235,31 @@ module.exports = {
 
                     if (room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.p && c.memory.p != 'doHarvest'}).length >= 1) {
 
-                        if (room.energyCapacityAvailable >= 2200) {
-                            var source = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
-
-                            if (source) {
-                                if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it, source.id);
-
-                                if (creep.pos.isNearTo(source)) {
-                                    creep.harvest(source);
-
-                                    if (!Memory[source.id]) Memory[source.id] = creep.pos.x + ',' + creep.pos.y;
-                                }
-                                else {
-                                    var pos = Memory[source.id] ? room.getPositionAt(Number.parseInt(Memory[source.id].split(',')[0]), Number.parseInt(Memory[source.id].split(',')[1])) : undefined;
-                                    if (pos) creep.moveWithPath(pos, {range: 0, repath: 0.01, maxRooms: 1, Memory: Memory});
-                                    else {
-                                        creep.moveWithPath(source, {repath: 0.01, maxRooms: 1});
-                                        Memory[source.id] = undefined;
-                                    }
-                                }
-                            }
-                        }
-                        else {
+                        // if (room.energyCapacityAvailable >= 2200) {
+                        //     var source = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+                        //
+                        //     if (source) {
+                        //         if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it, source.id);
+                        //
+                        //         if (creep.pos.isNearTo(source)) {
+                        //             creep.harvest(source);
+                        //
+                        //             if (!Memory[source.id]) Memory[source.id] = creep.pos.x + ',' + creep.pos.y;
+                        //         }
+                        //         else {
+                        //             var pos = Memory[source.id] ? room.getPositionAt(Number.parseInt(Memory[source.id].split(',')[0]), Number.parseInt(Memory[source.id].split(',')[1])) : undefined;
+                        //             if (pos) creep.moveWithPath(pos, {range: 0, repath: 0.01, maxRooms: 1, Memory: Memory});
+                        //             else {
+                        //                 creep.moveWithPath(source, {repath: 0.01, maxRooms: 1});
+                        //                 Memory[source.id] = undefined;
+                        //             }
+                        //         }
+                        //     }
+                        // }
+                        // else {
                             if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it);
                             this.harvest(Memory, room, creep_it_it);
-                        }
+                        // }
                     }
                     else {
                         if (creep.carry.energy >= creep.carryCapacity) {
@@ -1278,8 +1278,8 @@ module.exports = {
         },
 
         getHarvesters: function (room) {
-            if (room.energyCapacityAvailable < 2200) return room.find(FIND_SOURCES).length;
-            else return 1;
+            /*if (room.energyCapacityAvailable < 2200) */return room.find(FIND_SOURCES).length;
+            //else return 1;
         },
 
         harvest: function (Memory, room, creep_it_it) {
