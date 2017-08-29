@@ -27,7 +27,7 @@ const defaultBodyChart = {
     mine: [[WORK, CARRY, MOVE, MOVE], []],
     strgDistr: [[CARRY], [MOVE], 16],
     fillSpawn: [[CARRY, CARRY, MOVE], [], 6],
-    fillExt: [[CARRY, CARRY, MOVE], []],
+    fillExt: [[CARRY, CARRY, MOVE], [], 8],
     iRmHaul: [[CARRY, CARRY, MOVE], []],
     takeCare: [[WORK, CARRY, MOVE], []],
     claim: [[CLAIM, MOVE, MOVE], [], 1],
