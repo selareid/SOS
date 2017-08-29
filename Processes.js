@@ -1494,13 +1494,17 @@ module.exports = {
 
                 var extensionLink = room.extensionFlag ? _.filter(room.getPositionAt(room.extensionFlag.pos.x + 5, room.extensionFlag.pos.y + 5).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_LINK)[0] : room.extensionFlag;
 
-                if (room.controller.level < 6 || !room.extensionFlag || !extensionLink || extensionLink.energy < 100) this.notCoolVersion(Memory, room, creep);
+                if (room.controller.level < 6 || !room.extensionFlag || !extensionLink) this.notCoolVersion(Memory, room, creep);
                 else if (creep.pos.getRangeTo(extensionLink) > 4) creep.moveWithPath(extensionLink);
                 else if (creep.carry.energy < creep.carryCapacity && creep.pos.getRangeTo(extensionLink) <= 1) {
-                    creep.withdraw(extensionLink, RESOURCE_ENERGY);
+                    if (extensionLink.energy > 0) creep.withdraw(extensionLink, RESOURCE_ENERGY);
+                    else {
+                        var container = creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 0)[0];
+                        if (container) creep.withdraw(container, RESOURCE_ENERGY);
+                    }
                 }
                 else if (room.energyAvailable == room.energyCapacityAvailable && creep.pos.getRangeTo(extensionLink) <= 1) {
-                    var container = creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 0);
+                    var container = creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 0)[0];
                     if (container) creep.transfer(container, RESOURCE_ENERGY);
                 }
                 else {
