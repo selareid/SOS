@@ -19,6 +19,7 @@ module.exports = {
 
         for (let processIndex in Memory.p) {
             if (Memory.p[processIndex].idleTime && Memory.p[processIndex].idleTime <= Game.time) {
+                console.logKernel('MOVED PROCESS ' + processIndex + ' BACK TO NORMAL QUEUE');
                 Memory.p[processIndex].idleTime = undefined;
             }
             else if (Memory.p[processIndex].idleTime && Memory.p[processIndex].idleTime > Game.time) continue;
