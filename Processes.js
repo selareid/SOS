@@ -1007,13 +1007,13 @@ module.exports = {
             (() => {
                 for (var orderIndex in global.Mem.market) {
                     var order = Game.market.getOrderById(global.Mem.market[orderIndex]);
-
-                    if (order.resourceType == RESOURCE_POWER) continue;
-
+                    
                     if (!order || order.amount < 10) {
                         delete global.Mem.market[orderIndex];
                         continue;
                     }
+                    
+                    if (order.resourceType == RESOURCE_POWER) continue;
 
                     switch (order.type) {
                         case ORDER_SELL: //you buy
