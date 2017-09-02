@@ -1203,7 +1203,7 @@ module.exports = {
 
             if (powerSpawn && powerSpawn.energy >= 50 && powerSpawn.power >= 1 && room.storage && room.storage.store[RESOURCE_ENERGY] >= 50000) powerSpawn.processPower();
             else if (powerSpawn.power == 0 && room.terminal && Memory.market && Memory.market['power_buy']
-                && room.terminal.cooldown && room.terminal.store[RESOURCE_ENERGY] >= 10000 && Game.market.credits > 10000 && room.storage) {
+                && !room.terminal.cooldown && room.terminal.store[RESOURCE_ENERGY] >= 10000 && Game.market.credits > 10000 && room.storage) {
                 Game.market.deal(Memory.market['power_buy'], 100, room.name);
                 return {response: 'idle', time: Game.time + 101};
             }
