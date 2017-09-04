@@ -1507,7 +1507,7 @@ module.exports = {
                 }
                 else if (room.energyAvailable == room.energyCapacityAvailable && creep.pos.getRangeTo(extensionLink) <= 1) {
                     var container = creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 0)[0];
-                    if (container) creep.transfer(container, RESOURCE_ENERGY);
+                    if (container && creep.carry.energy > 0) creep.transfer(container, RESOURCE_ENERGY);
                 }
                 else {
                     if (!creep.memory.moving || !this.path[creep.memory.moving]) {
