@@ -1589,8 +1589,13 @@ module.exports = {
                 if (!link && Game.time % 101 == 0) return this.placeStrucs(room, flag);
                 else return;
             }
-            if (Game.time % 120960 == 0) this.placeStrucs(room, flag);
-            if (Game.time % 120960 == 0) this.placeRamparts(room, flag);
+            
+            if (!Memory.lastRC || room.controller.level != Memory.lastRC || Game.time % 120960 == 0)
+            {
+                this.placeStrucs(room, flag);
+                this.placeRamparts(room, flag);
+                Memory.lastRC = room.controller.level
+            }
 
             if (creeps.length > 0) {
                 //creep loop
@@ -1684,7 +1689,7 @@ module.exports = {
                     let strucPos = new RoomPosition(flag.pos.x + struc.x, flag.pos.y + struc.y, room.name);
                     let lookAt = strucPos.lookFor(LOOK_STRUCTURES);
 
-                    if (_.filter(lookAt, (s) => s.structureType == struc.s)[0]) room.createConstructionSite(strucPos.x, strucPos.y, struc.s);
+                    if (!_.filter(lookAt, (s) => s.structureType == struc.s)[0]) room.createConstructionSite(strucPos.x, strucPos.y, struc.s);
                     if (_.filter(lookAt, (s) => s.structureType == STRUCTURE_ROAD)[0]) _.filter(lookAt, (s) => s.structureType == STRUCTURE_ROAD)[0].destroy();
                 }
             }
@@ -1696,7 +1701,7 @@ module.exports = {
                     let strucPos = new RoomPosition(flag.pos.x + struc.x, flag.pos.y + struc.y, room.name);
                     let lookAt = strucPos.lookFor(LOOK_STRUCTURES);
 
-                    if (_.filter(lookAt, (s) => s.structureType == STRUCTURE_RAMPART)) room.createConstructionSite(strucPos.x, strucPos.y, STRUCTURE_RAMPART);
+                    if (!_.filter(lookAt, (s) => s.structureType == STRUCTURE_RAMPART)[0]) room.createConstructionSite(strucPos.x, strucPos.y, STRUCTURE_RAMPART);
                 }
             }
         },
