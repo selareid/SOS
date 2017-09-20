@@ -538,6 +538,11 @@ module.exports = {
             this.spawn(Memory_it);
             
             // if (Game.cpu.bucket > 5000) this.doStats(room);
+            
+            if (room.controller.level < 8 && room.terminal) {
+                if (!global.needsEnergy) global.needsEnergy = [];
+                global.needsEnergy.push(room.name);
+            }
         },
 
         addToSQ: function (roomName, process, creepMem = {}) {
