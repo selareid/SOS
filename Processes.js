@@ -1018,7 +1018,27 @@ module.exports = {
                 time: Game.time + (1 - (room.terminal.store[RESOURCE_ENERGY] / 10000)) * 1000
             };
             else if (room.terminal.cooldown) return {response: 'idle', time: Game.time + room.terminal.cooldown};
-
+            
+            if (_.size(global.needsEnergy) > 0) {
+                if (room.terminal.store[RESOURCE_ENERGY] < 50000) return {response: 'idle', time: Game.time + (1 - (room.terminal.store[RESOURCE_ENERGY] / 50000)) * 10000}; 
+                
+                var toSend;
+                
+                for (let roomPotential in global.needsEnergy) {
+                    toSend = roomPotential;
+                }
+                
+                
+                var transCost = Game.market.calcTransactionCost(1, room.name, toSend);
+                var amountToSend = Math.round((room.terminal.store.energy / 3) / transCost) > room.terminal.store[order.resourceType] ? room.terminal.store[order.resourceType] : Math.round((room.terminal.store.energy / 3) / transCost);
+                
+                if (amountToSend) {
+                    var rsl = room.terminal.send(RESOURCE_ENERGY, amountToSend, toSend, 'Get To RCL 8 Faster!');
+                    console.terminalLog(room, 'Sent excess energy to room ' + toSend + ' Amount ' + amountToSend + ' Result ' + rsl);
+                }
+                return {response: 'idle', time: Game.time + 4};
+            }
+            
             (() => {
                 for (var orderIndex in global.Mem.market) {
                     var order = Game.market.getOrderById(global.Mem.market[orderIndex]);
