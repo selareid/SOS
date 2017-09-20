@@ -2321,7 +2321,7 @@ module.exports = {
             if (extsToFill.length < 1) return false;
 
             if (creep.memory.w == true) {
-                if (creep.pos.isNearTo(extsToFill[0])) {if (creep.transfer(extsToFill[0], RESOURCE_ENERGY) == OK) return 'finished';}
+                if (creep.pos.isNearTo(extsToFill[0])) creep.transfer(extsToFill[0], RESOURCE_ENERGY);
                 else creep.moveWithPath(extsToFill[0], {maxRooms: 1});
             }
             else {
