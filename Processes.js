@@ -379,9 +379,10 @@ module.exports = {
             var nearestRoom = Game.rooms[Memory.nr];
             if (!nearestRoom) {
                 var newR = _.min(Game.rooms, (r) => {
-                    return r.find(FIND_MY_SPAWNS).length > 0 && r.energyCapacityAvailable >= 550 ? Game.map.getRoomLinearDistance(r.name, flag.pos.roomName) : undefined;
+                    return r.find(FIND_MY_SPAWNS).length > 0 && r.energyCapacityAvailable >= 550 ? Game.map.getRoomLinearDistance(r.name, flag.pos.roomName) : Number.POSITIVE_INFINITY;
                 });
                 Memory.nr = newR ? newR.name : undefined;
+                nearestRoom = Game.rooms[Memory.nr]
             }
 
             if (Game.creeps[Memory.crp] || nearestRoom.memory.spawnQueue[Memory.crp]) {
@@ -401,7 +402,7 @@ module.exports = {
                     else creep.moveWithPath(creep.room.controller, {range: 1, repath: 0.01, maxRooms: 1});
                 }
             }
-            else Memory.crp = module.exports.room.addToSQ('room:' + nearestRoom.name, 'claim');
+            else Memory.crp = module.exports.room.addToSQ(nearestRoom.name, 'claim');
         }
     },
 
@@ -466,7 +467,7 @@ module.exports = {
                 }
             }
             else {
-                if (!flag.room || flag.room.find(FIND_MY_SPAWNS) < 1) Memory.crp = module.exports.room.addToSQ('room:' + nearestRoom.name, 'buildSpawn');
+                if (!flag.room || flag.room.find(FIND_MY_SPAWNS) < 1) Memory.crp = module.exports.room.addToSQ(nearestRoom.name, 'buildSpawn');
                 else {
                     flag.remove();
                     return {response: 'end'};
