@@ -22,6 +22,7 @@ function getCreep(name, process) {
 }
 
 const defaultBodyChart = {
+    minimalist: [[WORK, MOVE, MOVE, CARRY, CARRY], []],
     doHarvest: [[WORK, MOVE, MOVE, CARRY], [], 5],
     praiseRC: [[WORK, CARRY, MOVE], []],
     mine: [[WORK, CARRY, MOVE, MOVE], []],
@@ -499,7 +500,9 @@ module.exports = {
             if (Game.time % 3 == 0 && room.find(FIND_HOSTILE_CREEPS).length > 0 && room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())}).length > 0
                 && !processExists('doTowers', Memory.rmN)) spawnNewProcess('doTowers', Memory.rmN);
 
-            if (Game.time % 11 == 0) {
+            if (room.controller.level < 8) delete room.memory.minimal;
+
+            if (!room.memory.minimal && Game.time % 11 == 0) {
                 if (room.controller.level > 7 && room.storage) {
                     if (room.terminal && !processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
 
@@ -523,6 +526,11 @@ module.exports = {
                 if (room.controller.level >= 5 && !processExists('doLinks', Memory.rmN)) spawnNewProcess('doLinks', Memory.rmN);
                 if (room.controller.level >= 8 && !processExists('doLabs', Memory.rmN)) spawnNewProcess('doLabs', Memory.rmN);
                 if (room.controller.level >= 8 && room.getStructures(STRUCTURE_POWER_SPAWN).length > 0 && !processExists('doPowerProc', Memory.rmN)) spawnNewProcess('doPowerProc', Memory.rmN);
+            }
+            else if (room.memory.minimal && Game.time % 11 == 0) {
+                if (!processExists('minimalist', Memory.rmN)) spawnNewProcess('minimalist', Memory.rmN);
+                if (!processExists('strgDistr', Memory.rmN)) spawnNewProcess('strgDistr', Memory.rmN);
+                if (room.terminal && !processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
             }
 
             this.spawn(Memory_it);
@@ -1065,7 +1073,7 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room || !room.storage || !room.terminal) return {response: 'end'};
+            if (!room || room.memory.minimal || !room.storage || !room.terminal) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
 
             var flag = Game.flags[Memory.flag];
@@ -1197,7 +1205,7 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room || !room.storage || !room.terminal || room.getStructures(STRUCTURE_POWER_SPAWN).length < 1) return {response: 'end'};
+            if (!room || room.memory.minimal || !room.storage || !room.terminal || room.getStructures(STRUCTURE_POWER_SPAWN).length < 1) return {response: 'end'};
 
             var powerSpawn = room.getStructures(STRUCTURE_POWER_SPAWN)[0];
 
@@ -1213,7 +1221,7 @@ module.exports = {
 
             var creeps = Memory.crps ? Memory.crps : undefined;
             var room = Game.rooms[Memory.rmN];
-            if (!room) return {response: 'end'};
+            if (!room || room.memory.minimal) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
             if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
             if (!creeps) Memory.crps = []; creeps = Memory.crps;
@@ -1387,7 +1395,7 @@ module.exports = {
             }
 
             var room = Game.rooms[Memory.rmN];
-            if (!room) return {response: 'end'};
+            if (!room || room.memory.minimal) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
 
             if (!global[room.name].fillSpawnFlag) global[room.name].fillSpawnFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'fillSpawn'})[0];
@@ -1473,7 +1481,7 @@ module.exports = {
 
             var creeps = Memory.crps ? Memory.crps : undefined;
             var room = Game.rooms[Memory.rmN];
-            if (!room) return {response: 'end'};
+            if (!room || room.memory.minimal) return {response: 'end'};
             if (!creeps) Memory.crps = [];
             creeps = Memory.crps;
             if (!global[room.name]) global[room.name] = {};
@@ -1900,7 +1908,7 @@ module.exports = {
 
          var creeps = Memory.crps ? Memory.crps : undefined;
          var room = Game.rooms[Memory.rmN];
-         if (!room || !room.storage || room.controller.level < 6) return {response: 'end'};
+         if (!room || room.memory.minimal || !room.storage || room.controller.level < 6) return {response: 'end'};
 
          var mineral = room.find(FIND_MINERALS)[0];
          if (!mineral || (mineral.mineralAmount < 1 && mineral.ticksToRegeneration > 200 && (!creeps || creeps.length < 1))) return {response: 'end'};
@@ -1960,7 +1968,7 @@ module.exports = {
 
             var creeps = Memory.crps ? Memory.crps : undefined;
             var room = Game.rooms[Memory.rmN];
-            if (!room) return {response: 'end'};
+            if (!room || room.memory.minimal) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
             if (!creeps) Memory.crps = []; creeps = Memory.crps;
             if (!room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0]) return;
@@ -2029,7 +2037,7 @@ module.exports = {
 
             var creeps = Memory.crps ? Memory.crps : undefined;
             var room = Game.rooms[Memory.rmN];
-            if (!room) return {response: 'end'};
+            if (!room || room.memory.minimal) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
             if (!creeps) {
                 Memory.crps = [];
@@ -2147,7 +2155,7 @@ module.exports = {
             }
 
             var room = Game.rooms[Memory.rmN];
-            if (!room) return {response: 'end'};
+            if (!room || room.memory.minimal) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
 
             if (creep) {
@@ -2252,128 +2260,101 @@ module.exports = {
         }
     },
 
-    remoteMine: {
+    minimalist: {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
+            var creep = Memory.creep ? getCreep(Memory.creep, 'minimalist') : undefined;
+            if (creep == 'dead') {
+                Memory.crp = undefined;
+                creep = undefined;
+            }
+
             var room = Game.rooms[Memory.rmN];
-            if (!room) return {response: 'end'};
+            if (!room || !room.memory.minimal) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
-            var rooms = room.memory.remotes;
-            if (!rooms || !rooms instanceof Array) {
-                room.memory.remotes = [];
-                return {response: 'end'};
-            }
 
-            //claimer
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //TODO
-            //claimer
+            if (creep) {
+                if (creep.spawning) return;
 
-            //haulers
-            var haulers = Memory.haulers ? Memory.haulers : undefined;
-            if (!haulers) {
-                Memory.haulers = [];
-                haulers = Memory.haulers;
-            }
+                creep.talk('minimalist');
 
-            //creep loop
-            if (haulers.length > 0) {
-                for (let creep_it_it in haulers) {
-                    if (typeof haulers[creep_it_it] == 'number') haulers[creep_it_it] = haulers[creep_it_it].toString();
-                    let creep = getCreep(haulers[creep_it_it].split(':')[0], 'remoteMine');
-                    if (creep == 'dead') {
-                        Memory.crp = undefined;
-                        creep = undefined;
-                    }
+                if (_.sum(creep.carry) == creep.carryCapacity) creep.memory.w = true;
+                else if (_.sum(creep.carry) == 0) creep.memory.w = false;
 
-                    if (!creep) {
-                        if (!room.memory.spawnQueue[haulers[creep_it_it]]) haulers.splice(creep_it_it, 1);
-                        continue;
-                    }
-
-                    creep.talk('hauler');
-
-                    if (creep.carry.energy == 0) creep.memory.goingHome = false;
-                    else if (_.sum(creep.carry) == creep.carryCapacity) creep.memory.goingHome = true;
-
-                    if (creep.memory.goingHome) {
-                        var thingToGoTo = room.storage ? room.storage : room.getStructures(STRUCTURE_SPAWN)[0];
-
-                        if (creep.pos.roomName == room.name) {
-                            if (creep.pos.isNearTo(thingToGoTo)) creep.transfer(thingToGoTo, RESOURCE_ENERGY);
-                            else creep.moveWithPath(thingToGoTo);
-                        }
-                        else {
-                            if (creep.room.controller && creep.room.controller.my && CONTROLLER_DOWNGRADE[creep.room.controller.level]*0.75 < creep.room.controller.ticksToDowngrade) {
-                                if (creep.getRangeTo(creep.room.controller) > 3) creep.moveWithPath(creep.room.controller, {range :3});
-                                else creep.upgradeController(creep.room.controller);
-                            }
-                            else creep.moveWithPath(thingToGoTo);
-                        }
-                    }
-                    else {
-                        if (!creep.memory.RTGT) creep.memory.RTGT = rooms[Math.floor(Math.random() * rooms.length)];
-
-                        if (creep.pos.roomName == creep.memory.RTGT) {
-
-                        }
-                        else if (Game.rooms[creep.memory.RTGT]) {
-                            var resource = Game.getObjectById(creep.memory.resource) ? Game.getObjectById(creep.memory.resource) : undefined;
-
-                            if (!resource) {
-                                resource = Game.rooms[creep.memory.RTGT].find(FIND_DROPPED_RESOURCES, {filter: (r) => r.resourceType == RESOURCE_ENERGY})[0];
-                                creep.memory.resource = resource.id;
-                            }
-
-                            if (!resource) creep.memory.RTGT = undefined;
-
-                            creep.moveWithPath(resource)
-                        }
-                        else creep.memory.RTGT = undefined;
-                    }
+                if (creep.memory.d) {
+                    if (this[creep.memory.d](Memory, room, creep) === 'finished' || this[creep.memory.d](Memory, room, creep) === false) creep.memory.d = undefined;
+                }
+                else {
+                    if (this.fillSpawn(Memory, room, creep) === true) creep.memory.d = 'fillSpawn';
+                    else if (this.fillExts(Memory, room, creep) === true) creep.memory.d = 'fillExts';
+                    else if (this.resetDG(Memory, room, creep) === true) creep.memory.d = 'resetDG';
+                    else if (this.harvest(Memory, room, creep) === true) creep.memory.d = 'harvest';
                 }
             }
-            if (haulers.length < this.getNumberOfHaulers(room)) Memory.haulers.push(module.exports.room.addToSQ(room.name, 'hauler'));
-            //haulers
+            else this.getCreep(Memory, room);
         },
 
-        getNumberOfHaulers: function (room) {
-            return room.memory.remotes ? room.memory.remotes.length : 0;
+        getCreep: function (Memory, room) {
+            return Memory.creep = module.exports.room.addToSQ(room.name, 'minimalist', {name: Memory.creep});
+        },
+
+        fillSpawn: function (Memory, room, creep) {
+            var spawnsToFill = room.getStructures(STRUCTURE_SPAWN, (s) => s.energy < s.energyCapacity);
+
+            if (!spawnsToFill) return false;
+
+            if (creep.memory.w == true) {
+                if (creep.pos.isNearTo(spawnsToFill[0])) if (creep.transfer(spawnsToFill[0], RESOURCE_ENERGY) == OK) return 'finished';
+                else creep.moveWithPath(spawnsToFill[0], {maxRooms: 1});
+            }
+            else creep.getConsumerEnergy(Memory);
+
+            return true;
+        },
+
+        fillExts: function (Memory, room, creep) {
+            var extsToFill = room.getStructures(STRUCTURE_EXTENSION, (s) => s.energy < s.energyCapacity);
+
+            if (!extsToFill) return false;
+
+            if (creep.memory.w == true) {
+                if (creep.pos.isNearTo(extsToFill[0])) if (creep.transfer(extsToFill[0], RESOURCE_ENERGY) == OK) return 'finished';
+                else creep.moveWithPath(extsToFill[0], {maxRooms: 1});
+            }
+            else creep.getConsumerEnergy(Memory);
+
+            return true;
+        },
+
+        resetDG: function (Memory, room, creep) {
+            if (creep.memory.w == true) {
+                if (creep.pos.getRangeTo(room.controller.pos) > 3) creep.moveWithPath(room.controller, {range: 3, maxRooms: 1});
+                else creep.upgradeController(room.controller);
+            }
+            else {
+                if (CONTROLLER_DOWNGRADE[8]-room.controller.ticksToDowngrade < 5000) return false;
+                creep.getConsumerEnergy(Memory);
+            }
+
+            return true;
+        },
+
+        harvest: function (Memory, room, creep) { //never fails
+            var source = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+
+            if (creep.memory.w == true) {
+                var link = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_LINK));
+
+                if (creep.pos.isNearTo(link.pos)) if (creep.transfer(link, RESOURCE_ENERGY) == OK) return 'finished';
+                else creep.moveWithPath(link, {maxRooms: 1})
+            }
+            else {
+                if (creep.pos.isNearTo(room.controller.pos) > 3) creep.moveWithPath(room.controller, {range: 3, maxRooms: 1});
+                else creep.upgradeController(room.controller);
+            }
+
+            return true;
         }
     }
 };
