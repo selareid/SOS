@@ -2324,7 +2324,14 @@ module.exports = {
                 if (creep.pos.isNearTo(extsToFill[0])) {if (creep.transfer(extsToFill[0], RESOURCE_ENERGY) == OK) return 'finished';}
                 else creep.moveWithPath(extsToFill[0], {maxRooms: 1});
             }
-            else creep.getConsumerEnergy(Memory);
+            else {
+                var container = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_CONTAINER, (s) => s.store.energy > 0));
+                if (!container) creep.getConsumerEnergy(Memory);
+                else {
+                    if (creep.pos.isNearTo(container)) creep.withdraw(container, RESOURCE_ENERGY);
+                    else creep.moveWithPath(container, {maxRooms: 1});
+                }
+            }
 
             return true;
         },
