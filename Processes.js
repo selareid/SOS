@@ -530,6 +530,7 @@ module.exports = {
             else if (room.memory.minimal && Game.time % 11 == 0) {
                 if (!processExists('minimalist', Memory.rmN)) spawnNewProcess('minimalist', Memory.rmN);
                 if (!processExists('strgDistr', Memory.rmN)) spawnNewProcess('strgDistr', Memory.rmN);
+                if (!processExists('takeCare', Memory.rmN)) spawnNewProcess('takeCare', Memory.rmN);
                 if (room.terminal && !processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
             }
 
@@ -2155,7 +2156,7 @@ module.exports = {
             }
 
             var room = Game.rooms[Memory.rmN];
-            if (!room || room.memory.minimal) return {response: 'end'};
+            if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
 
             if (creep) {
