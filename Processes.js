@@ -2317,7 +2317,7 @@ module.exports = {
         fillExts: function (Memory, room, creep) {
             var extsToFill = room.getStructures(STRUCTURE_EXTENSION, (s) => s.energy < s.energyCapacity);
 
-            if (!extsToFill) return false;
+            if (extsToFill.length < 1) return false;
 
             if (creep.memory.w == true) {
                 if (creep.pos.isNearTo(extsToFill[0])) {if (creep.transfer(extsToFill[0], RESOURCE_ENERGY) == OK) return 'finished';}
