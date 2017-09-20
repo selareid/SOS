@@ -2303,7 +2303,7 @@ module.exports = {
         fillSpawn: function (Memory, room, creep) {
             var spawnsToFill = room.getStructures(STRUCTURE_SPAWN, (s) => s.energy < s.energyCapacity);
 
-            if (!spawnsToFill) return false;
+            if (spawnsToFill.length < 1) return false;
 
             if (creep.memory.w == true) {
                 if (creep.pos.isNearTo(spawnsToFill[0])) {if (creep.transfer(spawnsToFill[0], RESOURCE_ENERGY) == OK) return 'finished';}
