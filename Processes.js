@@ -2308,6 +2308,7 @@ module.exports = {
                 if (creep.memory.d) {
                     var rsl = this[creep.memory.d](Memory, room, creep);
                     if (rsl === 'finished' || rsl === false) creep.memory.d = undefined;
+                    else if (rsl === 'sleep') return {response: 'idle', time: 5};
                 }
                 else {
                     if (this.fillSpawn(Memory, room, creep) === true) creep.memory.d = 'fillSpawn';
@@ -2372,8 +2373,16 @@ module.exports = {
         },
 
         harvest: function (Memory, room, creep) { //never fails
-            var source = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
-
+            var source = Game.getObjectById(Memory.source);
+            
+            if (!source) {
+                var newS = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+                Memory.source = newS ? newS.id : undefined;
+                
+                if (newS) source = newS;
+                else return 'sleep';
+            }
+            
             if (creep.memory.w == true) {
                 var link = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_LINK));
 
