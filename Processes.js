@@ -529,6 +529,7 @@ module.exports = {
                 if (room.controller.level >= 8 && room.getStructures(STRUCTURE_POWER_SPAWN).length > 0 && !processExists('doPowerProc', Memory.rmN)) spawnNewProcess('doPowerProc', Memory.rmN);
             }
             else if (room.memory.minimal && Game.time % 11 == 0) {
+                if (!processExists('doHarvest', Memory.rmN)) spawnNewProcess('doHarvest', Memory.rmN);
                 if (!processExists('minimalist', Memory.rmN)) spawnNewProcess('minimalist', Memory.rmN);
                 if (!processExists('strgDistr', Memory.rmN)) spawnNewProcess('strgDistr', Memory.rmN);
                 if (!processExists('takeCare', Memory.rmN)) spawnNewProcess('takeCare', Memory.rmN);
@@ -1248,7 +1249,7 @@ module.exports = {
 
             var creeps = Memory.crps ? Memory.crps : undefined;
             var room = Game.rooms[Memory.rmN];
-            if (!room || room.memory.minimal) return {response: 'end'};
+            if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
             if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
             if (!creeps) Memory.crps = []; creeps = Memory.crps;
