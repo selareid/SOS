@@ -540,8 +540,8 @@ module.exports = {
             // if (Game.cpu.bucket > 5000) this.doStats(room);
             
             if (room.controller.level < 8 && room.terminal && room.terminal.store.energy < 50000) {
-                if (!global.needsEnergy) global.needsEnergy = [];
-                global.needsEnergy.push(room.name);
+                if (!global.needsEnergy) global.needsEnergy = {};
+                global.needsEnergy[room.name] = 50000-room.terminal.store.energy;
             }
         },
 
