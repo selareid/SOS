@@ -457,12 +457,7 @@ module.exports = {
                         }
                     }
                     else {
-                        var source = flag.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
-
-                        if (source) {
-                            if (creep.pos.isNearTo(source.pos)) creep.harvest(source);
-                            else creep.moveWithPath(source, {range: 1, repath: 0.01, maxRooms: 1});
-                        }
+                        creep.getConsumerEnergy(Memory)
                     }
                 }
             }
