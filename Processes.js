@@ -2283,7 +2283,8 @@ module.exports = {
                 else if (_.sum(creep.carry) == 0) creep.memory.w = false;
 
                 if (creep.memory.d) {
-                    if (this[creep.memory.d](Memory, room, creep) === 'finished' || this[creep.memory.d](Memory, room, creep) === false) creep.memory.d = undefined;
+                    var rsl = this[creep.memory.d](Memory, room, creep);
+                    if (rsl === 'finished' || rsl === false) creep.memory.d = undefined;
                 }
                 else {
                     if (this.fillSpawn(Memory, room, creep) === true) creep.memory.d = 'fillSpawn';
@@ -2305,7 +2306,7 @@ module.exports = {
             if (!spawnsToFill) return false;
 
             if (creep.memory.w == true) {
-                if (creep.pos.isNearTo(spawnsToFill[0])) if (creep.transfer(spawnsToFill[0], RESOURCE_ENERGY) == OK) return 'finished';
+                if (creep.pos.isNearTo(spawnsToFill[0])) {if (creep.transfer(spawnsToFill[0], RESOURCE_ENERGY) == OK) return 'finished';}
                 else creep.moveWithPath(spawnsToFill[0], {maxRooms: 1});
             }
             else creep.getConsumerEnergy(Memory);
@@ -2319,7 +2320,7 @@ module.exports = {
             if (!extsToFill) return false;
 
             if (creep.memory.w == true) {
-                if (creep.pos.isNearTo(extsToFill[0])) if (creep.transfer(extsToFill[0], RESOURCE_ENERGY) == OK) return 'finished';
+                if (creep.pos.isNearTo(extsToFill[0])) {if (creep.transfer(extsToFill[0], RESOURCE_ENERGY) == OK) return 'finished';}
                 else creep.moveWithPath(extsToFill[0], {maxRooms: 1});
             }
             else creep.getConsumerEnergy(Memory);
@@ -2346,12 +2347,12 @@ module.exports = {
             if (creep.memory.w == true) {
                 var link = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_LINK));
 
-                if (creep.pos.isNearTo(link.pos)) if (creep.transfer(link, RESOURCE_ENERGY) == OK) return 'finished';
+                if (creep.pos.isNearTo(link.pos)) {if (creep.transfer(link, RESOURCE_ENERGY) == OK) return 'finished';}
                 else creep.moveWithPath(link, {maxRooms: 1})
             }
             else {
-                if (creep.pos.isNearTo(room.controller.pos) > 3) creep.moveWithPath(room.controller, {range: 3, maxRooms: 1});
-                else creep.upgradeController(room.controller);
+                if (creep.pos.isNearTo(source)) creep.harvest(source);
+                else creep.moveWithPath(source, {maxRooms: 1});
             }
 
             return true;

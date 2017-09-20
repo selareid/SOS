@@ -114,7 +114,7 @@ Creep.prototype.moveWithPath =
     function (dest, opts = {}) {
         try {
             (() => {
-                if (!dest instanceof RoomPosition) return ERR_INVALID_ARGS;
+                if (!dest || !dest instanceof RoomPosition) return ERR_INVALID_ARGS;
                 if (dest.pos) dest = dest.pos;
 
                 if (!global[this.room.name]) global[this.room.name] = {};
