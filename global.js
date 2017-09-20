@@ -21,20 +21,20 @@ module.exports = () => {
             case 'doTowers': return 0;
 
             case 'checkRooms': return 1;
+            case 'checkCreeps': return 1;
+            case 'room': return 1;
+                
+            case 'doHarvest': return 2;
+            case 'fillSpawn': return 2;
+            case 'minimalist': return 2;
 
-            case 'checkCreeps': return 2;
+            case 'strgDistr': return 3;
 
-            case 'room': return 3;
-            case 'doHarvest': return 3;
-            case 'fillSpawn': return 3;
+            case 'praiseRC': return 4;
+            case 'takeCare': return 4;
 
-            case 'strgDistr': return 4;
-
-            case 'praiseRC': return 5;
-            case 'takeCare': return 5;
-
-            case 'checkGlobalProcesses': return 9;
-            case 'doTerminal': return 9;
+            case 'checkGlobalProcesses': return 6;
+            case 'doTerminal': return 6;
 
             case 'doPowerProc': return 10;
             case 'placeTowers': return 10;
