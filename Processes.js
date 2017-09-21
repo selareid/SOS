@@ -1031,6 +1031,7 @@ module.exports = {
                 if (amountToSend) {
                     var rsl = room.terminal.send(RESOURCE_ENERGY, amountToSend, toSend, 'Get To RCL 8 Faster!');
                     console.terminalLog(room, 'Sent excess energy to room ' + toSend + ' Amount ' + amountToSend + ' Result ' + rsl);
+                    Memory.lastDid = Game.time;
                 }
                 return {response: 'idle', time: Game.time + 4};
             }
