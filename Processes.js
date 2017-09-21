@@ -1026,7 +1026,7 @@ module.exports = {
                 
                 
                 var transCost = Game.market.calcTransactionCost(1, room.name, toSend);
-                var amountToSend = Math.round((room.terminal.store.energy / 3) / transCost) > room.terminal.store[order.resourceType] ? room.terminal.store[order.resourceType] : Math.round((room.terminal.store.energy / 3) / transCost);
+                var amountToSend = Math.round((room.terminal.store.energy / 3) / transCost) > room.terminal.store.energy ? room.terminal.store.energy : Math.round((room.terminal.store.energy / 3) / transCost);
                 
                 if (amountToSend) {
                     var rsl = room.terminal.send(RESOURCE_ENERGY, amountToSend, toSend, 'Get To RCL 8 Faster!');
