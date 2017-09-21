@@ -24,7 +24,7 @@ module.exports = {
             }
             else if (Memory.p[processIndex].idleTime && Memory.p[processIndex].idleTime > Game.time) continue;
 
-            if (!Memory.p[processIndex].queue) Memory.p[processIndex].queue = getQueue(Memory.p[processIndex].pN);
+            if (isUndefinedOrNull(Memory.p[processIndex].queue)) Memory.p[processIndex].queue = getQueue(Memory.p[processIndex].pN);
 
             if (!queues[Memory.p[processIndex].queue]) queues[Memory.p[processIndex].queue] = [];
 
@@ -45,6 +45,7 @@ module.exports = {
                     && (!process.avg || Game.cpu.limit - Game.cpu.getUsed() < saveBucketAllowance || Game.cpu.limit - process.avg - Game.cpu.getUsed() < saveBucketAllowance)) {
                     //skip process
                     global.processesSkipped.push(process.pN);
+                    process.queue = process.queue == 0 ? 0 : process.queue-1;
                 }
                 else {
                     if (!process.pN) return; //Todo add something here
