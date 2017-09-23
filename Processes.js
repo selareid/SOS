@@ -1427,7 +1427,7 @@ module.exports = {
 
             if (!flag) return this.placeFlag(room);
             if (Game.time % 17280 == 0) this.placeSpawn(room);
-            if (Game.time % 17280 == 0) this.placeRamparts(room);
+            if (Game.time % 17280 == 0 && room.controller.level >= 4) this.placeRamparts(room);
 
             if (creep) {
                 creep.talk('fillSpawn');
@@ -1625,7 +1625,7 @@ module.exports = {
             if (!Memory.lastRC || room.controller.level != Memory.lastRC || Game.time % 120960 == 0)
             {
                 this.placeStrucs(room, flag);
-                this.placeRamparts(room, flag);
+                if (room.controller.level >= 4) this.placeRamparts(room, flag);
                 Memory.lastRC = room.controller.level
             }
 
