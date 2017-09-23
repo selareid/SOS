@@ -2104,7 +2104,7 @@ module.exports = {
                         else creep.moveWithPath(room.controller, {repath: 0.01, maxRooms: 1});
                     }
                     else {
-                        if (creep.pos.getRangeTo(room.controller) > 3) creep.moveWithPath(room.controller, {range: 3, repath: 0.01, maxRooms: 1});
+                        if (creep.pos.getRangeTo(room.controller) > 2) creep.moveWithPath(room.controller, {range: 2, repath: 0.01, maxRooms: 1});
                         else creep.upgradeController(room.controller);
                     }
 
