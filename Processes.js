@@ -1588,9 +1588,12 @@ module.exports = {
                     }
                 }
                 else {
-                    for (let ext of room.getStructures(STRUCTURE_EXTENSION)) {
-                        if (ext.energy < ext.energyCapacity) {
-                            creep.memory.ext = ext.id;
+                    var extensions = room.getStructures(STRUCTURE_EXTENSION);
+                    var chosen = Math.floor(Math.random() * extensions.length);
+                    
+                    for (let ext_it in extensions) {
+                        if (extensions[ext_it].energy < extensions[ext_it].energyCapacity && ext_it == chosen) {
+                            creep.memory.ext = extensions[ext_it].id;
                             break;
                         }
                     }
