@@ -34,9 +34,8 @@ RoomPosition.prototype.customFindPathTo = function (dest, opts) {
         if (!room) return;
         if (!global[room.name]) global[room.name] = {};
 
-        if (opts.ignoreCreeps && global[room.name].CostMatrix && global[room.name].CostMatrix instanceof PathFinder.CostMatrix && global[room.name].CostMatrixCount && global[room.name].CostMatrixCount > Game.time) return global[room.name].CostMatrix;
-        else if (global[room.name].CostMatrixIG && global[room.name].CostMatrixIG instanceof PathFinder.CostMatrix && global[room.name].CostMatrixIGCount && global[room.name].CostMatrixIGCount > Game.time) return global[room.name].CostMatrixIG;
-
+        if (global[room.name].CostMatrix && global[room.name].CostMatrix instanceof PathFinder.CostMatrix && global[room.name].CostMatrixCount && global[room.name].CostMatrixCount > Game.time) return global[room.name].CostMatrix;
+        
         var costs = new PathFinder.CostMatrix;
 
         room.find(FIND_STRUCTURES).forEach(function(struct) {
@@ -68,17 +67,11 @@ RoomPosition.prototype.customFindPathTo = function (dest, opts) {
         });
 
         room.find(FIND_CREEPS).forEach(function(creep) {
-            if (!opts.ignoreCreeps || (creep.memory && (creep.memory.p == 'doHarvest' || creep.memory.p == 'takeCare'))) costs.set(creep.pos.x, creep.pos.y, 0xff);
+            if (creep.memory && (creep.memory.p == 'doHarvest' || creep.memory.p == 'takeCare')) costs.set(creep.pos.x, creep.pos.y, 0xff);
         });
-
-        if (opts.ignoreCreeps) {
+        
             global[room.name].CostMatrixCount = Game.time + 75;
             global[room.name].CostMatrix = costs;
-        }
-        else {
-            global[room.name].CostMatrixIG = costs;
-            global[room.name].CostMatrixIGCount = Game.time + 75;
-        }
 
         return costs;
     };
