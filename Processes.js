@@ -197,7 +197,7 @@ module.exports = {
 
                 _.forEach(room.find(FIND_STRUCTURES), (structure) => {
                     if ((structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_RAMPART && structure.hits < (structure.hitsMax * 0.5)
-                        || (structure.structureType == STRUCTURE_RAMPART && structure.hits < RAMPART_DECAY_AMOUNT*RAMPART_DECAY_TIME))
+                        || (structure.structureType == STRUCTURE_RAMPART && structure.hits < RAMPART_DECAY_AMOUNT*RAMPART_DECAY_TIME/3))
                         && (structure.structureType != STRUCTURE_CONTAINER || structure.pos.findInRange(room.getStructures(STRUCTURE_LINK), 3) < 1 || structure.pos.findInRange(FIND_SOURCES).length < 1)
                         && !structure.room.memory.repairQueue.includes(structure.id)) structure.room.memory.repairQueue.push(structure.id);
                 });
@@ -2253,7 +2253,7 @@ module.exports = {
         findStructureToRepair: function (Memory, room, creep) {
             var structure = Memory.str ? Game.getObjectById(Memory.str) : undefined;
 
-            if (!structure || structure.structureType == STRUCTURE_WALL || structure.hits >= structure.hitsMax || (structure.structureType == STRUCTURE_RAMPART && structure.hits > RAMPART_DECAY_AMOUNT*RAMPART_DECAY_TIME)) {
+            if (!structure || structure.structureType == STRUCTURE_WALL || structure.hits >= structure.hitsMax || (structure.structureType == STRUCTURE_RAMPART && structure.hits > RAMPART_DECAY_AMOUNT*RAMPART_DECAY_TIME/3)) {
                 structure = Game.getObjectById(room.memory.repairQueue[0]);
                 if (room.memory.repairQueue && room.memory.repairQueue.length > 0)room.memory.repairQueue.splice(0, 1);
 
