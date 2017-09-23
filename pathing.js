@@ -97,7 +97,7 @@ Creep.prototype.customMoveByPath = function (path) {
     if (encodeChar(this.pos.x * 100 + this.pos.y) == this.memory.lastPos) this.memory.SPC = this.memory.SPC ? this.memory.SPC + 1 : 1;
     else this.memory.SPC = 0;
 
-    if (!path[this.memory.goto] || this.memory.SPC >= 3) {
+    if (!path[this.memory.goto] || this.memory.SPC >= 1) {
         delete this.memory.SPC;
         delete this.memory.goto;
         delete this.memory.lastPos;
