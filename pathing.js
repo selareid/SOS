@@ -23,59 +23,65 @@ function decodeChar(char) {
     return char.charCodeAt(0) & (~HIGH_MASK);
 }
 
-
-function getCostMatrix (roomName) {
-    var room = Game.rooms[roomName];
-    if (!room) return;
-    if (!global[room.name]) global[room.name] = {};
-
-    if (global[room.name].CostMatrix && global[room.name].CostMatrix instanceof PathFinder.CostMatrix && global[room.name].CostMatrixCount && global[room.name].CostMatrixCount > Game.time) return global[room.name].CostMatrix;
-
-    var costs = new PathFinder.CostMatrix;
-
-    room.find(FIND_STRUCTURES).forEach(function(struct) {
-        if (struct.structureType === STRUCTURE_ROAD) {
-            // Favor roads over plain tiles
-            costs.set(struct.pos.x, struct.pos.y, 1);
-        } else if (struct.structureType !== STRUCTURE_CONTAINER &&
-            (struct.structureType !== STRUCTURE_RAMPART ||
-            !struct.my)) {
-            // Can't walk through non-walkable buildings
-            costs.set(struct.pos.x, struct.pos.y, 0xff);
-        }
-    });
-    
-    room.find(FIND_CONSTRUCTION_SITES).forEach(function(struct) {
-        if (struct.structureType === STRUCTURE_ROAD) {
-            // Favor roads over plain tiles
-            costs.set(struct.pos.x, struct.pos.y, 1);
-        } else if (struct.structureType !== STRUCTURE_CONTAINER &&
-            (struct.structureType !== STRUCTURE_RAMPART ||
-            !struct.my)) {
-            // Can't walk through non-walkable buildings
-            costs.set(struct.pos.x, struct.pos.y, 0xff);
-        }
-    });
-
-    room.find(FIND_FLAGS).forEach(function(creep) {
-            costs.set(creep.pos.x, creep.pos.y, 15);
-    });
-
-    room.find(FIND_CREEPS).forEach(function(creep) {
-        if (creep.memory && (creep.memory.p == 'doHarvest' || creep.memory.p == 'takeCare')) costs.set(creep.pos.x, creep.pos.y, 0xff);
-    });
-
-    global[room.name].CostMatrixCount = Game.time + 75;
-    global[room.name].CostMatrix = costs;
-    return costs;
-}
-
 RoomPosition.prototype.customFindPathTo = function (dest, opts) {
     if (isUndefinedOrNull(opts.range)) opts.range = 1;
     if (isUndefinedOrNull(opts.obstacles)) opts.obstacles = getObstacles(Game.rooms[this.roomName]);
     if (isUndefinedOrNull(opts.plainCost)) opts.plainCost = 2;
     if (isUndefinedOrNull(opts.swampCost)) opts.swampCost = 10;
-    if (isUndefinedOrNull(opts.roomCallback)) opts.roomCallback = getCostMatrix;
+    if (isUndefinedOrNull(opts.ignoreCreeps)) opts.ignoreCreeps = true;
+    if (isUndefinedOrNull(opts.roomCallback)) opts.roomCallback = function getCostMatrix (roomName) {
+        var room = Game.rooms[roomName];
+        if (!room) return;
+        if (!global[room.name]) global[room.name] = {};
+
+        if (opts.ignoreCreeps && global[room.name].CostMatrix && global[room.name].CostMatrix instanceof PathFinder.CostMatrix && global[room.name].CostMatrixCount && global[room.name].CostMatrixCount > Game.time) return global[room.name].CostMatrix;
+        else if (global[room.name].CostMatrixIG && global[room.name].CostMatrixIG instanceof PathFinder.CostMatrix && global[room.name].CostMatrixIGCount && global[room.name].CostMatrixIGCount > Game.time) return global[room.name].CostMatrixIG;
+
+        var costs = new PathFinder.CostMatrix;
+
+        room.find(FIND_STRUCTURES).forEach(function(struct) {
+            if (struct.structureType === STRUCTURE_ROAD) {
+                // Favor roads over plain tiles
+                costs.set(struct.pos.x, struct.pos.y, 1);
+            } else if (struct.structureType !== STRUCTURE_CONTAINER &&
+                (struct.structureType !== STRUCTURE_RAMPART ||
+                !struct.my)) {
+                // Can't walk through non-walkable buildings
+                costs.set(struct.pos.x, struct.pos.y, 0xff);
+            }
+        });
+
+        room.find(FIND_CONSTRUCTION_SITES).forEach(function(struct) {
+            if (struct.structureType === STRUCTURE_ROAD) {
+                // Favor roads over plain tiles
+                costs.set(struct.pos.x, struct.pos.y, 1);
+            } else if (struct.structureType !== STRUCTURE_CONTAINER &&
+                (struct.structureType !== STRUCTURE_RAMPART ||
+                !struct.my)) {
+                // Can't walk through non-walkable buildings
+                costs.set(struct.pos.x, struct.pos.y, 0xff);
+            }
+        });
+
+        room.find(FIND_FLAGS).forEach(function(creep) {
+            costs.set(creep.pos.x, creep.pos.y, 15);
+        });
+
+        room.find(FIND_CREEPS).forEach(function(creep) {
+            if (!opts.ignoreCreeps || (creep.memory && (creep.memory.p == 'doHarvest' || creep.memory.p == 'takeCare'))) costs.set(creep.pos.x, creep.pos.y, 0xff);
+        });
+
+        if (opts.ignoreCreeps) {
+            global[room.name].CostMatrixCount = Game.time + 75;
+            global[room.name].CostMatrix = costs;
+        }
+        else {
+            global[room.name].CostMatrixIG = costs;
+            global[room.name].CostMatrixIGCount = Game.time + 75;
+        }
+
+        return costs;
+    };
 
 
     var path = PathFinder.search(this, {pos: dest, range: opts.range}, opts);
@@ -128,7 +134,8 @@ Creep.prototype.moveWithPath =
                     range: !isUndefinedOrNull(opts.range) ? encodeChar(opts.range) : 'd',
                     obstacles: !isUndefinedOrNull(opts.obstacles) ? opts.obstacles : 'd',
                     plainCost: !isUndefinedOrNull(opts.plainCost) ? encodeChar(opts.plainCost) : 'd',
-                    swampCost: !isUndefinedOrNull(opts.swampCost) ? encodeChar(opts.swampCost) : 'd'
+                    swampCost: !isUndefinedOrNull(opts.swampCost) ? encodeChar(opts.swampCost) : 'd',
+                    ignoreCreeps: opts.ignoreCreeps ? encodeChar(1) : encodeChar(0)
                 };
 
                 var optsTag = has.range + has.obstacles + has.plainCost + has.swampCost;
