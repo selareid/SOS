@@ -1589,15 +1589,9 @@ module.exports = {
                     }
                 }
                 else {
-                    var extensions = room.getStructures(STRUCTURE_EXTENSION);
-                    var chosen = Math.floor(Math.random() * extensions.length);
+                    var chosen = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_EXTENSION), {filter: (s) => s.energy < s.energyCapacity})
                     
-                    for (let ext_it in extensions) {
-                        if (extensions[ext_it].energy < extensions[ext_it].energyCapacity && ext_it == chosen) {
-                            creep.memory.ext = extensions[ext_it].id;
-                            break;
-                        }
-                    }
+                    creep.memory.ext = chosen ? chosen.id : undefined;
                 }
             }
         }
