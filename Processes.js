@@ -1567,10 +1567,10 @@ module.exports = {
         },
 
         notCoolVersion: function (Memory, room, creep) {
-            if (creep.carry.energy == 0) Memory.w = 1;
-            else if (creep.carry.energy == creep.carryCapacity) Memory.w = 0;
+            if (creep.carry.energy == 0) creep.memory.w = 1;
+            else if (creep.carry.energy == creep.carryCapacity) creep.memory.w = 0;
 
-            if (Memory.w == 1) {
+            if (creep.memory.w == 1) {
                 creep.getConsumerEnergy(Memory, room);
             }
             else {
