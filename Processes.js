@@ -1589,7 +1589,7 @@ module.exports = {
                     }
                 }
                 else {
-                    var chosen = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_EXTENSION), {filter: (s) => s.energy < s.energyCapacity})
+                    var chosen = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_EXTENSION, (s) => s.energy < s.energyCapacity));
                     
                     creep.memory.ext = chosen ? chosen.id : undefined;
                 }
