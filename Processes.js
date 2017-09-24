@@ -1562,7 +1562,7 @@ module.exports = {
         },
 
         getCreepAmount: function (room) {
-            if (!room || !room.controller || room.controller.level >= 7) return 1;
+            if (!room || !room.controller || room.controller.level >= 7 || room.getStructures(STRUCTURE_EXTENION).length < 1) return 1;
             else return room.controller.level < 8 && room.storage && room.storage.store.energy > 200000 ? 4 : 2;
         },
 
