@@ -1245,7 +1245,9 @@ module.exports = {
             if (!global[room.name]) global[room.name] = {};
             if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
             if (!creeps) Memory.crps = []; creeps = Memory.crps;
-
+            
+            if (room.storage && room.storage.store[RESOURCE_ENERGY] > 600000) return {response: 'idle', time: Game.time + 17};
+            
             if (creeps.length > 0) {
                 //creep loop
                 for (let creep_it_it in creeps) {
