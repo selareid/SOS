@@ -28,10 +28,10 @@ module.exports = () => {
             case 'fillSpawn': return 2;
             case 'fillExt': return 2;
             case 'minimalist': return 2;
+            case 'praiseRC': return 2;
 
             case 'strgDistr': return 3;
-
-            case 'praiseRC': return 4;
+            
             case 'takeCare': return 4;
 
             case 'checkGlobalProcesses': return 6;
