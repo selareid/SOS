@@ -2095,7 +2095,7 @@ module.exports = {
                     }
                     else {
                         if (creep.upgradeController(room.controller) == ERR_NOT_IN_RANGE) creep.moveWithPath(room.controller, {range: 1, repath: 0.01, maxRooms: 1, ignoreCreeps: false});
-                        else if (creep.getRangeTo(room.controller) > 1) creep.move(creep.pos.getDirectionTo(room.controller));
+                        else if (creep.pos.getRangeTo(room.controller) > 1) creep.move(creep.pos.getDirectionTo(room.controller));
                     }
 
                 }
