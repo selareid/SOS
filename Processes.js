@@ -823,13 +823,10 @@ module.exports = {
                     let goodPos = new RoomPosition(x, y, room.name);
 
                     let toSource = [];
-                    let toController;
 
                     _.forEach(room.find(FIND_SOURCES), (s) => {
                         toSource.push(room.findPath(goodPos, s.pos, {ignoreCreeps: true, ignoreRoads: true, maxRooms: 1}).length);
                     });
-
-                    toController = room.findPath(goodPos, room.controller.pos, {ignoreCreeps: true, ignoreRoads: true, maxRooms: 1}).length;
 
                     let cnt = 0;
 
@@ -837,7 +834,6 @@ module.exports = {
                         bestPos = {
                             x: goodPos.x,
                             y: goodPos.y,
-                            c: toController,
                             s: toSource
                         }
                     }
@@ -846,12 +842,11 @@ module.exports = {
                         if (bestPos.s[foo] > toSource[foo]) cnt++;
                     }
 
-                    if (cnt >= 2 || (cnt >= 1 && toController <= bestPos.c) || toController*2.5 <= bestPos.c) {
+                    if (cnt >= 1) {
                         bestPos = {
 
                             x: goodPos.x,
                             y: goodPos.y,
-                            c: toController,
                             s: toSource
                         }
                     }
