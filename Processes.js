@@ -1761,7 +1761,7 @@ module.exports = {
         linkToStorage: function (Memory, room, creep) {
             if (creep.memory.w == true) {
                 //if carry is full
-                var toPut = room.terminal && room.controller.level > 7 && room.storage.store[RESOURCE_ENERGY]-800 > storageEnergy && room.terminal.store[RESOURCE_ENERGY] < terminalGoals[RESOURCE_ENERGY] || room.storage.store[RESOURCE_ENERGY] >= 400000? room.terminal : room.storage;
+                var toPut = room.terminal && room.controller.level > 7 && room.storage.store[RESOURCE_ENERGY]-800 > storageEnergy && room.terminal.store[RESOURCE_ENERGY] < terminalGoals[RESOURCE_ENERGY]? room.terminal : room.storage;
                 creep.transfer(toPut, RESOURCE_ENERGY);
                 creep.memory.w = false;
             }
@@ -1874,7 +1874,7 @@ module.exports = {
 
                 for (let resourceType in room.terminal.store) {
                     if (resourceType == RESOURCE_ENERGY) {
-                        if ((room.storage.store[RESOURCE_ENERGY]-800 < 400000 && room.controller.level < 8) || room.storage.store[resourceType]+800 < storageEnergy) {
+                        if ((room.storage.store[RESOURCE_ENERGY]-800 < 900000 && room.controller.level < 8) || room.storage.store[resourceType]+800 < storageEnergy) {
                             resourceToMove = resourceType;
                             break;
                         }
@@ -1904,7 +1904,7 @@ module.exports = {
 
                 for (let resourceType in room.storage.store) {
                     if (resourceType == RESOURCE_ENERGY) {
-                        if ((room.storage.store[RESOURCE_ENERGY]+800 > 400000 || room.controller.level > 7) && room.storage.store[resourceType]-800 > storageEnergy && room.terminal.store[RESOURCE_ENERGY] < terminalGoals[RESOURCE_ENERGY]) {
+                        if (room.controller.level > 7 && room.storage.store[resourceType]-800 > storageEnergy && room.terminal.store[RESOURCE_ENERGY] < terminalGoals[RESOURCE_ENERGY]) {
                             resourceToMove = resourceType;
                             break;
                         }
