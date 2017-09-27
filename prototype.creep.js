@@ -70,7 +70,7 @@ function harvestEnergy(creep, room=creep.room) {
 //String.fromCodePoint('0x1F602')
 Creep.prototype.talk =
     function (message, public = true) {
-        if (Game.cpu.bucket > 9000) this.say(message, public);
+        if (Game.cpu.bucket > 9000 && Game.cpu.limit > 10) this.say(message, public);
     };
 
 Creep.prototype.runInSquares =
