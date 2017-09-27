@@ -1563,7 +1563,7 @@ module.exports = {
 
         getCreepAmount: function (room) {
             if (!room || !room.controller || room.controller.level >= 7 || room.getStructures(STRUCTURE_EXTENSION).length < 1) return 1;
-            else return room.controller.level < 8 && room.storage && room.storage.store.energy > 200000 ? 3 : 2;
+            else return 2;
         },
 
         notCoolVersion: function (Memory, room, creep) {
