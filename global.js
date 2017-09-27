@@ -26,6 +26,7 @@ module.exports = () => {
                 
             case 'doHarvest': return 2;
             case 'fillSpawn': return 2;
+            case 'fillExt': return 2;
             case 'minimalist': return 2;
 
             case 'strgDistr': return 3;
