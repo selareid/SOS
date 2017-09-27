@@ -1308,7 +1308,7 @@ module.exports = {
         },
 
         getHarvesters: function (room) {
-            /*if (room.energyCapacityAvailable < 2200) */return room.find(FIND_SOURCES).length;
+            /*if (room.energyCapacityAvailable < 2200) */return !room.memory.minimal ? room.find(FIND_SOURCES).length : 1;
             //else return 1;
         },
 
