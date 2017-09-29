@@ -580,11 +580,14 @@ module.exports = {
                     nextToSpawn.body = processSpawn.reCalcBody(room.energyAvailable, _.clone(getBodyChart(room)[nextToSpawn.proc][0]), _.clone(getBodyChart(room)[nextToSpawn.proc][1]), _.clone(getBodyChart(room)[nextToSpawn.proc][2]));
                     break;
             }
+            
+            var result = spawn.spawnCreep(nextToSpawn.body.body, nextToSpawn.name, { 
+                memory: {p: nextToSpawn.proc},
+                energyStructures: room.find(FIND_MY_SPAWNS).concat(room.getStructures(STRUCTURE_EXTENSION))
+            });
 
-            var name = spawn.createCreep(nextToSpawn.body.body, nextToSpawn.name, {p: nextToSpawn.proc});
-
-            if (Game.creeps[name]) console.logSpawn(room, name + ' ' + nextToSpawn.proc);
-            else if (name == -6 || name == -10) delete room.memory.spawnQueue[nextToSpawn.name];
+            if (result == OK) console.logSpawn(room, name + ' ' + nextToSpawn.proc);
+            else if (result == -6 || result == -10) delete room.memory.spawnQueue[nextToSpawn.name];
         },
 
         doStats: function (room) {
