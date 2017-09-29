@@ -586,7 +586,7 @@ module.exports = {
                 energyStructures: room.find(FIND_MY_SPAWNS).concat(room.getStructures(STRUCTURE_EXTENSION))
             });
 
-            if (result == OK) console.logSpawn(room, name + ' ' + nextToSpawn.proc);
+            if (result == OK) console.logSpawn(room, nextToSpawn.name + ' ' + nextToSpawn.proc);
             else if (result == -6 || result == -10) delete room.memory.spawnQueue[nextToSpawn.name];
         },
 
