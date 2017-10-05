@@ -2187,7 +2187,7 @@ module.exports = {
                 if (creep.carry.energy == 0) Memory.w = 1;
                 else if (creep.carry.energy == creep.carryCapacity) Memory.w = 0;
 
-                // if (creep.room.name != room.name) return creep.moveWithPath(room.getPositionAt(25, 25), {range: 21, repath: 0.01, maxRooms: 16});
+                if (creep.room.name != room.name) return creep.moveWithPath(room.getPositionAt(25, 25), {range: 21, repath: 0.01, maxRooms: 16});
 
                 if (Memory.w == 1) {
                     creep.getConsumerEnergy(Memory, room);
