@@ -2245,7 +2245,7 @@ module.exports = {
 
             if (nearestRoom.controller.level <= room.controller.level || Game.map.getRoomLinearDistance(room.name, nearestRoom.name) > 10) return Memory.creep = module.exports.room.addToSQ(room.name, 'takeCare', {name: Memory.creep});
 
-            return Memory.creep = module.exports.room.addToSQ('room:' + nearestRoom.name, 'takeCare', {name: Memory.creep});
+            return Memory.creep = module.exports.room.addToSQ(nearestRoom.name, 'takeCare', {name: Memory.creep});
         },
 
         findStructureToRepair: function (Memory, room, creep) {
