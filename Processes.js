@@ -1544,7 +1544,8 @@ module.exports = {
                 }
                 else {
                     if (!creep.memory.moving || !this.path[creep.memory.moving]) {
-                        creep.memory.moving = 0;
+                        if (creep.pos.x === extensionLink.pos.x-4) creep.memory.moving = 10;
+                        else creep.memory.moving = 0;
                     }
 
                     var newPos = room.getPositionAt(creep.pos.x + this.path[creep.memory.moving].x, creep.pos.y + this.path[creep.memory.moving].y);
