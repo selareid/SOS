@@ -1491,15 +1491,16 @@ module.exports = {
     },
 
     fillExt: {
-        path: [{x: -1, y: 1}, {x: -1, y: 1}, {x: -1, y: 1}, {x: -1, y: 1}, {x: -1, y: -1}, {x: -1, y: -1},
-            {x: 1, y: -1},
-            {x: -1, y: 1},
-            {x: -1, y: -1}, {x: -1, y: -1},
-            {x: 1, y: -1}, {x: 1, y: -1}, {x: 1, y: -1}, {x: 1, y: -1},
-            {x: 1, y: 1}, {x: 1, y: 1},
-            {x: -1, y: 1},
-            {x: 1, y: -1},
-            {x: 1, y: 1}, {x: 1, y: 1}],
+        path: [BOTTOM_LEFT, BOTTOM_LEFT, BOTTOM_LEFT, BOTTOM_LEFT,
+            TOP_LEFT, TOP_LEFT,
+            TOP_RIGHT,
+            BOTTOM_LEFT,
+            TOP_LEFT, TOP_LEFT,
+            TOP_RIGHT, TOP_RIGHT, TOP_RIGHT, TOP_RIGHT,
+            BOTTOM_RIGHT, BOTTOM_RIGHT,
+            BOTTOM_LEFT,
+            TOP_RIGHT,
+            BOTTOM_RIGHT, BOTTOM_RIGHT],
 
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
@@ -1532,7 +1533,11 @@ module.exports = {
                 if (room.controller.level < 6 || !room.extensionFlag || !extensionLink) this.notCoolVersion(Memory, room, creep);
                 else if (creep.pos.getRangeTo(extensionLink) > 4) creep.moveWithPath(extensionLink);
                 else if (creep.carry.energy < creep.carryCapacity && creep.pos.getRangeTo(extensionLink) <= 1) {
-                    if (extensionLink.energy > 0) creep.withdraw(extensionLink, RESOURCE_ENERGY);
+                    if (extensionLink.energy > 0) {
+                        creep.withdraw(extensionLink, RESOURCE_ENERGY);
+                        if (creep.pos.getDirectionTo(extensionLink) == TOP_RIGHT) creep.memory.moving = 7;
+                        else creep.memory.moving = 17;
+                    }
                     else {
                         var container = creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 0)[0];
                         if (container) creep.withdraw(container, RESOURCE_ENERGY);
@@ -1544,17 +1549,12 @@ module.exports = {
                 }
                 else {
                     if (!creep.memory.moving || !this.path[creep.memory.moving]) {
-                        if (creep.pos.x === extensionLink.pos.x-4) creep.memory.moving = 10;
+                        if (creep.pos.x === extensionLink.pos.x - 4) creep.memory.moving = 10;
                         else creep.memory.moving = 0;
                     }
 
-                    var newPos = room.getPositionAt(creep.pos.x + this.path[creep.memory.moving].x, creep.pos.y + this.path[creep.memory.moving].y);
-
-                    creep.move(creep.pos.getDirectionTo(newPos));
-                    var badCreeps = newPos.lookFor(LOOK_CREEPS);
-                    if (badCreeps[0] && badCreeps[0].my) badCreeps[0].move(badCreeps[0].pos.getDirectionTo(creep.pos));
-                    creep.memory.moving++;
-
+                        creep.move(this.path[creep.memory.moving]);
+                        creep.memory.moving++;
                     if (creep.carry.energy > 0) creep.transfer(creep.pos.findInRange(room.getStructures(STRUCTURE_EXTENSION), 1, {filter: (s) => s.energy < s.energyCapacity})[0], RESOURCE_ENERGY);
                 }
             }
