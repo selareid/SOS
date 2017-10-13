@@ -622,8 +622,8 @@ module.exports = {
 
             var room = Game.rooms[Memory.rmN];
             if (!room || room.find(FIND_HOSTILE_CREEPS).length < 1) {
-                if (Memory.counter && Memory.counter >= 7) return {response: 'end'};
-                else return Memory.counter = Memory.counter ? 1 : Memory.counter+1;
+                if (Memory.counter >= 7) return {response: 'end'};
+                else return Memory.counter = Memory.counter+1 || 1;
             }
             if (!global[room.name]) global[room.name] = {};
             if (room.getStructures(STRUCTURE_TOWER).length < 1) return {response: 'end'};
@@ -650,8 +650,8 @@ module.exports = {
 
             var room = Game.rooms[Memory.rmN];
             if (!room || (room.find(FIND_HOSTILE_CREEPS).length < 1 && !Memory.creeps)) {
-                if (Memory.counter && Memory.counter >= 7) return {response: 'end'};
-                else Memory.counter = Memory.counter ? 1 : Memory.counter + 1;
+                if (Memory.counter >= 7) return {response: 'end'};
+                else return Memory.counter = Memory.counter+1 || 1;
             }
             if (!global[room.name]) global[room.name] = {};
             if (!Memory.creeps) Memory.creeps = [];
