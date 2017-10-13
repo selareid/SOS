@@ -620,7 +620,10 @@ module.exports = {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room || room.find(FIND_HOSTILE_CREEPS).length < 1) return {response: 'end'};
+            if (!room || room.find(FIND_HOSTILE_CREEPS).length < 1) {
+                if (Memory.counter && Memory.counter >= 7) return {response: 'end'};
+                else return Memory.counter = Memory.counter ? 1 : Memory.counter+1;
+            }
             if (!global[room.name]) global[room.name] = {};
             if (room.getStructures(STRUCTURE_TOWER).length < 1) return {response: 'end'};
 
@@ -635,6 +638,47 @@ module.exports = {
             _.forEach(room.getStructures(STRUCTURE_TOWER), (tower) => {
                 tower.killIdiot(tower.pos.findClosestByRange(baddies));
             });
+
+            if (!processExists('defendRoom', Memory.rmN) && _.filter(baddies, (c) => c.hasActiveBodyparts(HEAL)).length > 0) spawnNewProcess('defendRoom', Memory.rmN);
+        }
+    },
+
+    defendRoom: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            var room = Game.rooms[Memory.rmN];
+            if (!room || (room.find(FIND_HOSTILE_CREEPS).length < 1 && !Memory.creeps)) {
+                if (Memory.counter && Memory.counter >= 7) return {response: 'end'};
+                else Memory.counter = Memory.counter ? 1 : Memory.counter + 1;
+            }
+            if (!global[room.name]) global[room.name] = {};
+            if (!Memory.creeps) Memory.creeps = [];
+
+            var baddies = room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())});
+            if (baddies.length < 1) return {response: 'end'};
+
+            for (let creep_it_it in creeps) {
+                if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
+                let creep = getCreep(creeps[creep_it_it].split(':')[0], 'defendRoom');
+                if (creep == 'dead') {
+                    Memory.crp = undefined;
+                    creep = undefined;
+                }
+
+                if (!creep) {
+                    if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
+                    continue;
+                }
+
+                creep.talk('defendRoom');
+
+                var myBaddy = creep.pos.findClosestByRange(baddies);
+                if (creep.pos.isNearTo(myBaddy)) creep.attack(myBaddy);
+                else creep.moveTo(myBaddy, {reusePath: 2});
+            }
+
+            if (Memory.creeps.length < baddies.length) Memory.crps.push(module.exports.room.addToSQ(room.name, 'defendRoom'));
         }
     },
 
