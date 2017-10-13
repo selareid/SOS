@@ -836,6 +836,8 @@ module.exports = {
             var amountToBuild = 100 - _.size(Game.constructionSites);
 
             for (let structureType in this.buildings) {
+                if (structureType == STRUCTURE_EXTENSION && room.controller.level < 6) continue;
+                
                 for (let posXYRAW of this.buildings[structureType]) {
                     let posXY = {x: flag.pos.x+posXYRAW.x, y: flag.pos.y+posXYRAW.y};
 
@@ -2201,9 +2203,9 @@ module.exports = {
             else {
                 creep.getConsumerEnergy(Memory, room);
 
-                if (_.size(Game.constructionSites) < 100 && Game.time % 101 == 0 && room.controller.pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 3).length < 1 && room.controller.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < 1
+                if (Game.time % 101 == 0 && _.size(Game.constructionSites) < 100 && room.controller.level >= 6 && room.controller.pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 3).length < 1 && room.controller.pos.findInRange(FIND_MY_STRUCTURES, 3, {filter: (s) => s.structureType == STRUCTURE_LINK}).length < 1
                     && CONTROLLER_STRUCTURES[STRUCTURE_LINK][room.controller.level] > room.getStructures(STRUCTURE_LINK).length) {
-                    var path = room.storage.pos.findPathTo(room.controller.pos, {range: 3});
+                    var path = room.storage.pos.findPathTo(room.controller.pos);
 
                     var linkPos = new RoomPosition(path[path.length-1].x, path[path.length-1].y, room.name);
                     if (linkPos) room.createConstructionSite(linkPos, STRUCTURE_LINK);
