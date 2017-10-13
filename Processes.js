@@ -36,7 +36,8 @@ const defaultBodyChart = {
     stealEnergy: [[CARRY, MOVE, MOVE], []],
     doLabs: [[CARRY, CARRY, MOVE], [], 8],
     healer: [[MOVE, HEAL], []],
-    crusher: [[MOVE, ATTACK], []]
+    crusher: [[MOVE, ATTACK], []],
+    defendRoom: [[MOVE, ATTACK], []]
 };
 
 function getBodyChart(room) {
