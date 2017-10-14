@@ -547,7 +547,8 @@ module.exports = {
             var room = Game.rooms[roomName];
             if (!room) throw 'ERROR addToSQ Passed Bad roomName';
 
-            while (!creepMem.name || Game.creeps[creepMem.name]) creepMem.name = (Game.time % 1000) + '' + Math.round(Math.random() * 1000);
+            while (!creepMem.name || Game.creeps[creepMem.name] || room.memory.spawnQueue[creepMem.name]) creepMem.name = roomName + ((Game.time % 1000) + '' + Math.round(Math.random() * 1000));
+
             creepMem.body = processSpawn.run(Game.rooms[roomName], _.clone(getBodyChart(Game.rooms[roomName])[process][0]), _.clone(getBodyChart(Game.rooms[roomName])[process][1]),
                 (process == 'praiseRC' && Game.rooms[roomName] && Game.rooms[roomName].controller.level >= 8 ? 15 : _.clone(getBodyChart(Game.rooms[roomName])[process][2])));
 
