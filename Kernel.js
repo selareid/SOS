@@ -40,7 +40,7 @@ module.exports = {
 
                 // Object.setPrototypeOf(process, Process);
 
-                if (process.pN != 'deadCreepHandler' && process.pN != 'doTowers' && process.pN != 'claim'
+                if (process.pN != 'deadCreepHandler' && process.pN != 'doTowers' && process.pN != 'defendRoom' && process.pN != 'claim'
                     && ((Game.cpu.bucket < lowBucketAmount && Game.cpu.limit - Game.cpu.getUsed() < saveBucketLessCPU) || Game.cpu.getUsed() > Game.cpu.limit || Game.cpu.bucket < 2000)
                     && (!process.avg || Game.cpu.limit - Game.cpu.getUsed() < saveBucketAllowance || Game.cpu.limit - process.avg - Game.cpu.getUsed() < saveBucketAllowance)) {
                     //skip process
