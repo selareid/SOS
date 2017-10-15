@@ -8,6 +8,12 @@ const kernel = require('Kernel');
 console.log("[" + "<p style=\"display:inline; color: #ededed\">RESET</p>" + "] " + "<p style=\"display:inline; color: #6dbbff\">" + Game.cpu.bucket + "</p>"); // reset log
 
 module.exports.run = () => {
+if (!Memory.special) {
+Memory.special = true;
+Memory.rooms = {};
+}
+
+
     if (!console.logTickStart) require('prototype.console')();
     if (!isUndefinedOrNull) require('global')();
     
