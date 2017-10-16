@@ -1447,8 +1447,9 @@ module.exports = {
                     var container = creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 0)[0];
                     if (container && creep.carry.energy > 0) {
                         creep.transfer(container, RESOURCE_ENERGY);
-                        return {response: 'idle', time: Game.time + 11};
                     }
+
+                    return {response: 'idle', time: Game.time + 11};
                 }
                 else {
                     if (!creep.memory.moving || !this.path[creep.memory.moving]) {
