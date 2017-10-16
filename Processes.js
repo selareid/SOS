@@ -34,10 +34,10 @@ const defaultBodyChart = {
     claim: [[CLAIM, MOVE, MOVE], [], 1],
     buildSpawn: [[WORK, MOVE, CARRY], []],
     stealEnergy: [[CARRY, MOVE, MOVE], []],
-    doLabs: [[CARRY, CARRY, MOVE], [], 8],
     healer: [[MOVE, HEAL], []],
     crusher: [[MOVE, ATTACK], []],
-    defendRoom: [[MOVE, ATTACK], []]
+    defendRoom: [[MOVE, ATTACK], []],
+    reserver: [[CLAIM, MOVE, MOVE], [], 3]
 };
 
 function getBodyChart(room) {
@@ -248,22 +248,7 @@ module.exports = {
             }
 
             if (healer) {
-                if (!Memory.boosted || _.filter(healer.body, (b) => b.type == HEAL && b.boost == undefined).length > 0) {
-                    var lab = Game.getObjectById(Memory.lab);
-
-                    if (!lab) {
-                        var newLab = _.filter(room.getStructures(STRUCTURE_LAB), (l) => l.mineralType == RESOURCE_LEMERGIUM_OXIDE && l.energy > LAB_BOOST_ENERGY && l.mineralAmount > LAB_BOOST_MINERAL);
-                        Memory.lab = newLab ? newLab.id : undefined;
-                        Memory.boosted = newLab ? false : true;
-                    }
-                    else {
-                        if (healer.isNearTo(lab)) {
-                            if (lab.boostCreep(healer) == OK) Memory.boosted = true;
-                        }
-                        else healer.moveWithPath(lab);
-                    }
-                }
-                else if (crusher) {
+                if (crusher) {
                     if (!healer.pos.isNearTo(crusher)) healer.moveTo(crusher, {reusePath: 2});
                     else {
                         if (crusher.pos.roomName != flag.pos.roomName) {
@@ -522,7 +507,6 @@ module.exports = {
 
                 if (!processExists('strgDistr', Memory.rmN)) spawnNewProcess('strgDistr', Memory.rmN);
                 if (room.controller.level >= 5 && !processExists('doLinks', Memory.rmN)) spawnNewProcess('doLinks', Memory.rmN);
-                if (room.controller.level >= 8 && !processExists('doLabs', Memory.rmN)) spawnNewProcess('doLabs', Memory.rmN);
                 if (room.controller.level >= 8 && room.getStructures(STRUCTURE_POWER_SPAWN).length > 0 && !processExists('doPowerProc', Memory.rmN)) spawnNewProcess('doPowerProc', Memory.rmN);
             }
             else if (room.memory.minimal && Game.time % 11 == 0) {
@@ -680,7 +664,7 @@ module.exports = {
                 else creep.moveTo(myBaddy, {reusePath: 2});
             }
 
-            if (Memory.creeps.length < baddies.length) Memory.crps.push(module.exports.room.addToSQ(room.name, 'defendRoom'));
+            if (Memory.creeps.length < baddies.length) Memory.creeps.push(module.exports.room.addToSQ(room.name, 'defendRoom'));
         }
     },
 
@@ -1136,138 +1120,6 @@ module.exports = {
             })();
 
             return {response: 'idle', time: Game.time + 7};
-        }
-    },
-
-    doLabs: {
-        run: function (Memory_it) {
-            var Memory = global.Mem.p[Memory_it];
-
-            var room = Game.rooms[Memory.rmN];
-            if (!room || room.memory.minimal || !room.storage || !room.terminal) return {response: 'end'};
-            if (!global[room.name]) global[room.name] = {};
-
-            var flag = Game.flags[Memory.flag];
-
-            if (!flag || flag instanceof Array) {
-                var newFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(' ')[0] == 'lab'})[0];
-                Memory.flag = newFlag ? newFlag.name : undefined;
-            }
-
-            var labs = Memory.labs ? _.map(Memory.labs, (id) => {return Game.getObjectById(id)}) : undefined;
-
-            if (!labs || !labs[0] || !labs[1] || !labs[2]) {
-                var found = _.map(_.sortBy(flag.pos.findInRange(room.getStructures(STRUCTURE_LAB), 2), (s) => {return s.pos.getRangeTo(flag.pos)}),
-                    (l) => {return l.id});
-                Memory.labs = found;
-
-                if (found.length < 3) this.buildLabs(flag)
-            }
-
-            var lab1 = Game.getObjectById(Memory.lab1);
-            var lab2 = Game.getObjectById(Memory.lab2);
-
-            if (!lab1 || !lab2) {
-                Memory.lab1 = labs[0] ? labs[0].id : undefined; lab1 = Game.getObjectById(Memory.lab1);
-                Memory.lab2 = labs[1] ? labs[1].id : undefined; lab2 = Game.getObjectById(Memory.lab2);
-            }
-
-            //reactions section
-            var needEnergy = _.filter(labs, (lab) => {
-                if (lab.id != lab1.id && lab.id != lab2.id && lab1.mineralAmount >= 5 && lab2.mineralAmount >= 5 && !lab.cooldown && lab.mineralAmount < lab.mineralCapacity) {
-                    lab.runReaction(lab1, lab2);
-                }
-
-                return lab.energy < lab.energyCapacity;
-            });
-            //reactions section
-
-            if (needEnergy.length > 0 || ((room.storage.store[RESOURCE_LEMERGIUM] || room.terminal.store[RESOURCE_LEMERGIUM]) && (room.storage.store[RESOURCE_OXYGEN] || room.terminal.store[RESOURCE_OXYGEN]))) {
-                var creep = Memory.creep ? getCreep(Memory.creep, 'doLabs') : undefined;
-                if (creep == 'dead') {
-                    Memory.crp = undefined;
-                    creep = undefined;
-                }
-
-                if (creep) {
-                    creep.talk('doLabs');
-
-                    if (needEnergy.length > 0) {
-                        if (!creep.memory.w == 2 && _.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
-                        else if (creep.carry.energy == 0) creep.memory.w = 1;
-
-                        if (creep.memory.w == 1) {
-                            if (room.storage.store[RESOURCE_ENERGY]) {
-                                if (creep.pos.isNearTo(room.storage)) {
-                                    creep.withdraw(room.storage, RESOURCE_ENERGY);
-                                    creep.memory.w = 0;
-                                }
-                                else creep.moveWithPath(room.storage, {repath: 0.01, maxRooms: 1});
-                            }
-                        }
-                        else if (creep.memory.w == 2) {
-                            if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
-                            else creep.moveWithPath(room.storage, {repath: 0.01, maxRooms: 1});
-                        }
-                        else {
-                            if (creep.pos.isNearTo(needEnergy[0])) creep.transfer(needEnergy[0], RESOURCE_ENERGY);
-                            else creep.moveWithPath(needEnergy[0], {repath: 0.01, maxRooms: 1});
-                        }
-                    }
-                    else {
-                        if (!creep.memory.currentMineral) return creep.memory.currentMineral = RESOURCE_LEMERGIUM;
-
-                        if (lab1.mineralType == creep.memory.currentMineral && lab1.mineralAmount >= lab1.mineralCapacity) {
-                            creep.memory.currentMineral = creep.memory.currentMineral == RESOURCE_LEMERGIUM ? RESOURCE_OXYGEN : RESOURCE_LEMERGIUM;
-                            creep.memory.w = 2;
-                        }
-                        else if (lab2.mineralType == creep.memory.currentMineral && lab2.mineralAmount >= lab2.mineralCapacity) {
-                            creep.memory.currentMineral = creep.memory.currentMineral == RESOURCE_LEMERGIUM ? RESOURCE_OXYGEN : RESOURCE_LEMERGIUM;
-                            creep.memory.w = 2;
-                        }
-
-                        if (!creep.memory.w == 2 && _.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
-                        else if (_.sum(creep.carry) == 0) creep.memory.w = 1;
-
-                        if (creep.memory.w == 1) {
-                            var hasResource = room.storage.store[creep.memory.currentMineral] ? room.storage : room.terminal.store[creep.memory.currentMineral] ? room.terminal : undefined;
-
-                            if (hasResource) {
-                                if (creep.pos.isNearTo(hasResource)) {
-                                    creep.withdraw(hasResource, creep.memory.currentMineral);
-                                    creep.memory.w = 0;
-                                }
-                                else creep.moveWithPath(hasResource, {repath: 0.01, maxRooms: 1});
-                            }
-                        }
-                        else if (creep.memory.w == 2) {
-                            if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
-                            else creep.moveWithPath(room.storage, {repath: 0.01, maxRooms: 1});
-                        }
-                        else {
-                            var labToDo = !lab1.mineralType || lab1.mineralType == creep.memory.currentMineral ? lab1 : lab2;
-
-                            if (creep.pos.isNearTo(labToDo)) creep.transfer(labToDo, creep.memory.currentMineral);
-                            else creep.moveWithPath(labToDo, {repath: 0.01, maxRooms: 1});
-                        }
-                    }
-                }
-                else if (needEnergy.length > 0 || !lab1.mineralAmount || !lab2.mineralAmount) {
-                    Memory.creep = module.exports.room.addToSQ(room.name, 'doLabs', {name: Memory.creep});
-                }
-            }
-        },
-
-        labSpots: [{"x": 0, "y": 0}, {"x": 1, "y": 1}, {"x": -1, "y": 1}],
-
-        buildLabs: function (flag) {
-            if (flag.room.getStructures(STRUCTURE_LAB).length < CONTROLLER_STRUCTURES[STRUCTURE_LAB][flag.room.controller.level]) {
-                _.forEach(this.labSpots, (ls) => {
-                    var newPos = ls ? flag.room.getPositionAt(flag.pos.x + ls.x, flag.pos.y + ls.y) : undefined;
-                    if (newPos && newPos.lookFor(LOOK_STRUCTURES).length < 1 && newPos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1) flag.room.createConstructionSite(newPos, STRUCTURE_LAB);
-                });
-
-            }
         }
     },
 
@@ -2444,5 +2296,63 @@ module.exports = {
 
             return true;
         }
-    }
+    }//,
+
+    // remoteHandler: {
+    //     run: function (Memory_it) {
+    //         var Memory = global.Mem.p[Memory_it];
+    //
+    //         var roomName = Memory.rmN;
+    //         if (!roomName) return {response: 'end'};
+    //         if (!global[roomName]) global[roomName] = {};
+    //
+    //         var nearestRoom = Game.rooms[Memory.nr];
+    //         if (!nearestRoom) {
+    //             var newR = _.min(Game.rooms, (r) => {
+    //                 return r.find(FIND_MY_SPAWNS).length > 0 ? Game.map.getRoomLinearDistance(r.name, roomName) : Number.POSITIVE_INFINITY;
+    //             });
+    //             Memory.nr = newR ? newR.name : undefined;
+    //             nearestRoom = Game.rooms[Memory.nr];
+    //             if (Game.map.getRoomLinearDistance(nearestRoom, roomName) > 3) return {response: 'end'}
+    //         }
+    //
+    //         if (!Memory.reservers) Memory.reservers = [];
+    //
+    //         var reservers = Memory.reservers;
+    //
+    //         for (var creepName_it in reservers) {
+    //             if (typeof reservers[creepName_it] == 'number') reservers[creepName_it] = reservers[creepName_it].toString();
+    //
+    //             var creep = getCreep(reservers[creepName_it].split(':')[0], 'remoteHandler');
+    //             if (creep == 'dead') {
+    //                 creep = undefined;
+    //             }
+    //
+    //             if (!creep) {
+    //                 if (!nearestRoom.memory.spawnQueue[reservers[creepName_it]]) reservers.splice(creepName_it, 1);
+    //                 continue;
+    //             }
+    //
+    //             creep.talk('remoteHandler');
+    //
+    //             this.doReserver(creep, roomName);
+    //         }
+    //
+    //         if (reservers.length < 1) module.exports.room.addToSQ(nearestRoom.name, 'reserver');
+    //
+    //
+    //
+    //     },
+    //
+    //     doReserver: function (creep, roomName) {
+    //         var room = Game.rooms[roomName];
+    //         if (room) {
+    //             if (creep.isNearTo(room.controller)) {
+    //                 if (!room.controller.reservation || room.controller.reservation.ticksToEnd < CONTROLLER_RESERVE_MAX-(CONTROLLER_RESERVE*3)) creep.reserveController(room.controller);
+    //             }
+    //             else creep.moveWithPath(room.controller);
+    //         }
+    //         else creep.moveWithPath(new RoomPosition(21, 21, roomName), {range: 21});
+    //     }
+    // }
 };
