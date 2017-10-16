@@ -3,8 +3,10 @@ const Processes = require('Processes');
 const lowBucketAmount = 5000;
 const saveBucketLessCPU = 2.5;
 
-module.exports = {
-    run:  function() {
+module.exports = {run: Kernel.run};
+
+const Kernel = {
+    run: function () {
         if (!Memory.init) return Processes.init.run();
 
         //normal processes
@@ -41,10 +43,10 @@ module.exports = {
 
                 if (process.pN != 'deadCreepHandler' && process.pN != 'doTowers' && process.pN != 'defendRoom' && process.pN != 'claim'
                     && ((Game.cpu.bucket < lowBucketAmount && Game.cpu.limit - Game.cpu.getUsed() < saveBucketLessCPU) || Game.cpu.getUsed() >= Game.cpu.limit || Game.cpu.bucket < 2000)
-                    && (!process.avg || process.avg + Game.cpu.getUsed() > Game.cpu.limit)) {
+                    && (!process.avg || (Memory.shutdownAvg || 0) + process.avg + Game.cpu.getUsed() > Game.cpu.limit)) {
                     //skip process
                     global.processesSkipped.push(process.pN);
-                    process.queue = process.queue == 0 ? 0 : process.queue-1;
+                    process.queue = process.queue == 0 ? 0 : process.queue - 1;
                 }
                 else {
                     if (!process.pN) return; //Todo add something here
@@ -54,9 +56,9 @@ module.exports = {
                             let startCpu = Game.cpu.getUsed();
 
                             let rsl = Processes[process.pN].run(processTag);
-                            
+
                             process.queue = getQueue(process.pN);
-                            
+
                             let used = Game.cpu.getUsed() - startCpu;
                             process.avg = process.avg ? ((process.avg * process.times) + used) / (process.times + 1) : used;
                             process.times = process.times ? process.times + 1 : 1;
@@ -65,7 +67,7 @@ module.exports = {
 
                             global.processesRun++;
                             global.processesRunName.push(process.pN);
-                            
+
                             if (rsl) {
                                 switch (rsl.response) {
                                     case 'end':
@@ -92,5 +94,25 @@ module.exports = {
             }
         }
         //normal processes
+
+        var beforeShutdownCPU = Game.cpu.getUsed();
+        this.shutdown();
+        var shutdownUsedCPU = Game.cpu.getUsed()-beforeShutdownCPU;
+        Memory.shutdownAvg = Memory.shutdownAvg ? ((Memory.shutdownAvg * Memory.shutdownTimes) + shutdownUsedCPU) / (Memory.shutdownTimes + 1) : shutdownUsedCPU;
+        Memory.shutdownTimes = Memory.shutdownTimes ? Memory.shutdownTimes + 1 : 1;
+    },
+
+    shutdown: function () {
+        if (Game.time % 13 == 0) Memory.market = {};
+
+        if (global.stats.cpu) {
+            global.stats.cpu.processUse = _.clone(global.processCost);
+            global.stats.cpu.getUsed = _.clone(Game.cpu.getUsed());
+        }
+
+        if (isUndefinedOrNull(RawMemory.segments[1])) RawMemory.setActiveSegments([0, 1]);
+        else if (global.stats) {
+            RawMemory.segments[1] = JSON.stringify(global.stats);
+        }
     }
 };

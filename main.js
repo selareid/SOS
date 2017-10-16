@@ -8,11 +8,6 @@ const kernel = require('Kernel');
 console.log("[" + "<p style=\"display:inline; color: #ededed\">RESET</p>" + "] " + "<p style=\"display:inline; color: #6dbbff\">" + Game.cpu.bucket + "</p>"); // reset log
 
 module.exports.run = () => {
-if (!Memory.special) {
-Memory.special = true;
-Memory.rooms = {};
-}
-
 
     if (!console.logTickStart) require('prototype.console')();
     if (!isUndefinedOrNull) require('global')();
@@ -53,18 +48,6 @@ Memory.rooms = {};
     }
     catch (err) {
         err && err.stack ? console.kernelError(err.stack) : console.kernelError(err);
-    }
-    
-    if (Game.time % 13 == 0) Memory.market = {};
-    
-    if (global.stats.cpu) {
-        global.stats.cpu.processUse = _.clone(global.processCost);
-        global.stats.cpu.getUsed = _.clone(Game.cpu.getUsed());
-    }
-
-    if (isUndefinedOrNull(RawMemory.segments[1])) RawMemory.setActiveSegments([0, 1]);
-    else if (global.stats) {
-        RawMemory.segments[1] = JSON.stringify(global.stats);
     }
 
     console.logTickSummary();
