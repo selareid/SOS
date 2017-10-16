@@ -1864,15 +1864,20 @@ module.exports = {
                  else if (_.sum(creep.carry) == creep.carryCapacity) Memory.w = 1;
 
                  if (Memory.w == 1) {
-                     var putWhere = room.terminal && room.terminal[mineral.mineralType] && room.terminal[mineral.mineralType] < terminalGoals[mineral.mineralType] ? room.terminal : room.storage;
-                     if (creep.pos.isNearTo(putWhere)) creep.transfer(putWhere, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
-                     else creep.moveWithPath(putWhere, {repath: 0.01, maxRooms: 1});
+                     if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
+                     else creep.moveWithPath(room.storage, {repath: 0.01, maxRooms: 1});
                  }
-                 else if (mineral.mineralAmount > 1 && mineral.pos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1) {
+                 else {
+                     if (mineral.mineralAmount < 1 && mineral.ticksToRegeneration > 200) {
+                         if (_.sum(creep.carry) > 0) Memory.w = 1;
+                         else creep.suicide();
+                     }
+
                      if (creep.pos.isNearTo(mineral)) {
                          if (creep.harvest(mineral) == ERR_NOT_FOUND) {
                              if (mineral.pos.lookFor(LOOK_CONSTRUCTION_SITES).length < 1) room.createConstructionSite(mineral.pos, STRUCTURE_EXTRACTOR);
                              creep.memory.t = 'build';
+                             return {response: 'idle', time: Game.time + CONSTRUCTION_COST[STRUCTURE_EXTRACTOR]};
                          }
                          else return {response: 'idle', time: Game.time + 6};
                      }
