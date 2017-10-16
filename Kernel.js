@@ -3,7 +3,21 @@ const Processes = require('Processes');
 const lowBucketAmount = 5000;
 const saveBucketLessCPU = 2.5;
 
-const Kernel = {
+var Kernel = {
+    shutdown: function () {
+        if (Game.time % 13 == 0) Memory.market = {};
+
+        if (global.stats.cpu) {
+            global.stats.cpu.processUse = _.clone(global.processCost);
+            global.stats.cpu.getUsed = _.clone(Game.cpu.getUsed());
+        }
+
+        if (isUndefinedOrNull(RawMemory.segments[1])) RawMemory.setActiveSegments([0, 1]);
+        else if (global.stats) {
+            RawMemory.segments[1] = JSON.stringify(global.stats);
+        }
+    },
+
     run: function () {
         if (!Memory.init) return Processes.init.run();
 
@@ -94,24 +108,10 @@ const Kernel = {
         //normal processes
 
         var beforeShutdownCPU = Game.cpu.getUsed();
-        this.shutdown();
+        Kernel.shutdown();
         var shutdownUsedCPU = Game.cpu.getUsed()-beforeShutdownCPU;
         Memory.shutdownAvg = Memory.shutdownAvg ? ((Memory.shutdownAvg * Memory.shutdownTimes) + shutdownUsedCPU) / (Memory.shutdownTimes + 1) : shutdownUsedCPU;
         Memory.shutdownTimes = Memory.shutdownTimes ? Memory.shutdownTimes + 1 : 1;
-    },
-
-    shutdown: function () {
-        if (Game.time % 13 == 0) Memory.market = {};
-
-        if (global.stats.cpu) {
-            global.stats.cpu.processUse = _.clone(global.processCost);
-            global.stats.cpu.getUsed = _.clone(Game.cpu.getUsed());
-        }
-
-        if (isUndefinedOrNull(RawMemory.segments[1])) RawMemory.setActiveSegments([0, 1]);
-        else if (global.stats) {
-            RawMemory.segments[1] = JSON.stringify(global.stats);
-        }
     }
 };
 
