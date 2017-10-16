@@ -2,7 +2,6 @@ const Processes = require('Processes');
 
 const lowBucketAmount = 5000;
 const saveBucketLessCPU = 2.5;
-const saveBucketAllowance = 2;
 
 module.exports = {
     run:  function() {
@@ -41,8 +40,8 @@ module.exports = {
                 // Object.setPrototypeOf(process, Process);
 
                 if (process.pN != 'deadCreepHandler' && process.pN != 'doTowers' && process.pN != 'defendRoom' && process.pN != 'claim'
-                    && ((Game.cpu.bucket < lowBucketAmount && Game.cpu.limit - Game.cpu.getUsed() < saveBucketLessCPU) || Game.cpu.getUsed() > Game.cpu.limit || Game.cpu.bucket < 2000)
-                    && (!process.avg || Game.cpu.limit - Game.cpu.getUsed() < saveBucketAllowance || Game.cpu.limit - process.avg - Game.cpu.getUsed() < saveBucketAllowance)) {
+                    && ((Game.cpu.bucket < lowBucketAmount && Game.cpu.limit - Game.cpu.getUsed() < saveBucketLessCPU) || Game.cpu.getUsed() >= Game.cpu.limit || Game.cpu.bucket < 2000)
+                    && (!process.avg || process.avg + Game.cpu.getUsed() > Game.cpu.limit)) {
                     //skip process
                     global.processesSkipped.push(process.pN);
                     process.queue = process.queue == 0 ? 0 : process.queue-1;
