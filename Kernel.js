@@ -3,8 +3,6 @@ const Processes = require('Processes');
 const lowBucketAmount = 5000;
 const saveBucketLessCPU = 2.5;
 
-module.exports = {run: Kernel.run};
-
 const Kernel = {
     run: function () {
         if (!Memory.init) return Processes.init.run();
@@ -116,3 +114,5 @@ const Kernel = {
         }
     }
 };
+
+module.exports = {run: Kernel.run};
