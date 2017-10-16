@@ -23,7 +23,7 @@ function getCreep(name, process) {
 
 const defaultBodyChart = {
     minimalist: [[WORK, MOVE, MOVE, CARRY, CARRY], []],
-    doHarvest: [[WORK, MOVE, MOVE, CARRY], [], 5],
+    doHarvest: [[WORK, MOVE, MOVE, CARRY], [], 6],
     praiseRC: [[WORK, CARRY, MOVE], []],
     mine: [[WORK, CARRY, MOVE, MOVE], []],
     strgDistr: [[CARRY], [MOVE], 16],
@@ -1241,7 +1241,7 @@ module.exports = {
 
             if (source) {
                 if (!creep.pos.isNearTo(source)) creep.moveWithPath(source, {repath: 0.01, maxRooms: 1});
-                else creep.harvest(source)
+                else if (source.energy) creep.harvest(source)
             }
             else Memory.crps[creep_it_it] = creep.name;
         },
@@ -2112,7 +2112,7 @@ module.exports = {
                         if (creep.pos.getRangeTo(structureToRepair) > 3) creep.moveWithPath(structureToRepair, {range: 3, repath: 0.01, maxRooms: 1});
                         else creep.repair(structureToRepair);
                     }
-                    else if (room.controller.level == 8 && room.controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[room.controller.level]*0.5) {
+                    else if (room.controller.level == 8 && room.controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[room.controller.level]*0.75) {
                         if (creep.pos.getRangeTo(room.controller) > 3) creep.moveWithPath(room.controller, {range: 3, repath: 0.01, maxRooms: 1});
                         else creep.upgradeController(room.controller);
                     }
