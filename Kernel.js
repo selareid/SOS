@@ -55,7 +55,7 @@ var Kernel = {
 
                 if (process.pN != 'deadCreepHandler' && process.pN != 'doTowers' && process.pN != 'defendRoom' && process.pN != 'claim'
                     && ((Game.cpu.bucket < lowBucketAmount && Game.cpu.limit - Game.cpu.getUsed() < saveBucketLessCPU) || Game.cpu.getUsed() >= Game.cpu.limit || Game.cpu.bucket < 2000)
-                    && (!process.avg || (Memory.shutdownAvg || 0) + process.avg + Game.cpu.getUsed() > Game.cpu.limit)) {
+                    && (!process.avg || saveBucketLessCPU + (Memory.shutdownAvg || 0) + process.avg + Game.cpu.getUsed() > Game.cpu.limit)) {
                     //skip process
                     global.processesSkipped.push(process.pN);
                     process.queue = process.queue == 0 ? 0 : process.queue - 1;
