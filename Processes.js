@@ -680,7 +680,7 @@ module.exports = {
                 else creep.moveTo(myBaddy, {reusePath: 2});
             }
 
-            if (Memory.creeps.length < baddies.length) Memory.crps.push(module.exports.room.addToSQ(room.name, 'defendRoom'));
+            if (Memory.creeps.length < baddies.length) Memory.creeps.push(module.exports.room.addToSQ(room.name, 'defendRoom'));
         }
     },
 
