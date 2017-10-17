@@ -2000,7 +2000,7 @@ module.exports = {
                     creep.talk('praiseRC');
 
                     if (creep.carry.energy == 0) {
-                        if (Game.cpu.bucket < 9000 && (creep.memory.w == 0 || creep.memory.w == 2)) creep.memory.w = 2;
+                        if (Game.cpu.bucket > 9000 && (creep.memory.w == 0 || creep.memory.w == 2) && (!room.controller.sign || Game.time-room.controller.sign.time > 501 || room.controller.sign.username != creep.owner.username)) creep.memory.w = 2;
                         else creep.memory.w = 1;
                     }
                     else if (creep.carry.energy == creep.carryCapacity) creep.memory.w = 0;
@@ -2065,7 +2065,10 @@ module.exports = {
             var link = global[randomHash].l;
 
             if (link && link.energy > 0 && (room.storage && creep.pos.findClosestByRange([link, room.storage]) == link)) {
-                if (creep.pos.isNearTo(link.pos)) creep.withdraw(link, RESOURCE_ENERGY);
+                if (creep.pos.isNearTo(link.pos)) {
+                    creep.withdraw(link, RESOURCE_ENERGY);
+
+                }
                 else creep.moveWithPath(link, {repath: 0.01, maxRooms: 1});
             }
             else {
