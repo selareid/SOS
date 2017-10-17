@@ -16,11 +16,11 @@ module.exports.run = () => {
         var segment0;
         if (!RawMemory.segments[0]) RawMemory.setActiveSegments([0]);
         else {
-        segment0 = JSON.parse(RawMemory.segments[0]);
+            segment0 = JSON.parse(RawMemory.segments[0]);
         }
         global.allies = segment0 && segment0.allies ? segment0.allies : [];
         global.controllerSigns = segment0 && segment0.controllerSigns ? segment0.controllerSigns : [];
-        }
+    }
 
 
     console.logTickStart();
