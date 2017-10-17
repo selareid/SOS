@@ -22,14 +22,7 @@ module.exports.run = () => {
         global.controllerSigns = segment0 && segment0.controllerSigns ? segment0.controllerSigns : [];
     }
 
-
     console.logTickStart();
-
-    if (!global.stats) global.stats = {rooms: {}};
-
-    global.Mem = Memory;
-    global.processesRun = 0;
-    global.processCost = {};
 
     try {
         kernel.run();

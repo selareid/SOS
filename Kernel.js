@@ -4,6 +4,18 @@ const lowBucketAmount = 5000;
 const saveBucketLessCPU = 2.5;
 
 var Kernel = {
+    startup: function () {
+        console.log("<p style=\"display:inline; color: #00ed1b\">" + '[Initializing Kernel]' + "</p>");
+
+        if (!global.stats) global.stats = {rooms: {}};
+
+        global.Mem = Memory;
+        global.processesRun = 0;
+        global.processCost = {};
+
+        console.log("<p style=\"display:inline; color: #00ed1b\">" + '[Initializing Kernel]' + "</p>" + ' CPU used: ' + Game.cpu.getUsed());
+    },
+
     shutdown: function () {
         if (Game.time % 13 == 0) Memory.market = {};
 
@@ -19,6 +31,12 @@ var Kernel = {
     },
 
     run: function () {
+        var beforeStartupCPU = Game.cpu.getUsed();
+        Kernel.startup();
+        var startupUsedCPU = Game.cpu.getUsed()-beforeStartupCPU;
+        Memory.startupAvg = Memory.startupAvg ? ((Memory.startupAvg * Memory.startupTimes) + startupUsedCPU) / (Memory.startupTimes + 1) : startupUsedCPU;
+        Memory.startupTimes = Memory.startupTimes ? Memory.startupTimes + 1 : 1;
+
         if (!Memory.init) return Processes.init.run();
 
         //normal processes
