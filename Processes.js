@@ -643,8 +643,10 @@ module.exports = {
 
             var baddies = room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())});
             if (baddies.length < 1) return {response: 'end'};
-
-            for (let creep_it_it in Memory.creeps) {
+            
+            var creeps = Memory.creeps;
+            
+            for (let creep_it_it in creeps) {
                 if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
                 let creep = getCreep(creeps[creep_it_it].split(':')[0], 'defendRoom');
                 if (creep == 'dead') {
@@ -1440,7 +1442,7 @@ module.exports = {
                     }
                     else {
                         var container = creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 0)[0];
-                        if (container) creep.withdraw(container, RESOURCE_ENERGY);
+                        if (container && container.store.energy) creep.withdraw(container, RESOURCE_ENERGY);
                     }
                 }
                 else if (room.energyAvailable == room.energyCapacityAvailable && creep.pos.getRangeTo(extensionLink) <= 1) {
