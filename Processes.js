@@ -128,6 +128,15 @@ module.exports = {
         }
     },
 
+    garbageCollection: {
+        run: function () {
+            for (let creep_it in Memory.creeps) if (!Game.creeps[creep_it]) delete Memory.creeps[creep_it];
+            for (let flag_it in Memory.flags) if (!Game.flags[flag_it]) delete Memory.flags[flag_it];
+
+            return {response: 'idle', time: Game.time + 13};
+        }
+    },
+
     checkGlobalProcesses: {
         run: function () {
 
