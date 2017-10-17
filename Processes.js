@@ -2058,7 +2058,7 @@ module.exports = {
             }
 
             if (global[randomHash] && (!global[randomHash].l || !Memory.lt || Game.time - Memory.lt > 101)) {
-                if (room.controller) global[randomHash].l = room.controller.pos.findInRange(room.getStructures(STRUCTURE_LINK), 1)[0];
+                if (room.controller) global[randomHash].l = room.controller.pos.findInRange(room.getStructures(STRUCTURE_LINK), 3)[0];
                 Memory.lt = Game.time;
             }
 
