@@ -1457,7 +1457,7 @@ module.exports = {
                     var exts = room.getStructures(STRUCTURE_EXTENSION, (extension) => extension.energy < extension.energyCapacity & extension.pos.isNearTo(creep.pos));
 
                     if (exts && creep.carry.energy > 0) creep.transfer(exts[0], RESOURCE_ENERGY);
-                    else {
+                    
                         if (!creep.memory.moving || !this.path[creep.memory.moving]) {
                             if (creep.pos.x === extensionLink.pos.x - 4) creep.memory.moving = 10;
                             else creep.memory.moving = 0;
@@ -1465,7 +1465,7 @@ module.exports = {
 
                         creep.move(this.path[creep.memory.moving]);
                         creep.memory.moving++;
-                    }
+                    
                 }
             }
 
