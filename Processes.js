@@ -998,45 +998,28 @@ module.exports = {
             if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
 
-            if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
-            var storageFlag = global[room.name].distrSquareFlag;
-            if (!storageFlag) return;
-
-            var randomHash = Memory.RH;
-
-            if (!randomHash || !global[randomHash]) {
-                randomHash = getRandomHash();
-                global[randomHash] = {};
-                Memory.RH = randomHash;
-            }
-
-            if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.map(_.filter(room.getStructures(STRUCTURE_LINK), (s) => s.pos.findInRange(FIND_SOURCES, 3)[0]), (l) => l.id);
-
             var links = room.getStructures(STRUCTURE_LINK);
 
-            if (global[randomHash] && (!global[randomHash].sl || !Memory.lt || Game.time - Memory.lt > 101)) {
-                global[randomHash].sl = storageFlag.pos.findInRange(room.getStructures(STRUCTURE_LINK), 1)[0]
-                    ? storageFlag.pos.findInRange(room.getStructures(STRUCTURE_LINK), 1)[0].id : undefined;
-                Memory.lt = Game.time;
+            var full = [];
+            var empty = [];
+
+            for (let link of links) {
+                if (link.energy >= link.energyCapacity * 0.9) full.push(link);
+                else if (link.energy <= link.energyCapacity * 0.5) empty.push(link);
             }
 
-            var storageLink = Game.getObjectById(global[randomHash].sl);
-            if (!storageLink) return {response: 'idle', time: Game.time + 101};
+            for (var full_it in full) {
+                var fullLink = full[full_it];
+                var emptyLink = empty[full_it];
 
-            var sourceLinks = global[room.name].sourcelinks;
-            var link = _.filter(links, (s) => s.energy < 100 && s.id != storageLink.id && !sourceLinks.includes(s.id))[0];
+                if (!fullLink || !emptyLink) break;
 
-            if (!storageLink) return;
-
-            _.forEach(sourceLinks, (l_id) => {
-                var l = Game.getObjectById(l_id);
-                if (l && l.cooldown == 0 && l.energy >= l.energyCapacity) l.transferEnergy(storageLink);
-            });
-            
-            
-            if (link && storageLink.energy >= storageLink.energyCapacity-100 && (!room.storage || room.storage.store.energy > 1000)) {
-                storageLink.transferEnergy(link);
+                fullLink.transferEnergy(emptyLink);
             }
+
+            if (full.length < 1 || empty.length < 1) return {response: 'idle', time: Game.time + 11};
+            else return {response: 'idle', time: Game.time + 3};
+
         }
     },
     
