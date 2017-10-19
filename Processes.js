@@ -1006,7 +1006,7 @@ module.exports = {
 
             for (let link of links) {
                 if (link.energy >= link.energyCapacity * 0.9) full.push(link);
-                else if (link.energy <= link.energyCapacity * 0.5 && !link.pos.findInRange(FIND_SOURCES, 2)) empty.push(link);
+                else if (link.energy <= link.energyCapacity*0.5 && link.pos.findInRange(FIND_SOURCES, 2).length < 1) empty.push(link);
             }
 
             for (var full_it in full) {
