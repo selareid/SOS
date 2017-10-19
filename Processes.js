@@ -2308,7 +2308,7 @@ module.exports = {
             return true;
         }
     }//,
-
+    //
     // remoteHandler: {
     //     run: function (Memory_it) {
     //         var Memory = global.Mem.p[Memory_it];
@@ -2327,6 +2327,8 @@ module.exports = {
     //             if (Game.map.getRoomLinearDistance(nearestRoom, roomName) > 3) return {response: 'end'}
     //         }
     //
+    //
+    //         //reservers
     //         if (!Memory.reservers) Memory.reservers = [];
     //
     //         var reservers = Memory.reservers;
@@ -2352,7 +2354,60 @@ module.exports = {
     //         if (reservers.length < 1) module.exports.room.addToSQ(nearestRoom.name, 'reserver');
     //
     //
+    //         //harvesters
+    //         if (!Memory.harvesters) Memory.harvesters = [];
     //
+    //         var harvesters = Memory.harvesters;
+    //
+    //         for (var creepName_it in harvesters) {
+    //             if (typeof harvesters[creepName_it] == 'number') harvesters[creepName_it] = harvesters[creepName_it].toString();
+    //
+    //             var creep = getCreep(harvesters[creepName_it].split(':')[0], 'remoteHandler');
+    //             if (creep == 'dead') {
+    //                 creep = undefined;
+    //             }
+    //
+    //             if (!creep) {
+    //                 if (!nearestRoom.memory.spawnQueue[harvesters[creepName_it]]) harvesters.splice(creepName_it, 1);
+    //                 continue;
+    //             }
+    //
+    //             creep.talk('remoteHandler');
+    //
+    //             this.doHarvester(creep, roomName);
+    //         }
+    //
+    //         if (harvesters.length < this.getNumberOfHarvesters(roomName)) module.exports.room.addToSQ(nearestRoom.name, 'harvesters');
+    //
+    //
+    //         //haulers
+    //         if (!Memory.haulers) Memory.haulers = [];
+    //
+    //         var haulers = Memory.haulers;
+    //
+    //         for (var creepName_it in haulers) {
+    //             if (typeof haulers[creepName_it] == 'number') haulers[creepName_it] = haulers[creepName_it].toString();
+    //
+    //             var creep = getCreep(haulers[creepName_it].split(':')[0], 'remoteHandler');
+    //             if (creep == 'dead') {
+    //                 creep = undefined;
+    //             }
+    //
+    //             if (!creep) {
+    //                 if (!nearestRoom.memory.spawnQueue[haulers[creepName_it]]) haulers.splice(creepName_it, 1);
+    //                 continue;
+    //             }
+    //
+    //             creep.talk('remoteHandler');
+    //
+    //             this.doHaulers(creep, roomName);
+    //         }
+    //
+    //         if (haulers.length < this.getNumberOfHarvesters(roomName)*1.5) module.exports.room.addToSQ(nearestRoom.name, 'haulers');
+    //     },
+    //
+    //     getNumberOfHarvesters: function (roomName) {
+    //         return Game.rooms[roomName] ? Game.rooms[roomName].find(FIND_SOURCES).length : 1;
     //     },
     //
     //     doReserver: function (creep, roomName) {
@@ -2362,6 +2417,22 @@ module.exports = {
     //                 if (!room.controller.reservation || room.controller.reservation.ticksToEnd < CONTROLLER_RESERVE_MAX-(CONTROLLER_RESERVE*3)) creep.reserveController(room.controller);
     //             }
     //             else creep.moveWithPath(room.controller);
+    //         }
+    //         else creep.moveWithPath(new RoomPosition(21, 21, roomName), {range: 21});
+    //     },
+    //
+    //     doHarvester: function (creep, roomName) {
+    //         var room = Game.rooms[roomName];
+    //         if (room) {
+    //             //TODO TODO TODO
+    //         }
+    //         else creep.moveWithPath(new RoomPosition(21, 21, roomName), {range: 21});
+    //     },
+    //
+    //     doHaulers: function (creep, roomName) {
+    //         var room = Game.rooms[roomName];
+    //         if (room) {
+    //             //TODO TODO TODO
     //         }
     //         else creep.moveWithPath(new RoomPosition(21, 21, roomName), {range: 21});
     //     }
