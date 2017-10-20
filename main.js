@@ -26,7 +26,7 @@ if (Game.shard.name == 'shard0') {
 
         console.logTickStart();
 
-        if (!RawMemory.interShardSegment == 2) {
+        if (!Number.parseInt(RawMemory.interShardSegment) == 2) {
             var otherCreep = Game.creeps['otherCreep'];
 
             if (!otherCreep && !Game.spawns['Spawn2'].spawning) {
@@ -39,7 +39,7 @@ if (Game.shard.name == 'shard0') {
             }
         }
 
-        if (!RawMemory.interShardSegment == 1) {
+        if (!Number.parseInt(RawMemory.interShardSegment) == 1) {
             var claimer = Game.creeps['claimer'];
 
             if (!claimer && !Game.spawns['Spawn2'].spawning) {
