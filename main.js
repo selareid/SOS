@@ -26,21 +26,7 @@ if (Game.shard.name == 'shard0') {
 
         console.logTickStart();
 
-
-        if (RawMemory.interShardSegment == 1) {
-            var claimer = Game.creeps[Memory.c];
-
-            if (!claimer && !Game.spawns['Spawn2'].spawning) {
-                Game.spawns['Spawn2'].spawnCreep([MOVE, CLAIM], 'claimer');
-            }
-            else if (claimer) {
-                claimer.memory.l = Game.time;
-                claimer.memory.p = 'insanity';
-                claimer.travelTo(new RoomPosition(24, 37, 'E70S40'), {range: 0});
-            }
-        }
-
-        if (RawMemory.interShardSegment == 2) {
+        if (!RawMemory.interShardSegment == 2) {
             var otherCreep = Game.creeps[Memory.oc];
 
             if (!otherCreep && !Game.spawns['Spawn2'].spawning) {
@@ -50,6 +36,19 @@ if (Game.shard.name == 'shard0') {
                 otherCreep.memory.l = Game.time;
                 otherCreep.memory.p = 'insanity';
                 otherCreep.travelTo(new RoomPosition(24, 37, 'E70S40'), {range: 0});
+            }
+        }
+
+        if (!RawMemory.interShardSegment == 1) {
+            var claimer = Game.creeps[Memory.c];
+
+            if (!claimer && !Game.spawns['Spawn2'].spawning) {
+                Game.spawns['Spawn2'].spawnCreep([MOVE, CLAIM], 'claimer');
+            }
+            else if (claimer) {
+                claimer.memory.l = Game.time;
+                claimer.memory.p = 'insanity';
+                claimer.travelTo(new RoomPosition(24, 37, 'E70S40'), {range: 0});
             }
         }
 
