@@ -27,7 +27,7 @@ if (Game.shard.name == 'shard0') {
         console.logTickStart();
 
         if (!RawMemory.interShardSegment == 2) {
-            var otherCreep = Game.creeps[Memory.oc];
+            var otherCreep = Game.creeps['otherCreep'];
 
             if (!otherCreep && !Game.spawns['Spawn2'].spawning) {
                 Game.spawns['Spawn2'].spawnCreep([MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY], 'otherCreep');
@@ -40,7 +40,7 @@ if (Game.shard.name == 'shard0') {
         }
 
         if (!RawMemory.interShardSegment == 1) {
-            var claimer = Game.creeps[Memory.c];
+            var claimer = Game.creeps['claimer'];
 
             if (!claimer && !Game.spawns['Spawn2'].spawning) {
                 Game.spawns['Spawn2'].spawnCreep([MOVE, CLAIM], 'claimer');
