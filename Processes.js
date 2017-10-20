@@ -100,7 +100,7 @@ module.exports = {
             spawnNewProcess('checkRooms');
             spawnNewProcess('checkCreeps');
             spawnNewProcess('checkGlobalProcesses');
-            spawnNewProcess('checkStructRepair');garbageCollection
+            spawnNewProcess('checkStructRepair');
             spawnNewProcess('garbageCollection');
         }
     },
