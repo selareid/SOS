@@ -90,7 +90,7 @@ else {
             else if (creep.carry.energy == creep.carryCapacity) creep.memory.w = 1;
 
             if (creep.memory.w == 1) {
-                var constructionSite = creep.room.find(FIND_MY_CONSTRUCTION_SITES)[0];
+                var constructionSite = creep.room.find(FIND_MY_CONSTRUCTION_SITES, {filter: (s) => s.structureType == STRUCTURE_SPAWN})[0];
 
                 if (constructionSite) {
                     if (creep.pos.isNearTo(constructionSite)) creep.build(constructionSite);
