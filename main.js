@@ -27,10 +27,11 @@ if (Game.shard.name == 'shard0') {
         console.logTickStart();
 
 
-        var otherCreep = Game.creeps['otherCreep'];
+        var otherCreep = Game.creeps[Memory.otherCreep];
 
         if (!otherCreep && !Game.spawns['Spawn2'].spawning && Game.spawns['Spawn2'].room.energyAvailable >= 2400) {
-            Game.spawns['Spawn2'].spawnCreep([MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY,MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY], 'otherCreep');
+            Memory.otherCreep = 'otherCreep' + Game.time;
+            Game.spawns['Spawn2'].spawnCreep([MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY,MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY], Memory.otherCreep);
         }
         else if (otherCreep) {
             otherCreep.memory.l = Game.time;
