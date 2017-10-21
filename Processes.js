@@ -1664,23 +1664,27 @@ module.exports = {
         },
 
         linkToStorage: function (Memory, room, creep) {
+            var storageLink = Game.getObjectById(Memory.link);
+
+
             if (creep.memory.w == true) {
                 //if carry is full
-                var toPut = room.terminal && room.controller.level > 7 && room.storage.store[RESOURCE_ENERGY]-800 > storageEnergy && room.terminal.store[RESOURCE_ENERGY] < terminalGoals[RESOURCE_ENERGY]? room.terminal : room.storage;
+                var toPut = storageLink.energy > 0 && storageLink.energy < storageLink.energyCapacity ? storageLink : room.terminal && room.controller.level > 7 && room.storage.store[RESOURCE_ENERGY]-800 > storageEnergy && room.terminal.store[RESOURCE_ENERGY] < terminalGoals[RESOURCE_ENERGY]? room.terminal : room.storage;
                 creep.transfer(toPut, RESOURCE_ENERGY);
                 creep.memory.w = false;
             }
             else {
                 //if carry is empty
-                var storageLink = Game.getObjectById(Memory.link);
-
                 if (storageLink && storageLink.energy > 0) {
-                    var link = _.filter(room.getStructures(STRUCTURE_LINK), (s) => s.energy < 100 && s.id != storageLink.id && !s.pos.findInRange(FIND_SOURCES, 3)[0])[0];
+                    var link = room.getStructures(STRUCTURE_LINK, (s) => s.energy < 100 && s.id != storageLink.id && !s.pos.findInRange(FIND_SOURCES, 3)[0])[0];
 
                     if (room.storage.store.energy <= 1000 || !link) {
                         creep.memory.w = true;
                         creep.withdraw(storageLink, RESOURCE_ENERGY);
                         return OK;
+                    }
+                    else {
+                        creep.withdraw(room.storage, RESOURCE_ENERGY, storageLink.energyCapacity-storageLink.energy);
                     }
                 }
                 else return 'no structure'
