@@ -1319,7 +1319,7 @@ module.exports = {
             if (!global[room.name]) global[room.name] = {};
 
             if (!global[room.name].fillSpawnFlag) global[room.name].fillSpawnFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'fillSpawn'})[0];
-            var flag = global[room.name].fillSpawnFlag;
+            var flag = global[room.name].fillSpawnFlag ? Game.flags[global[room.name].fillSpawnFlag.name] : undefined;
 
             if (!flag) return this.placeFlag(room);
             if (Game.time % 17280 == 0) this.placeSpawn(room);
