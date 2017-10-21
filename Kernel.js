@@ -72,7 +72,7 @@ var Kernel = {
                 // Object.setPrototypeOf(process, Process);
 
                 if (process.pN != 'deadCreepHandler' && process.pN != 'doTowers' && process.pN != 'defendRoom' && process.pN != 'claim'
-                    && (((Game.cpu.bucket < lowBucketAmount && Game.cpu.limit - Game.cpu.getUsed() < saveBucketLessCPU) || Game.cpu.bucket < 2000)
+                    && (((Game.cpu.bucket < lowBucketAmount && Game.cpu.limit - Game.cpu.getUsed() < (Game.cpu.limit > 2.5 ? saveBucketLessCPU : 0)) || Game.cpu.bucket < 2000)
                     && (!process.avg || saveBucketLessCPU + (Memory.shutdownAvg || 0) + process.avg + Game.cpu.getUsed() > Game.cpu.limit)
                     || Game.cpu.getUsed() >= Game.cpu.limit)) {
                     //skip process
