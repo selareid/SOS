@@ -1604,6 +1604,7 @@ module.exports = {
                             else if (this.TTS(Memory, room, creep) == OK) creep.memory.doing = 'TTS';
                             else if (this.STT(Memory, room, creep) == OK) creep.memory.doing = 'STT';
                             else if (this.fillPowerSpawn(Memory, room, creep) == OK) creep.memory.doing = 'fillPowerSpawn';
+                            else return {response: 'idle', time: Game.time+7};
                         }
                     }
                 }
