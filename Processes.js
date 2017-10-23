@@ -660,7 +660,6 @@ module.exports = {
                 if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
                 let creep = getCreep(creeps[creep_it_it].split(':')[0], 'defendRoom');
                 if (creep == 'dead') {
-                    Memory.crp = undefined;
                     creep = undefined;
                 }
 
@@ -668,6 +667,7 @@ module.exports = {
                     if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
                     continue;
                 }
+                else if (creep.spawning) continue;
 
                 creep.talk('defendRoom');
 
@@ -1152,7 +1152,6 @@ module.exports = {
                     if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
                     let creep = getCreep(creeps[creep_it_it].split(':')[0], 'doHarvest');
                     if (creep == 'dead') {
-                        Memory.crp = undefined;
                         creep = undefined;
                     }
 
@@ -1160,6 +1159,7 @@ module.exports = {
                         if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
                         continue;
                     }
+                    else if (creep.spawning) continue;
 
                     creep.talk('doHarvest');
 
@@ -1215,7 +1215,6 @@ module.exports = {
         harvest: function (Memory, room, creep_it_it) {
             var creep = getCreep(Memory.crps[creep_it_it].split(':')[0], 'doHarvest');
             if (creep == 'dead') {
-                Memory.crp = undefined;
                 creep = undefined;
             }
 
@@ -1310,7 +1309,7 @@ module.exports = {
 
             var creep = Memory.creep ? getCreep(Memory.creep, 'fillSpawn') : undefined;
             if (creep == 'dead') {
-                Memory.crp = undefined;
+                Memory.creep = undefined;
                 creep = undefined;
             }
 
@@ -1412,7 +1411,6 @@ module.exports = {
                 if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
                 let creep = getCreep(creeps[creep_it_it].split(':')[0], 'fillExt');
                 if (creep == 'dead') {
-                    Memory.crp = undefined;
                     creep = undefined;
                 }
 
@@ -1420,6 +1418,7 @@ module.exports = {
                     if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
                     continue;
                 }
+                else if (creep.spawning) continue;
 
                 creep.talk('fillExt');
 
@@ -1853,7 +1852,6 @@ module.exports = {
                  if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
                  let creep = getCreep(creeps[creep_it_it].split(':')[0], 'mine');
                  if (creep == 'dead') {
-                     Memory.crp = undefined;
                      creep = undefined;
                  }
 
@@ -1861,6 +1859,7 @@ module.exports = {
                      if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
                      continue;
                  }
+                 else if (creep.spawning) continue;
 
                  creep.talk('mine');
 
@@ -1924,6 +1923,7 @@ module.exports = {
                         if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
                         continue;
                     }
+                    else if (creep.spawning) continue;
 
                     creep.talk('iRmHaul');
 
@@ -1994,6 +1994,7 @@ module.exports = {
                         if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
                         continue;
                     }
+                    else if (creep.spawning) continue;
 
                     creep.talk('praiseRC');
 
@@ -2089,7 +2090,7 @@ module.exports = {
 
             var creep = Memory.creep ? getCreep(Memory.creep, 'takeCare') : undefined;
             if (creep == 'dead') {
-                Memory.crp = undefined;
+                Memory.creep = undefined;
                 creep = undefined;
             }
 
@@ -2205,7 +2206,7 @@ module.exports = {
 
             var creep = Memory.creep ? getCreep(Memory.creep, 'minimalist') : undefined;
             if (creep == 'dead') {
-                Memory.crp = undefined;
+                Memory.creep = undefined;
                 creep = undefined;
             }
 
