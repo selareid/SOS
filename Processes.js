@@ -1164,7 +1164,7 @@ module.exports = {
                     creep.talk('doHarvest');
 
                     if (room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.p && c.memory.p != 'doHarvest'}).length >= 1) {
-                        if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it);
+                        if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep);
                         this.harvest(Memory, room, creep);
                     }
                     else {
@@ -1208,19 +1208,22 @@ module.exports = {
             }
         },
 
-        dropEnergy: function (Memory, creep, creep_it_it, srcId = Memory.crps[creep_it_it].split(':')[1], room = creep.room) {
-            if (!global[room.name].sourcelinks || !global[room.name].sourcelinks[0]) global[room.name].sourcelinks = _.map(_.filter(room.getStructures(STRUCTURE_LINK), (s) => {return s.pos.findInRange(FIND_SOURCES, 3)[0];}), (s) => s.id);
+        dropEnergy: function (Memory, creep, room = creep.room) {
 
-            var link = Game.getObjectById(srcId) && Game.getObjectById(srcId).pos.findClosestByRange(_.map(global[room.name].sourcelinks, (s) => Game.getObjectById(s)));
+            var link = Game.getObjectById(creep.memory.lnk);
 
-            if (link && Game.getObjectById(srcId).pos.getRangeTo(link) < 3) {
+            if (!link) {
+                var links = room.getStructures(STRUCTURE_LINK, (s) => s.pos.getRangeTo(creep.pos.findClosestByRange(FIND_SOURCES)) < 3);
+                creep.memory.lnk = links ? links[0].id : null;
+                link = Game.getObjectById(creep.memory.lnk);
+            }
+
+            if (link) {
                 if (creep.pos.isNearTo(link.pos)) creep.transfer(link, RESOURCE_ENERGY);
                  else creep.moveWithPath(link, {repath: 0.01, maxRooms: 1});
             }
             else {
-                var container = Game.getObjectById(srcId)
-                    ? Game.getObjectById(srcId).pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 1, (s) => s.store.energy < s.storeCapacity)[0]
-                    : creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 1, (s) => s.store.energy < s.storeCapacity)[0];
+                var container = creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 1, (s) => s.store.energy < s.storeCapacity)[0];
 
                 if (container) {
                     if (creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -1232,12 +1235,12 @@ module.exports = {
                 }
 
                 if (room.getStructures(STRUCTURE_LINK).length < CONTROLLER_STRUCTURES.link[creep.room.controller.level]) {
-                    if (!Game.getObjectById(srcId).pos.findInRange(FIND_CONSTRUCTION_SITES, 2)[0]) {
-                        this.placeLink(Game.getObjectById(srcId), creep);
+                    if (!creep.pos.findClosestByRange(FIND_SOURCES).pos.findInRange(FIND_CONSTRUCTION_SITES, 2)[0]) {
+                        this.placeLink(creep.pos.findClosestByRange(FIND_SOURCES), creep);
                     }
                 }
                 else {
-                    var src = Game.getObjectById(srcId);
+                    var src = creep.pos.findClosestByRange(FIND_SOURCES);
                     if (_.size(Game.constructionSites) < 100 && src && creep.pos.isNearTo(src) && creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 1).length < 1
                         && creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1).length < 1) room.createConstructionSite(creep.pos.x, creep.pos.y, STRUCTURE_CONTAINER)
                 }
