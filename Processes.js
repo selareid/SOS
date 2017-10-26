@@ -1164,32 +1164,8 @@ module.exports = {
                     creep.talk('doHarvest');
 
                     if (room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.p && c.memory.p != 'doHarvest'}).length >= 1) {
-
-                        // if (room.energyCapacityAvailable >= 2200) {
-                        //     var source = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
-                        //
-                        //     if (source) {
-                        //         if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it, source.id);
-                        //
-                        //         if (creep.pos.isNearTo(source)) {
-                        //             creep.harvest(source);
-                        //
-                        //             if (!Memory[source.id]) Memory[source.id] = creep.pos.x + ',' + creep.pos.y;
-                        //         }
-                        //         else {
-                        //             var pos = Memory[source.id] ? room.getPositionAt(Number.parseInt(Memory[source.id].split(',')[0]), Number.parseInt(Memory[source.id].split(',')[1])) : undefined;
-                        //             if (pos) creep.moveWithPath(pos, {range: 0, repath: 0.01, maxRooms: 1, Memory: Memory});
-                        //             else {
-                        //                 creep.moveWithPath(source, {repath: 0.01, maxRooms: 1});
-                        //                 Memory[source.id] = undefined;
-                        //             }
-                        //         }
-                        //     }
-                        // }
-                        // else {
-                            if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it);
-                            this.harvest(Memory, room, creep_it_it);
-                        // }
+                        if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep, creep_it_it);
+                        this.harvest(Memory, room, creep);
                     }
                     else {
                         if (creep.carry.energy >= creep.carryCapacity) {
@@ -1197,8 +1173,7 @@ module.exports = {
                             if (creep.pos.isNearTo(sE)) creep.transfer(sE, RESOURCE_ENERGY);
                             else creep.moveWithPath(sE, {repath: 0.01, maxRooms: 1});
                         }
-                        else this.harvest(Memory, room, creep_it_it);
-
+                        else this.harvest(Memory, room, creep);
                     }
                 }
             }
@@ -1212,32 +1187,25 @@ module.exports = {
             //else return 1;
         },
 
-        harvest: function (Memory, room, creep_it_it) {
-            var creep = getCreep(Memory.crps[creep_it_it].split(':')[0], 'doHarvest');
-            if (creep == 'dead') {
-                creep = undefined;
-            }
-
-            if (!Memory.crps[creep_it_it].split(':')[1]) {
-
-                var takenSources = [];
-                _.forEach(Memory.crps, (c) => {
-                    c = c.toString();
-                    if (c.split(':')[1]) takenSources.push(c.split(':')[1])
-                });
-
-                var zeChosn = room.find(FIND_SOURCES, {filter: (s) => !takenSources.includes(s.id)})[0];
-
-                if (zeChosn && zeChosn.id) Memory.crps[creep_it_it] = creep.name + ':' + zeChosn.id;
-            }
-
-            var source = Game.getObjectById(Memory.crps[creep_it_it].split(':')[1]);
+        harvest: function (Memory, room, creep) {
+            var source = Game.getObjectById(creep.memory.src);
 
             if (source) {
                 if (!creep.pos.isNearTo(source)) creep.moveWithPath(source, {repath: 0.01, maxRooms: 1});
                 else if (source.energy) creep.harvest(source)
             }
-            else Memory.crps[creep_it_it] = creep.name;
+            else {
+                var takenSources = [];
+                _.forEach(Memory.crps, (c) => {
+                    c = c.toString();
+                    c = Game.creeps[c.split(':')[1]];
+                    if (c && c.memory.src) takenSources.push(c.memory.src);
+                });
+
+                var zeChosn = room.find(FIND_SOURCES, {filter: (s) => !takenSources.includes(s.id)})[0];
+
+                if (zeChosn && zeChosn.id) creep.memory.src = zeChosn.id;
+            }
         },
 
         dropEnergy: function (Memory, creep, creep_it_it, srcId = Memory.crps[creep_it_it].split(':')[1], room = creep.room) {
