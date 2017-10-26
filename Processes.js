@@ -1198,7 +1198,7 @@ module.exports = {
                 var takenSources = [];
                 _.forEach(Memory.crps, (c) => {
                     c = c.toString();
-                    c = Game.creeps[c.split(':')[1]];
+                    c = Game.creeps[c.split(':')[0]];
                     if (c && c.memory.src) takenSources.push(c.memory.src);
                 });
 
