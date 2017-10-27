@@ -1214,7 +1214,7 @@ module.exports = {
 
             if (!link) {
                 var nLink = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_LINK));
-                creep.memory.lnk = nLink ? nLink.id : null;
+                creep.memory.lnk = nLink && nLink.pos.getRangeTo(creep.pos.findClosestByRange(FIND_SOURCES)) < 3 ? nLink.id : null;
                 link = Game.getObjectById(creep.memory.lnk);
             }
 
