@@ -1648,9 +1648,12 @@ module.exports = {
             else {
                 //if carry is empty
                 if (storageLink && storageLink.energy > 0) {
-                    creep.memory.w = true;
-                    creep.withdraw(storageLink, RESOURCE_ENERGY);
-                    return OK;
+                    var link = room.getStructures(STRUCTURE_LINK, (s) => s.energy < 100 && s.id != storageLink.id && !s.pos.findInRange(FIND_SOURCES, 3)[0])[0];
+                     if (room.storage.store.energy <= 1000 || !link) {
+                         creep.memory.w = true;
+                         creep.withdraw(storageLink, RESOURCE_ENERGY);
+                         return OK;
+                     }
                 }
                 else return 'no structure'
             }
