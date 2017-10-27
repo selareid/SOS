@@ -1213,8 +1213,8 @@ module.exports = {
             var link = Game.getObjectById(creep.memory.lnk);
 
             if (!link) {
-                var links = room.getStructures(STRUCTURE_LINK, (s) => s.pos.getRangeTo(creep.pos.findClosestByRange(FIND_SOURCES)) < 3);
-                creep.memory.lnk = links ? links[0].id : null;
+                var nLink = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_LINK));
+                creep.memory.lnk = nLink ? nLink.id : null;
                 link = Game.getObjectById(creep.memory.lnk);
             }
 
