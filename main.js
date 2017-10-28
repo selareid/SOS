@@ -3,7 +3,7 @@ require('prototype.console')();
 
 const Traveler = require('Traveler');
 
-if (Game.shard.name == 'shard0') {
+if (Game.spawns['Spawn1']) {
     const profiler = require('screeps-profiler');
 
 
@@ -25,19 +25,22 @@ if (Game.shard.name == 'shard0') {
             global.allies = segment0 && segment0.allies ? segment0.allies : [];
             global.controllerSigns = segment0 && segment0.controllerSigns ? segment0.controllerSigns : [];
         }
+        
+        if (Game.shard.name == 'shard0' && RawMemory.interShardSegment == "gimme") {
+            var otherCreep = Game.creeps[Memory.otherCreep];
 
-        var otherCreep = Game.creeps[Memory.otherCreep];
-
-        if (!otherCreep && !Game.spawns['Spawn2'].spawning && Game.spawns['Spawn2'].room.energyAvailable >= 2400) {
-            Memory.otherCreep = 'otherCreep' + Game.time;
-            Game.spawns['Spawn2'].spawnCreep([MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY,MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY], Memory.otherCreep);
+            if (!otherCreep && !Game.spawns['Spawn2'].spawning && Game.spawns['Spawn2'].room.energyAvailable >= 2400) {
+                Memory.otherCreep = 'otherCreep' + Game.time;
+                Game.spawns['Spawn2'].spawnCreep([MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY,MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY], Memory.otherCreep);
+            }
+            else if (otherCreep) {
+                otherCreep.memory.l = Game.time;
+                otherCreep.memory.p = 'insanity';
+                otherCreep.travelTo(new RoomPosition(24, 37, 'E70S40'), {range: 0});
+            }
         }
-        else if (otherCreep) {
-            otherCreep.memory.l = Game.time;
-            otherCreep.memory.p = 'insanity';
-            otherCreep.travelTo(new RoomPosition(24, 37, 'E70S40'), {range: 0});
-        }
-
+        else if (Game.shard.name == 'shard1') RawMemory.interShardSegment = "stop!";
+            
         console.logTickStart();
 
 
@@ -61,6 +64,8 @@ if (Game.shard.name == 'shard0') {
     }
 }
 else {
+    RawMemory.interShardSegment = "gimme"
+    
     const roomToGoTo = 'E41S19';
 
     require('prototype.creep');
