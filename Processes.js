@@ -195,7 +195,7 @@ module.exports = {
                     if (creep.memory.nc > 3) {
                         if (creep.ticksToLive > CREEP_LIFE_TIME*0.25 && creep.memory.p != null && creep.hasActiveBodyparts(WORK) && creep.hasActiveBodyparts(CARRY)) {
                             var praiseRCP = _.filter(global.Mem.p, (p) => p.rmN == creep.room.name && p.pN == 'praiseRC');
-                            if (praiseRCP && praiseRCP[0].crps) praiseRCP[0].crps.push(creep.name);
+                            if (praiseRCP && praiseRCP[0] && praiseRCP[0].crps) praiseRCP[0].crps.push(creep.name);
 
                             creep.memory.p = praiseRCP ? 'praiseRC' : null;
                         }
