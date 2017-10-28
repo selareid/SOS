@@ -64,7 +64,6 @@ if (Game.spawns['Spawn1']) {
     }
 }
 else {
-    RawMemory.interShardSegment = "gimme"
     
     const roomToGoTo = 'E41S19';
 
@@ -113,6 +112,7 @@ else {
     }
 
     module.exports.loop = function () {
+        RawMemory.interShardSegment = "gimme"
         if (Game.time % 103 == 0) for (let creep_it in Memory.creeps) if (!Game.creeps[creep_it]) delete Memory.creeps[creep_it];
 
         _.forEach(Game.creeps, (creep) => {
