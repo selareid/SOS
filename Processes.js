@@ -193,7 +193,13 @@ module.exports = {
                     else creep.memory.nc++;
 
                     if (creep.memory.nc > 3) {
-                        spawnNewProcess('deadCreepHandler', creep.room.name, creep.name);
+                        if (creep.ticksToLive > CREEP_LIFE_TIME*0.25 && creep.memory.p != null && creep.hasActiveBodyparts(WORK) && creep.hasActiveBodyparts(CARRY)) {
+                            var praiseRCP = _.filter(global.Mem.p, (p) => p.rmN == creep.room.name && p.pN == 'praiseRC');
+                            if (praiseRCP && praiseRCP[0].crps) praiseRCP[0].crps.push(creep.name);
+
+                            creep.memory.p = praiseRCP ? 'praiseRC' : null;
+                        }
+                        else spawnNewProcess('deadCreepHandler', creep.room.name, creep.name);
                     }
                 }
                 else delete creep.memory.nc;
@@ -1955,7 +1961,6 @@ module.exports = {
                     if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
                     let creep = getCreep(creeps[creep_it_it].split(':')[0], 'praiseRC');
                     if (creep == 'dead') {
-                        Memory.crp = undefined;
                         creep = undefined;
                     }
 
