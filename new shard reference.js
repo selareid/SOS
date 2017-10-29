@@ -1,17 +1,20 @@
 if (Game.shard.name == 'shard0') {
     //normal code
 
-    var otherCreep = Game.creeps[Memory.otherCreep];
+    if (Game.shard.name == 'shard0' && RawMemory.interShardSegment == "gimme") {
+            var otherCreep = Game.creeps[Memory.otherCreep];
 
-    if (!otherCreep && !Game.spawns['Spawn2'].spawning && Game.spawns['Spawn2'].room.energyAvailable >= 2400) {
-        Memory.otherCreep = 'otherCreep' + Game.time;
-        Game.spawns['Spawn2'].spawnCreep([MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY,MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY], Memory.otherCreep);
-    }
-    else if (otherCreep) {
-        otherCreep.memory.l = Game.time;
-        otherCreep.memory.p = 'insanity';
-        otherCreep.travelTo(new RoomPosition(24, 37, 'E70S40'), {range: 0});
-    }
+            if (!otherCreep && !Game.spawns['Spawn2'].spawning && Game.spawns['Spawn2'].room.energyAvailable >= 2400) {
+                Memory.otherCreep = 'otherCreep' + Game.time;
+                Game.spawns['Spawn2'].spawnCreep([MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY,MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY], Memory.otherCreep);
+            }
+            else if (otherCreep) {
+                otherCreep.memory.l = Game.time;
+                otherCreep.memory.p = 'insanity';
+                otherCreep.travelTo(new RoomPosition(24, 37, 'E70S40'), {range: 0});
+            }
+        }
+        else if (Game.shard.name == 'shard1') RawMemory.interShardSegment = "stop!";
 
     //normal code
 }
@@ -63,6 +66,9 @@ else {
     }
 
     module.exports.loop = function () {
+        if (!Game.rooms[roomToGoTo] || Game.rooms[roomToGoTo].find(FIND_HOSTILE_CREEPS).length < 1) RawMemory.interShardSegment = "gimme";
+        else RawMemory.interShardSegment = "stop!";
+        
         if (Game.time % 103 == 0) for (let creep_it in Memory.creeps) if (!Game.creeps[creep_it]) delete Memory.creeps[creep_it];
 
         _.forEach(Game.creeps, (creep) => {
