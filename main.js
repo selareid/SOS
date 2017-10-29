@@ -112,7 +112,8 @@ else {
     }
 
     module.exports.loop = function () {
-        RawMemory.interShardSegment = "gimme"
+        if (!Game.rooms[roomToGoTo] || Game.rooms[roomToGoTo].find(FIND_HOSTILE_CREEPS).length < 1) RawMemory.interShardSegment = "gimme";
+else RawMemory.interShardSegment = "gimme";
         if (Game.time % 103 == 0) for (let creep_it in Memory.creeps) if (!Game.creeps[creep_it]) delete Memory.creeps[creep_it];
 
         _.forEach(Game.creeps, (creep) => {
