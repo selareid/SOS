@@ -2004,23 +2004,19 @@ module.exports = {
         },
 
         getNumberOfUpgraders: function (room) {
-            switch (room.controller.level) {
-                case 3:
-                    return 15;
-                case 2:
-                    return 15;
-                case 1:
-                    return 15;
-                default:
-                    if (room.controller.level < 8) {
-                        var storage = room.storage;
+            if (room.controller.level <= 3) {
+                return 15;
+            }
+            else {
+                if (room.controller.level < 8) {
+                    var storage = room.storage;
 
-                        if (!storage) return 1;
+                    if (!storage) return 1;
 
-                        var terminalEnergy = room.terminal && room.terminal.store ? room.terminal.store[RESOURCE_ENERGY] : 0;
-                        return Math.floor(((storage.store.energy + terminalEnergy) - 20000) / 20000) > 1 ? Math.min(Math.floor(((storage.store.energy + terminalEnergy) - 20000) / 20000), 7) : 1;
-                    }
-                    else return room.controller.ticksToDowngrade <= CONTROLLER_DOWNGRADE[room.controller.level]*0.5 ? 1 : 0;
+                    var terminalEnergy = room.terminal && room.terminal.store ? room.terminal.store[RESOURCE_ENERGY] : 0;
+                    return Math.floor(((storage.store.energy + terminalEnergy) - 20000) / 20000) > 1 ? Math.min(Math.floor(((storage.store.energy + terminalEnergy) - 20000) / 20000), 7) : 1;
+                }
+                else return room.controller.ticksToDowngrade <= CONTROLLER_DOWNGRADE[room.controller.level]*0.5 ? 1 : 0;
             }
         },
 
