@@ -1190,8 +1190,8 @@ module.exports = {
         },
 
         getHarvesters: function (room) {
-            /*if (room.energyCapacityAvailable < 2200) */return !room.memory.minimal ? room.find(FIND_SOURCES).length : 1;
-            //else return 1;
+            if (room.controller.level > 3) return !room.memory.minimal ? room.find(FIND_SOURCES).length : 1;
+            else return 4;
         },
 
         harvest: function (Memory, room, creep) {
@@ -1212,6 +1212,10 @@ module.exports = {
                 var zeChosn = room.find(FIND_SOURCES, {filter: (s) => !takenSources.includes(s.id)})[0];
 
                 if (zeChosn && zeChosn.id) creep.memory.src = zeChosn.id;
+                else {
+                    zeChosn = creep.pos.findClosestByPath(FIND_SOURCES);
+                    creep.memory.src = zeChosn ? zeChosn.id : undefined;
+                }
             }
         },
 
