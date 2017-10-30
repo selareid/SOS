@@ -2088,8 +2088,8 @@ module.exports = {
 
                 creep.talk('takeCare');
 
-                if (creep.carry.energy == 0) Memory.w = 1;
-                else if (creep.carry.energy == creep.carryCapacity) Memory.w = 0;
+                if (creep.carry.energy == 0) creep.memory.w = 1;
+                else if (creep.carry.energy == creep.carryCapacity) creep.memory.w = 0;
 
                 if (creep.room.name != room.name) return creep.moveWithPath(room.getPositionAt(25, 25), {
                     range: 21,
@@ -2097,7 +2097,7 @@ module.exports = {
                     maxRooms: 16
                 });
 
-                if (Memory.w == 1) {
+                if (creep.memory.w == 1) {
                     creep.getConsumerEnergy(Memory, room);
                 }
                 else {
