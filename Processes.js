@@ -1252,7 +1252,7 @@ module.exports = {
                 }
                 else {
                     var src = creep.pos.findClosestByRange(FIND_SOURCES);
-                    if (_.size(Game.constructionSites) < 100 && src && creep.pos.isNearTo(src) && creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 1).length < 1
+                    if (room.controller.level >= 3 && _.size(Game.constructionSites) < 100 && src && creep.pos.isNearTo(src) && creep.pos.findInRange(room.getStructures(STRUCTURE_CONTAINER), 1).length < 1
                         && creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1).length < 1) room.createConstructionSite(creep.pos.x, creep.pos.y, STRUCTURE_CONTAINER)
                 }
             }
