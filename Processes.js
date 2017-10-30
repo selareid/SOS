@@ -2005,7 +2005,7 @@ module.exports = {
 
         getNumberOfUpgraders: function (room) {
             if (room.controller.level <= 3) {
-                return 15;
+                return 10;
             }
             else {
                 if (room.controller.level < 8) {
