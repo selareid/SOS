@@ -2006,11 +2006,11 @@ module.exports = {
         getNumberOfUpgraders: function (room) {
             switch (room.controller.level) {
                 case 3:
-                    return 7;
+                    return 15;
                 case 2:
-                    return 5;
+                    return 15;
                 case 1:
-                    return 3;
+                    return 15;
                 default:
                     if (room.controller.level < 8) {
                         var storage = room.storage;
