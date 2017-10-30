@@ -2065,24 +2065,41 @@ module.exports = {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
-            var creep = Memory.creep ? getCreep(Memory.creep, 'takeCare') : undefined;
-            if (creep == 'dead') {
-                Memory.creep = undefined;
-                creep = undefined;
-            }
-
+            var creeps = Memory.crps ? Memory.crps : undefined;
             var room = Game.rooms[Memory.rmN];
             if (!room) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
+            if (!creeps) {
+                Memory.crps = [];
+                creeps = Memory.crps;
+            }
 
-            if (creep) {
-                if (creep.spawning) return;
+
+            //creep loop
+            for (let creep_it_it in creeps) {
+                if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
+                let creep = getCreep(creeps[creep_it_it].split(':')[0], 'praiseRC');
+                if (creep == 'dead') {
+                    creep = undefined;
+                }
+
+                if (!creep) {
+                    if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
+                    continue;
+                }
+                else if (creep.spawning) continue;
+
 
                 creep.talk('takeCare');
+
                 if (creep.carry.energy == 0) Memory.w = 1;
                 else if (creep.carry.energy == creep.carryCapacity) Memory.w = 0;
 
-                if (creep.room.name != room.name) return creep.moveWithPath(room.getPositionAt(25, 25), {range: 21, repath: 0.01, maxRooms: 16});
+                if (creep.room.name != room.name) return creep.moveWithPath(room.getPositionAt(25, 25), {
+                    range: 21,
+                    repath: 0.01,
+                    maxRooms: 16
+                });
 
                 if (Memory.w == 1) {
                     creep.getConsumerEnergy(Memory, room);
@@ -2090,17 +2107,29 @@ module.exports = {
                 else {
                     var structureToRepair = this.findStructureToRepair(Memory, room, creep);
                     if (structureToRepair) {
-                        if (creep.pos.getRangeTo(structureToRepair) > 3) creep.moveWithPath(structureToRepair, {range: 3, repath: 0.01, maxRooms: 1});
+                        if (creep.pos.getRangeTo(structureToRepair) > 3) creep.moveWithPath(structureToRepair, {
+                            range: 3,
+                            repath: 0.01,
+                            maxRooms: 1
+                        });
                         else creep.repair(structureToRepair);
                     }
-                    else if (room.controller.level == 8 && room.controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[room.controller.level]*0.75) {
-                        if (creep.pos.getRangeTo(room.controller) > 3) creep.moveWithPath(room.controller, {range: 3, repath: 0.01, maxRooms: 1});
+                    else if (room.controller.level == 8 && room.controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[room.controller.level] * 0.75) {
+                        if (creep.pos.getRangeTo(room.controller) > 3) creep.moveWithPath(room.controller, {
+                            range: 3,
+                            repath: 0.01,
+                            maxRooms: 1
+                        });
                         else creep.upgradeController(room.controller);
                     }
                     else {
                         var structureToBuild = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
                         if (structureToBuild) {
-                            if (creep.pos.getRangeTo(structureToBuild) > 3) creep.moveWithPath(structureToBuild, {range: 3, repath: 0.01, maxRooms: 1});
+                            if (creep.pos.getRangeTo(structureToBuild) > 3) creep.moveWithPath(structureToBuild, {
+                                range: 3,
+                                repath: 0.01,
+                                maxRooms: 1
+                            });
                             else creep.build(structureToBuild);
                         }
                         else {
@@ -2112,7 +2141,11 @@ module.exports = {
                             else {
                                 var defenseToRepair = this.findDefence(Memory, room, creep);
                                 if (defenseToRepair) {
-                                    if (creep.pos.getRangeTo(defenseToRepair) > 3) creep.moveWithPath(defenseToRepair, {range: 3, repath: 0.01, maxRooms: 1});
+                                    if (creep.pos.getRangeTo(defenseToRepair) > 3) creep.moveWithPath(defenseToRepair, {
+                                        range: 3,
+                                        repath: 0.01,
+                                        maxRooms: 1
+                                    });
                                     else creep.repair(defenseToRepair);
                                 }
                                 else creep.runInSquares();
@@ -2122,26 +2155,34 @@ module.exports = {
 
                 }
             }
-            else this.getCreep(Memory, room);
+
+            //get more creeps
+            if (creeps.length < this.getNumberOfCaretakers(room)) Memory.crps.push(module.exports.room.addToSQ(room.name, 'takeCare'));
         },
 
-        getCreep: function (Memory, room) {
-            if (room.energyCapacityAvailable >= 400) return Memory.creep = module.exports.room.addToSQ(room.name, 'takeCare', {name: Memory.creep});
-
-            var nearestRoom = Game.rooms[Memory.nr];
-            if (!nearestRoom) {
-                var newR = _.min(Game.rooms, (r) => {
-                    return r.find(FIND_MY_SPAWNS).length > 0 && r.energyCapacityAvailable >= 550 ? Game.map.getRoomLinearDistance(r.name, room.name) : undefined;
-                });
-                Memory.nr = newR ? newR.name : undefined;
-
-                return Memory.creep = module.exports.room.addToSQ(room.name, 'takeCare', {name: Memory.creep});
-            }
-
-            if (nearestRoom.controller.level <= room.controller.level || Game.map.getRoomLinearDistance(room.name, nearestRoom.name) > 10) return Memory.creep = module.exports.room.addToSQ(room.name, 'takeCare', {name: Memory.creep});
-
-            return Memory.creep = module.exports.room.addToSQ(nearestRoom.name, 'takeCare', {name: Memory.creep});
+        getNumberOfCaretakers: function (room) {
+            if (room.controller.level < 3) return 3;
+            else return 1;
         },
+
+        //OLD CODE WHEN THERE WAS ONLY ONE CARETAKER, IT HAS SOME USEFUL STUFF THOUGH
+        // getCreep: function (Memory, room) {
+        //     if (room.energyCapacityAvailable >= 400) return Memory.creep = module.exports.room.addToSQ(room.name, 'takeCare', {name: Memory.creep});
+        //
+        //     var nearestRoom = Game.rooms[Memory.nr];
+        //     if (!nearestRoom) {
+        //         var newR = _.min(Game.rooms, (r) => {
+        //             return r.find(FIND_MY_SPAWNS).length > 0 && r.energyCapacityAvailable >= 550 ? Game.map.getRoomLinearDistance(r.name, room.name) : undefined;
+        //         });
+        //         Memory.nr = newR ? newR.name : undefined;
+        //
+        //         return Memory.creep = module.exports.room.addToSQ(room.name, 'takeCare', {name: Memory.creep});
+        //     }
+        //
+        //     if (nearestRoom.controller.level <= room.controller.level || Game.map.getRoomLinearDistance(room.name, nearestRoom.name) > 10) return Memory.creep = module.exports.room.addToSQ(room.name, 'takeCare', {name: Memory.creep});
+        //
+        //     return Memory.creep = module.exports.room.addToSQ(nearestRoom.name, 'takeCare', {name: Memory.creep});
+        // },
 
         findStructureToRepair: function (Memory, room, creep) {
             var structure = Memory.str ? Game.getObjectById(Memory.str) : undefined;
