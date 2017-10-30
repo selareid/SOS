@@ -1476,7 +1476,7 @@ module.exports = {
                 else {
                     var chosen = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_EXTENSION, (s) => s.energy < s.energyCapacity));
                     
-                    creep.memory.ext = chosen ? chosen.id : undefined;
+                    creep.memory.ext = chosen ? chosen.id : room.find(FIND_MY_SPAWNS)[0];
                 }
             }
         }
