@@ -44,7 +44,6 @@ function getBodyChart(room) {
     var newChart = _.clone(defaultBodyChart);
 
     if (room) {
-        if (room.find(FIND_MY_CONSTRUCTION_SITES).length < 1) newChart['takeCare'][2] = 5;
         if (room.controller.level < 7) newChart['fillExt'][0] = [CARRY, CARRY, MOVE, MOVE];
         newChart['fillSpawn'][2] = room.find(FIND_MY_SPAWNS).length*3;
 
