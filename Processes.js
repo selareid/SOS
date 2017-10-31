@@ -505,38 +505,49 @@ module.exports = {
             if (Game.time % 3 == 0 && room.find(FIND_HOSTILE_CREEPS).length > 0 && room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())}).length > 0
                 && !processExists('doTowers', Memory.rmN)) spawnNewProcess('doTowers', Memory.rmN);
 
-            if (room.controller.level < 8) delete room.memory.minimal;
-
-            if (!room.memory.minimal && Game.time % 11 == 0) {
-                if (room.controller.level > 7 && room.storage) {
-                    if (room.terminal && !processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
-
-                    var mineral = room.find(FIND_MINERALS)[0];
-                    if (mineral && ((mineral.mineralAmount > 1 || mineral.ticksToRegeneration < 200) && !processExists('mine', Memory.rmN))) spawnNewProcess('mine', Memory.rmN);
-                }
+            if (room.memory.type == 'jump') {
                 if (!processExists('doHarvest', Memory.rmN)) spawnNewProcess('doHarvest', Memory.rmN);
                 if (!processExists('takeCare', Memory.rmN)) spawnNewProcess('takeCare', Memory.rmN);
                 if (!processExists('fillSpawn', Memory.rmN)) spawnNewProcess('fillSpawn', Memory.rmN);
                 if (!processExists('fillExt', Memory.rmN)) spawnNewProcess('fillExt', Memory.rmN);
-                if (!processExists('buildRoads', Memory.rmN)) spawnNewProcess('buildRoads', Memory.rmN);
-                if ((room.controller.level < 8 || room.controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[room.controller.level]*0.5) && !processExists('praiseRC', Memory.rmN)) spawnNewProcess('praiseRC', Memory.rmN);
-
-                if (room.controller.level >= 4 && room.getStructures(STRUCTURE_LINK).length < 3 && global[room.name].distrSquareFlag && !processExists('iRmHaul', Memory.rmN)) spawnNewProcess('iRmHaul', Memory.rmN);
 
                 if (room.controller.level >= 2 && global[room.name].distrSquareFlag && !processExists('placeExtensions', Memory.rmN)) spawnNewProcess('placeExtensions', Memory.rmN);
-                if (room.controller.level >= 2 && !room.storage && !Game.flags[global[room.name].distrSquareFlag] && !processExists('placeStorage', Memory.rmN)) spawnNewProcess('placeStorage', Memory.rmN);
-                if (room.controller.level >= 3 && global[room.name].distrSquareFlag && !processExists('placeTowers', Memory.rmN)) spawnNewProcess('placeTowers', Memory.rmN);
-
-                if (!processExists('strgDistr', Memory.rmN)) spawnNewProcess('strgDistr', Memory.rmN);
-                if (room.controller.level >= 5 && !processExists('doLinks', Memory.rmN)) spawnNewProcess('doLinks', Memory.rmN);
-                if (room.controller.level >= 8 && room.getStructures(STRUCTURE_POWER_SPAWN).length > 0 && !processExists('doPowerProc', Memory.rmN)) spawnNewProcess('doPowerProc', Memory.rmN);
+                if ((room.controller.level < 8 || room.controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[room.controller.level] * 0.5) && !processExists('praiseRC', Memory.rmN)) spawnNewProcess('praiseRC', Memory.rmN);
             }
-            else if (room.memory.minimal && Game.time % 11 == 0) {
-                if (!processExists('doHarvest', Memory.rmN)) spawnNewProcess('doHarvest', Memory.rmN);
-                if (!processExists('minimalist', Memory.rmN)) spawnNewProcess('minimalist', Memory.rmN);
-                if (!processExists('strgDistr', Memory.rmN)) spawnNewProcess('strgDistr', Memory.rmN);
-                if (!processExists('takeCare', Memory.rmN)) spawnNewProcess('takeCare', Memory.rmN);
-                if (room.terminal && !processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
+            else {
+                if (room.controller.level < 8) delete room.memory.minimal;
+
+                if (!room.memory.minimal && Game.time % 11 == 0) {
+                    if (room.controller.level > 7 && room.storage) {
+                        if (room.terminal && !processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
+
+                        var mineral = room.find(FIND_MINERALS)[0];
+                        if (mineral && ((mineral.mineralAmount > 1 || mineral.ticksToRegeneration < 200) && !processExists('mine', Memory.rmN))) spawnNewProcess('mine', Memory.rmN);
+                    }
+                    if (!processExists('doHarvest', Memory.rmN)) spawnNewProcess('doHarvest', Memory.rmN);
+                    if (!processExists('takeCare', Memory.rmN)) spawnNewProcess('takeCare', Memory.rmN);
+                    if (!processExists('fillSpawn', Memory.rmN)) spawnNewProcess('fillSpawn', Memory.rmN);
+                    if (!processExists('fillExt', Memory.rmN)) spawnNewProcess('fillExt', Memory.rmN);
+                    if (!processExists('buildRoads', Memory.rmN)) spawnNewProcess('buildRoads', Memory.rmN);
+                    if ((room.controller.level < 8 || room.controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[room.controller.level] * 0.5) && !processExists('praiseRC', Memory.rmN)) spawnNewProcess('praiseRC', Memory.rmN);
+
+                    if (room.controller.level >= 4 && room.getStructures(STRUCTURE_LINK).length < 3 && global[room.name].distrSquareFlag && !processExists('iRmHaul', Memory.rmN)) spawnNewProcess('iRmHaul', Memory.rmN);
+
+                    if (room.controller.level >= 2 && global[room.name].distrSquareFlag && !processExists('placeExtensions', Memory.rmN)) spawnNewProcess('placeExtensions', Memory.rmN);
+                    if (room.controller.level >= 2 && !room.storage && !Game.flags[global[room.name].distrSquareFlag] && !processExists('placeStorage', Memory.rmN)) spawnNewProcess('placeStorage', Memory.rmN);
+                    if (room.controller.level >= 3 && global[room.name].distrSquareFlag && !processExists('placeTowers', Memory.rmN)) spawnNewProcess('placeTowers', Memory.rmN);
+
+                    if (!processExists('strgDistr', Memory.rmN)) spawnNewProcess('strgDistr', Memory.rmN);
+                    if (room.controller.level >= 5 && !processExists('doLinks', Memory.rmN)) spawnNewProcess('doLinks', Memory.rmN);
+                    if (room.controller.level >= 8 && room.getStructures(STRUCTURE_POWER_SPAWN).length > 0 && !processExists('doPowerProc', Memory.rmN)) spawnNewProcess('doPowerProc', Memory.rmN);
+                }
+                else if (room.memory.minimal && Game.time % 11 == 0) {
+                    if (!processExists('doHarvest', Memory.rmN)) spawnNewProcess('doHarvest', Memory.rmN);
+                    if (!processExists('minimalist', Memory.rmN)) spawnNewProcess('minimalist', Memory.rmN);
+                    if (!processExists('strgDistr', Memory.rmN)) spawnNewProcess('strgDistr', Memory.rmN);
+                    if (!processExists('takeCare', Memory.rmN)) spawnNewProcess('takeCare', Memory.rmN);
+                    if (room.terminal && !processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
+                }
             }
 
             this.spawn(Memory_it);
