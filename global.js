@@ -20,6 +20,8 @@ module.exports = () => {
             case 'doStats': return 0;
             case 'doTowers': return 0;
             case 'defendRoom': return 0;
+            case 'buildSpawn': return 0;
+            case 'claim': return 0;
 
             case 'checkRooms': return 1;
             case 'checkCreeps': return 1;
