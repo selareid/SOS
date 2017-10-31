@@ -426,11 +426,12 @@ module.exports = {
                     return r.find(FIND_MY_SPAWNS).length > 0 && Game.map.getRoomLinearDistance(r.name, flag.pos.roomName) < 11 ? r.energyAvailable : 0;
                 });
                 Memory.nr = newR ? newR.name : undefined;
+                nearestRoom = Game.rooms[Memory.nr]
             }
 
             if (Game.creeps[Memory.crp] || nearestRoom.memory.spawnQueue[Memory.crp]) {
                 if (!Game.creeps[Memory.crp]) return;
-                var creep = getCreep(Memory.crp, 'claim');
+                var creep = getCreep(Memory.crp, 'buildSpawn');
                 if (creep == 'dead') {
                     Memory.crp = undefined;
                     creep = undefined;
