@@ -461,7 +461,11 @@ module.exports = {
                         }
                     }
                     else {
-                        creep.getConsumerEnergy(Memory)
+                        var source = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+                        if (source) {
+                            if (creep.pos.isNearTo(source)) creep.harvest(source);
+                            else creep.moveWithPath(source, {range: 1, repath: 0.01, maxRooms: 1});
+                        }
                     }
                 }
             }
