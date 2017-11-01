@@ -1,5 +1,5 @@
 module.exports.loop = () => {
-    if (Game.cpu.bucket < 100) {
+    if (Game.cpu.bucket < 300) {
         console.log('Code not loaded cause no bucket');
         return;
     }
@@ -17,7 +17,7 @@ module.exports.loop = () => {
     console.log("[" + "<p style=\"display:inline; color: #ededed\">RESET</p>" + "] " + "<p style=\"display:inline; color: #6dbbff\">" + Game.cpu.bucket + "</p>"); // reset log
 
     module.exports.run = () => {
-        if (Game.cpu.bucket < 100) {
+        if (Game.cpu.bucket < 150) {
         console.log('Code not run cause no bucket');
         return;
     }
