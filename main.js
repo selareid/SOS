@@ -1,5 +1,8 @@
 module.exports.run = () => {
-    if (Game.cpu.bucket < 100) return;
+    if (Game.cpu.bucket < 100) {
+        console.log('Code not loaded cause no bucket');
+        return;
+    }
     
     require('global')();
     require('prototype.console')();
@@ -14,7 +17,10 @@ module.exports.run = () => {
     console.log("[" + "<p style=\"display:inline; color: #ededed\">RESET</p>" + "] " + "<p style=\"display:inline; color: #6dbbff\">" + Game.cpu.bucket + "</p>"); // reset log
 
     module.exports.run = () => {
-        if (Game.cpu.bucket < 100) return;
+        if (Game.cpu.bucket < 100) {
+        console.log('Code not run cause no bucket');
+        return;
+    }
         
         if (!console.logTickStart) require('prototype.console')();
         if (!isUndefinedOrNull) require('global')();
