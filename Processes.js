@@ -37,7 +37,9 @@ const defaultBodyChart = {
     healer: [[MOVE, HEAL], []],
     crusher: [[MOVE, ATTACK], []],
     defendRoom: [[MOVE, ATTACK], []],
-    reserver: [[CLAIM, MOVE, MOVE], [], 3]
+    reserver: [[CLAIM, MOVE, MOVE], [], 3],
+    harvesters: [[WORK, CARRY, MOVE, MOVE], [], 6],
+    haulers: [[CARRY, MOVE, MOVE], []]
 };
 
 function getBodyChart(room) {
