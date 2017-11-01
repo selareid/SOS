@@ -1,4 +1,4 @@
-module.exports.run = () => {
+module.exports.loop = () => {
     if (Game.cpu.bucket < 100) {
         console.log('Code not loaded cause no bucket');
         return;
