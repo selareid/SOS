@@ -372,7 +372,7 @@ module.exports = {
             var flag = Game.flags[Memory.f];
             if (!flag) {
                 var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'claim')[0];
-                return newFlag ? Memory.f = newFlag.name : 'end';
+                return newFlag ? Memory.f = newFlag.name : {response: 'end'};
             }
 
             if (flag.room && flag.room.controller.my) {
@@ -417,7 +417,7 @@ module.exports = {
             var flag = Game.flags[Memory.f];
             if (!flag) {
                 var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'claim')[0];
-                return newFlag ? Memory.f = newFlag.name : 'end';
+                return newFlag ? Memory.f = newFlag.name : {response: 'end'};
             }
 
             var nearestRoom = Game.rooms[Memory.nr];
