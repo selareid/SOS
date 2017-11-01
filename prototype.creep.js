@@ -1,4 +1,4 @@
-Creep.prototype.getConsumerEnergy = function (Memory, room = this.room, creep = this) {
+Creep.prototype.getConsumerEnergy = function (room = this.room, creep = this) {
     var storage = room.storage;
 
     if (storage && storage.store[RESOURCE_ENERGY] > creep.carryCapacity) {
@@ -30,7 +30,7 @@ Creep.prototype.getConsumerEnergy = function (Memory, room = this.room, creep = 
     }
 };
 
-Creep.prototype.getCarrierResources = function (Memory, room = this.room, creep = this) {
+Creep.prototype.getCarrierResources = function (room = this.room, creep = this) {
     var droppedResource = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (r) => r.amount > creep.carryCapacity});
 
     if (droppedResource) {
