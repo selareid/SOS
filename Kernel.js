@@ -57,6 +57,7 @@ var Kernel = {
             }
             else if (Memory.p[processIndex].idleTime && Memory.p[processIndex].idleTime > Game.time) continue;
 
+            if (isUndefinedOrNull(Memory.p[processIndex].avg)) Memory.p[processIndex].queue = 0;
             if (isUndefinedOrNull(Memory.p[processIndex].queue)) Memory.p[processIndex].queue = getQueue(Memory.p[processIndex].pN);
 
             if (!queues[Memory.p[processIndex].queue]) queues[Memory.p[processIndex].queue] = [];
