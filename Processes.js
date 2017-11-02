@@ -551,6 +551,7 @@ module.exports = {
                         if (!_.includes(Memory.toScout, r) && (!Game.rooms[r] || !Game.rooms[r].memory.scoutData || Game.time - Game.rooms[r].memory.scoutData.lastCheck > 1250) && Game.map.getRoomLinearDistance(nearestRoom, toScout) < 10) Memory.scout.push(r);
                     });
                 }
+                else if (Game.time-creep.room.memory.scoutData.lastCheck < 1250) Memory.toScout.splice(0, 1);
             }
 
             if (creeps.length < 1) {
