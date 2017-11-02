@@ -509,6 +509,11 @@ module.exports = {
 
             var toScout = Memory.toScout[0];
 
+            var newR = _.min(Game.rooms, (r) => {
+                return r.find(FIND_MY_SPAWNS).length > 0 ? Game.map.getRoomLinearDistance(r.name, toScout) : Number.POSITIVE_INFINITY;
+            });
+            var nearestRoom = newR ? newR.name : undefined;
+
             var room = Game.rooms[toScout];
 
             if (room) {
@@ -522,7 +527,7 @@ module.exports = {
                 };
 
                 _.forEach(Game.map.describeExits(room), (r) => {
-                    if (!_.includes(Memory.toScout, r) && (!Game.rooms[r] || !Game.rooms[r].memory.scoutData || Game.time-Game.rooms[r].memory.scoutData.lastCheck > 1250)) Memory.scout.push(r);
+                    if (!_.includes(Memory.toScout, r) && (!Game.rooms[r] || !Game.rooms[r].memory.scoutData || Game.time-Game.rooms[r].memory.scoutData.lastCheck > 1250) && Game.map.getRoomLinearDistance(nearestRoom, toScout) < 10) Memory.scout.push(r);
                 });
             }
             else {
@@ -548,7 +553,9 @@ module.exports = {
                     creep.travelTo(new RoomPosition(25, 25, toScout), {range: 23, repath: 0.01, maxRooms: 16});
                 }
 
-                if (creeps.length < 1) Memory.crps.push(module.exports.room.addToSQ(room.name, 'scout'));
+                if (creeps.length < 1) {
+                    Memory.crps.push(module.exports.room.addToSQ(nearestRoom, 'scout'));
+                }
             }
         }
     },
