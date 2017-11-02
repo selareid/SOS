@@ -510,7 +510,7 @@ module.exports = {
             var toScout = Memory.toScout[0];
 
             var newR = _.min(Game.rooms, (r) => {
-                return r.find(FIND_MY_SPAWNS).length > 0 ? Game.map.getRoomLinearDistance(r.name, toScout) : Number.POSITIVE_INFINITY;
+                return r.find(FIND_MY_SPAWNS).length > 0 && r.memory.spawnQueue ? Game.map.getRoomLinearDistance(r.name, toScout) : Number.POSITIVE_INFINITY;
             });
             var nearestRoom = newR ? newR.name : undefined;
 
