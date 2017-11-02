@@ -501,7 +501,7 @@ module.exports = {
 
                 _.forEach(Game.rooms, (rn) => {
                     var r = rn.name;
-                    if (!_.includes(Memory.toScout, r) && (!Game.rooms[r] || !Game.rooms[r].memory.scoutData || Game.time - Game.rooms[r].memory.scoutData.lastCheck > 1250)) Memory.scout.push(r);
+                    if (!_.includes(Memory.toScout, r) && (!Game.rooms[r] || !Game.rooms[r].memory.scoutData || Game.time - Game.rooms[r].memory.scoutData.lastCheck > 1250)) Memory.toScout.push(r);
                 });
 
                 if (Memory.toScout.length < 1) return {response: 'idle', times: 101};
