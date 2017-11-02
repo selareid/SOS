@@ -2432,6 +2432,7 @@ module.exports = {
                 });
                 Memory.nr = newR ? newR.name : undefined;
                 nearestRoom = Game.rooms[Memory.nr];
+                roomName = Memory.rmN;
                 if (Game.map.getRoomLinearDistance(nearestRoom, roomName) > 3) return {response: 'end'}
             }
 
