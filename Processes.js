@@ -634,7 +634,7 @@ module.exports = {
 
         addToSQ: function (roomName, process, creepMem = {}) {
             var room = Game.rooms[roomName];
-            if (!room) throw 'ERROR addToSQ Passed Bad roomName';
+            if (!room) throw new Error('ERROR addToSQ Passed Bad roomName');
 
             while (!creepMem.name || Game.creeps[creepMem.name]) creepMem.name = roomName + ((Game.time % 1000) + '' + Math.round(Math.random() * 1000));
 
