@@ -496,7 +496,7 @@ module.exports = {
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
-            if (!Memory.toScout) {
+            if (!Memory.toScout || Memory.toScout.length < 1) {
                 Memory.toScout = [];
 
                 _.forEach(Game.rooms, (rn) => {
@@ -525,6 +525,8 @@ module.exports = {
                     sources: room.find(FIND_SOURCES).length,
                     mineral: room.find(FIND_MINERALS).length
                 };
+
+                Memory.toScout.splice(0, 1);
 
                 _.forEach(Game.map.describeExits(room), (r) => {
                     if (!_.includes(Memory.toScout, r) && (!Game.rooms[r] || !Game.rooms[r].memory.scoutData || Game.time-Game.rooms[r].memory.scoutData.lastCheck > 1250) && Game.map.getRoomLinearDistance(nearestRoom, toScout) < 10) Memory.scout.push(r);
