@@ -2521,7 +2521,7 @@ module.exports = {
         doReserver: function (creep, roomName) {
             var room = Game.rooms[roomName];
             if (room) {
-                if (creep.isNearTo(room.controller)) {
+                if (creep.pos.isNearTo(room.controller)) {
                     if (!room.controller.reservation || room.controller.reservation.ticksToEnd < CONTROLLER_RESERVE_MAX-(CONTROLLER_RESERVE*3)) creep.reserveController(room.controller);
                 }
                 else creep.moveWithPath(room.controller);
