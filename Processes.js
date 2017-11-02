@@ -554,7 +554,7 @@ module.exports = {
             }
 
             if (creeps.length < 1) {
-                Memory.crps.push(module.exports.room.addToSQ(nearestRoom, 'scout'));
+                Memory.crps.push(module.exports.room.addToSQ(nearestRoom.name, 'scout'));
             }
         }
     },
