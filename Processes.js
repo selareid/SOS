@@ -2566,9 +2566,8 @@ module.exports = {
             else if (_.sum(creep.carry) == 0) creep.memory.w = 1;
 
             if (creep.memory.w == 1) {
-                var room = Game.rooms[roomName];
-                if (room) {
-                    creep.getCarrierResources(room);
+                if (creep.pos.roomName == roomName) {
+                    creep.getCarrierResources();
                 }
                 else creep.moveWithPath(new RoomPosition(21, 21, roomName), {range: 21});
             }
