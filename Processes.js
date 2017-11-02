@@ -2485,7 +2485,7 @@ module.exports = {
                 this.doHarvester(creep, roomName, harvesters);
             }
 
-            if (harvesters.length < this.getNumberOfHarvesters(roomName)) Memory.harvesters(module.exports.room.addToSQ(nearestRoom.name, 'harvesters'));
+            if (harvesters.length < this.getNumberOfHarvesters(roomName)) Memory.harvesters.push(module.exports.room.addToSQ(nearestRoom.name, 'harvesters'));
 
 
             //haulers
@@ -2511,7 +2511,7 @@ module.exports = {
                 this.doHaulers(creep, roomName);
             }
 
-            if (haulers.length < this.getNumberOfHarvesters(roomName)*1.5) Memory.haulers(module.exports.room.addToSQ(nearestRoom.name, 'haulers'));
+            if (haulers.length < this.getNumberOfHarvesters(roomName)*1.5) Memory.haulers.push(module.exports.room.addToSQ(nearestRoom.name, 'haulers'));
         },
 
         getNumberOfHarvesters: function (roomName) {
