@@ -22,6 +22,7 @@ function getCreep(name, process) {
 }
 
 const defaultBodyChart = {
+    scout: [[], [MOVE], 1],
     minimalist: [[WORK, MOVE, MOVE, CARRY, CARRY], []],
     doHarvest: [[WORK, MOVE, MOVE, CARRY], [], 6],
     praiseRC: [[WORK, CARRY, MOVE], []],
@@ -104,6 +105,7 @@ module.exports = {
             spawnNewProcess('checkGlobalProcesses');
             spawnNewProcess('checkStructRepair');
             spawnNewProcess('garbageCollection');
+            spawnNewProcess('scout');
         }
     },
 
@@ -486,6 +488,67 @@ module.exports = {
             if (_.size(Game.constructionSites) < 100) {
                 let pos = new RoomPosition(flagPos.x + 1, flagPos.y, flagPos.roomName);
                 Game.rooms[flagPos.roomName].createConstructionSite(pos.x, pos.y, STRUCTURE_SPAWN);
+            }
+        }
+    },
+
+    scout: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            if (!Memory.toScout) {
+                Memory.toScout = [];
+
+                _.forEach(Game.rooms, (rn) => {
+                    var r = rn.name;
+                    if (!_.includes(Memory.toScout, r) && (!Game.rooms[r] || !Game.rooms[r].memory.scoutData || Game.time - Game.rooms[r].memory.scoutData.lastCheck > 1250)) Memory.scout.push(r);
+                });
+
+                if (Memory.toScout.length < 1) return {response: 'idle', times: 101};
+            }
+
+            var toScout = Memory.toScout[0];
+
+            var room = Game.rooms[toScout];
+
+            if (room) {
+                var whoOwnsRoom =  !room.controller ? OWNED_IMPOSSIBLE : room.controller.my ? OWNED_ME : _.includes(global.allies, room.controller.owner.username) ? OWNED_ALLY : OWNED_NEUTRAL;
+
+                room.memory.scoutData = {
+                    lastCheck: Game.time,
+                    owned: whoOwnsRoom,
+                    sources: room.find(FIND_SOURCES).length,
+                    mineral: room.find(FIND_MINERALS).length
+                };
+
+                _.forEach(Game.map.describeExits(room), (r) => {
+                    if (!_.includes(Memory.toScout, r) && (!Game.rooms[r] || !Game.rooms[r].memory.scoutData || Game.time-Game.rooms[r].memory.scoutData.lastCheck > 1250)) Memory.scout.push(r);
+                });
+            }
+            else {
+                if (!Memory.crps) Memory.crps = [];
+
+                var creeps = Memory.crps;
+
+                for (let creep_it_it in creeps) {
+                    if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
+                    let creep = getCreep(creeps[creep_it_it].split(':')[0], 'scout');
+                    if (creep == 'dead') {
+                        creep = undefined;
+                    }
+
+                    if (!creep) {
+                        if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
+                        continue;
+                    }
+                    else if (creep.spawning) continue;
+
+                    creep.talk('scout');
+
+                    creep.travelTo(new RoomPosition(25, 25, toScout), {range: 23, repath: 0.01, maxRooms: 16});
+                }
+
+                if (creeps.length < 1) Memory.crps.push(module.exports.room.addToSQ(room.name, 'scout'));
             }
         }
     },

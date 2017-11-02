@@ -39,6 +39,7 @@ module.exports = () => {
 
             case 'checkGlobalProcesses': return 6;
             case 'doTerminal': return 6;
+            case 'scout': return 6;
 
             case 'doPowerProc': return 10;
             case 'placeTowers': return 10;
@@ -131,5 +132,11 @@ module.exports = () => {
         [RESOURCE_CATALYZED_ZYNTHIUM_ALKALIDE]: 5000,
         [RESOURCE_CATALYZED_GHODIUM_ACID]: 5000,
         [RESOURCE_CATALYZED_GHODIUM_ALKALIDE]: 5000
-    }
+    };
+
+    OWNED_ME = 0;
+    OWNED_ALLY = 1;
+    OWNED_NEUTRAL = 2;
+    OWNED_ENEMY = 3;
+    OWNED_IMPOSSIBLE = 4;
 };
