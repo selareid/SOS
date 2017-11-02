@@ -2583,6 +2583,9 @@ module.exports = {
                         creep.transfer(toPut, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
                     }
                 }
+                else {
+                    creep.moveWithPath(toPut, {range: 1, repath: 0.01, maxRooms: 1});
+                }
             }
         }
     }
