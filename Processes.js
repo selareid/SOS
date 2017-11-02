@@ -517,7 +517,7 @@ module.exports = {
             var room = Game.rooms[toScout];
 
             if (room) {
-                var whoOwnsRoom =  !room.controller ? OWNED_IMPOSSIBLE : room.controller.my ? OWNED_ME : _.includes(global.allies, room.controller.owner.username) ? OWNED_ALLY : OWNED_NEUTRAL;
+                var whoOwnsRoom =  !room.controller ? OWNED_IMPOSSIBLE : room.controller.my ? OWNED_ME : room.controller.owner && _.includes(global.allies, room.controller.owner.username) ? OWNED_ALLY : OWNED_NEUTRAL;
 
                 room.memory.scoutData = {
                     lastCheck: Game.time,
