@@ -2509,7 +2509,7 @@ module.exports = {
 
                 creep.talk('remoteHandler');
 
-                this.doHaulers(creep, roomName);
+                this.doHaulers(creep, roomName, nearestRoom);
             }
 
             if (haulers.length < this.getNumberOfHarvesters(roomName)*1.5) Memory.haulers.push(module.exports.room.addToSQ(nearestRoom.name, 'haulers'));
@@ -2561,12 +2561,29 @@ module.exports = {
             else creep.moveWithPath(new RoomPosition(21, 21, roomName), {range: 21});
         },
 
-        doHaulers: function (creep, roomName) {
-            var room = Game.rooms[roomName];
-            if (room) {
-                creep.getCarrierResources();
+        doHaulers: function (creep, roomName, nearestRoom) {
+            if (_.sum(creep.carry) == creep.carryCapacity) creep.memory.w = 0;
+            else if (_.sum(creep.carry) == 0) creep.memory.w = 1;
+
+            if (creep.memory.w == 1) {
+                var room = Game.rooms[roomName];
+                if (room) {
+                    creep.getCarrierResources(room);
+                }
+                else creep.moveWithPath(new RoomPosition(21, 21, roomName), {range: 21});
             }
-            else creep.moveWithPath(new RoomPosition(21, 21, roomName), {range: 21});
+            else {
+                var toPut = nearestRoom.storage ? nearestRoom.storage : nearestRoom.find(FIND_MY_SPAWNS)[0];
+
+                if (creep.pos.isNearTo(toPut)) {
+                    if (toPut.structureType == STRUCTURE_SPAWN) {
+                        creep.drop(Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
+                    }
+                    else {
+                        creep.transfer(toPut, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
+                    }
+                }
+            }
         }
     }
 };
