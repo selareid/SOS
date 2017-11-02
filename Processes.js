@@ -2522,18 +2522,18 @@ module.exports = {
 
         doReserver: function (creep, roomName) {
             var room = Game.rooms[roomName];
-            if (room) {
+            if (creep.pos.roomName == roomName) {
                 if (creep.pos.isNearTo(room.controller)) {
                     if (!room.controller.reservation || room.controller.reservation.ticksToEnd < CONTROLLER_RESERVE_MAX-(CONTROLLER_RESERVE*3)) creep.reserveController(room.controller);
                 }
                 else creep.moveWithPath(room.controller);
             }
-            else creep.moveWithPath(new RoomPosition(21, 21, roomName), {range: 21});
+            else creep.travelTo(new RoomPosition(21, 21, roomName), {range: 21, repath: 0.01})
         },
 
         doHarvester: function (creep, roomName, crps) {
             var room = Game.rooms[roomName];
-            if (room) {
+            if (creep.pos.roomName == roomName) {
                 var source = Game.getObjectById(creep.memory.src);
 
                 if (source) {
@@ -2559,7 +2559,7 @@ module.exports = {
 
                 if (creep.carry.energy && creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) creep.drop(RESOURCE_ENERGY);
             }
-            else creep.moveWithPath(new RoomPosition(21, 21, roomName), {range: 21});
+            else creep.travelTo(new RoomPosition(21, 21, roomName), {range: 21, repath: 0.01})
         },
 
         doHaulers: function (creep, roomName, nearestRoom) {
@@ -2570,7 +2570,7 @@ module.exports = {
                 if (creep.pos.roomName == roomName) {
                     creep.getCarrierResources();
                 }
-                else creep.moveWithPath(new RoomPosition(21, 21, roomName), {range: 21});
+                else creep.travelTo(new RoomPosition(21, 21, roomName), {range: 21, repath: 0.01});
             }
             else {
                 var toPut = nearestRoom.storage ? nearestRoom.storage : nearestRoom.find(FIND_MY_SPAWNS)[0];
