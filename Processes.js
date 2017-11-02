@@ -533,7 +533,7 @@ module.exports = {
 
                 creep.talk('scout');
 
-                creep.travelTo(new RoomPosition(25, 25, toScout), {range: 23, repath: 0.01, maxRooms: 16});
+                creep.travelTo(new RoomPosition(25, 25, toScout), {range: 23, repath: 0.01, maxRooms: 16, ignoreRoads: true});
 
                 var whoOwnsRoom = !creep.room.controller ? OWNED_IMPOSSIBLE : creep.room.controller.my ? OWNED_ME : creep.room.controller.owner && _.includes(global.allies, creep.room.controller.owner.username) ? OWNED_ALLY : OWNED_NEUTRAL;
 
