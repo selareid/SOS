@@ -493,26 +493,8 @@ module.exports = {
     },
 
     scout: {
-        run: function (Memory_it) {
+        run: function (Memory_it) {console.log('PLEASE REWRITE SCOUT PROCESS '); return {response: 'idle', time: Game.time + 101};
             var Memory = global.Mem.p[Memory_it];
-
-            if (!Memory.toScout || Memory.toScout.length < 1) {
-                Memory.toScout = [];
-
-                _.forEach(Game.rooms, (rn) => {
-                    var r = rn.name;
-                    if (!_.includes(Memory.toScout, r) && (!Game.rooms[r] || !Game.rooms[r].memory.scoutData || Game.time - Game.rooms[r].memory.scoutData.lastCheck > 1250)) Memory.toScout.push(r);
-                });
-
-                if (Memory.toScout.length < 1) return {response: 'idle', times: 101};
-            }
-
-            var toScout = Memory.toScout[0];
-
-            var newR = _.min(Game.rooms, (r) => {
-                return r.find(FIND_MY_SPAWNS).length > 0 && r.memory.spawnQueue ? Game.map.getRoomLinearDistance(r.name, toScout) : Number.POSITIVE_INFINITY;
-            });
-            var nearestRoom = newR;
 
             if (!Memory.crps) Memory.crps = [];
 
@@ -535,29 +517,31 @@ module.exports = {
 
                 creep.travelTo(new RoomPosition(25, 25, toScout), {range: 23, repath: 0.001, maxRooms: 16, ignoreRoads: true});
 
-                var whoOwnsRoom = !creep.room.controller ? OWNED_IMPOSSIBLE : creep.room.controller.my ? OWNED_ME : creep.room.controller.owner && _.includes(global.allies, creep.room.controller.owner.username) ? OWNED_ALLY : OWNED_NEUTRAL;
 
-                if (!creep.room || !creep.room.memory.scoutData || Game.time - creep.room.memory.scoutData.lastCheck > 1250) {
-                    creep.room.memory.scoutData = {
-                        lastCheck: Game.time,
-                        owned: whoOwnsRoom,
-                        sources: creep.room.find(FIND_SOURCES).length,
-                        mineral: creep.room.find(FIND_MINERALS).length
-                    };
-
-                    Memory.toScout.splice(0, 1);
-
-                    _.forEach(Game.map.describeExits(creep.room), (r) => {
-                        if (!_.includes(Memory.toScout, r) && (!Game.rooms[r] || !Game.rooms[r].memory.scoutData || Game.time - Game.rooms[r].memory.scoutData.lastCheck > 1250) && Game.map.getRoomLinearDistance(nearestRoom, toScout) < 10) Memory.scout.push(r);
-                    });
-                }
-                else if (Game.time-creep.room.memory.scoutData.lastCheck < 1250) Memory.toScout.splice(0, 1);
+                // else if (Game.time-creep.room.memory.scoutData.lastCheck < 1250) Memory.toScout.splice(0, 1);
             }
 
             if (creeps.length < 1) {
                 Memory.crps.push(module.exports.room.addToSQ(nearestRoom.name, 'scout'));
             }
         }
+
+//         var whoOwnsRoom = !creep.room.controller ? OWNED_IMPOSSIBLE : creep.room.controller.my ? OWNED_ME : creep.room.controller.owner && _.includes(global.allies, creep.room.controller.owner.username) ? OWNED_ALLY : OWNED_NEUTRAL;
+//
+// if (!creep.room || !creep.room.memory.scoutData || Game.time - creep.room.memory.scoutData.lastCheck > 1250) {
+//     creep.room.memory.scoutData = {
+//         lastCheck: Game.time,
+//         owned: whoOwnsRoom,
+//         sources: creep.room.find(FIND_SOURCES).length,
+//         mineral: creep.room.find(FIND_MINERALS).length
+//     };
+//
+//     Memory.toScout.splice(0, 1);
+//
+//     _.forEach(Game.map.describeExits(creep.room), (r) => {
+//         if (!_.includes(Memory.toScout, r) && (!Game.rooms[r] || !Game.rooms[r].memory.scoutData || Game.time - Game.rooms[r].memory.scoutData.lastCheck > 1250) && Game.map.getRoomLinearDistance(nearestRoom, toScout) < 10) Memory.scout.push(r);
+//     });
+// }
     },
 
     //room processes
