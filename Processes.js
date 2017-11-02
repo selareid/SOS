@@ -514,8 +514,6 @@ module.exports = {
             });
             var nearestRoom = newR ? newR.name : undefined;
 
-            var room = Game.rooms[toScout];
-
             if (!Memory.crps) Memory.crps = [];
 
             var creeps = Memory.crps;
@@ -539,7 +537,7 @@ module.exports = {
 
                 var whoOwnsRoom = !creep.room.controller ? OWNED_IMPOSSIBLE : creep.room.controller.my ? OWNED_ME : creep.room.controller.owner && _.includes(global.allies, creep.room.controller.owner.username) ? OWNED_ALLY : OWNED_NEUTRAL;
 
-                if (!Game.rooms[r] || !Game.rooms[r].memory.scoutData || Game.time - Game.rooms[r].memory.scoutData.lastCheck > 1250) {
+                if (!creep.room || !creep.room.memory.scoutData || Game.time - creep.room.memory.scoutData.lastCheck > 1250) {
                     creep.room.memory.scoutData = {
                         lastCheck: Game.time,
                         owned: whoOwnsRoom,
