@@ -545,7 +545,7 @@ module.exports = {
                     }
 
                     if (!creep) {
-                        if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
+                        if (!nearestRoom.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
                         continue;
                     }
                     else if (creep.spawning) continue;
