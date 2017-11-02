@@ -2460,7 +2460,7 @@ module.exports = {
                 this.doReserver(creep, roomName);
             }
 
-            if (reservers.length < 1) Memory.reservers.push(module.exports.room.addToSQ(nearestRoom.name, 'reserver'));
+            if (reservers.length < 1 || reservers[0].ticksToLive < 100) Memory.reservers.push(module.exports.room.addToSQ(nearestRoom.name, 'reserver'));
 
 
             //harvesters
