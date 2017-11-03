@@ -1688,6 +1688,8 @@ return;
         },
 
         placeRamparts: function (room, flag) {
+            if (!_.filter(flag.pos.lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_RAMPART)[0]) room.createConstructionSite(flag.pos.x, flag.pos.y, STRUCTURE_RAMPART);
+
             for (let struc of this.structs) {
                 if (_.size(Game.constructionSites) < 100) {
                     let strucPos = new RoomPosition(flag.pos.x + struc.x, flag.pos.y + struc.y, room.name);
