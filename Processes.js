@@ -388,7 +388,7 @@ module.exports = {
             var nearestRoom = Game.rooms[Memory.nr];
             if (!nearestRoom) {
                 var newR = _.min(Game.rooms, (r) => {
-                    return r.find(FIND_MY_SPAWNS).length > 0 && r.energyCapacityAvailable >= 600 ? Game.map.getRoomLinearDistance(r.name, flag.pos.roomName) : Number.POSITIVE_INFINITY;
+                    return r.find(FIND_MY_SPAWNS).length > 0 && r.energyCapacityAvailable >= 600 ? Game.map.findRoute(r.name, flag.pos.roomName).length : Number.POSITIVE_INFINITY;
                 });
                 Memory.nr = newR ? newR.name : undefined;
                 nearestRoom = Game.rooms[Memory.nr]
@@ -429,7 +429,7 @@ return;
             var nearestRoom = Game.rooms[Memory.nr];
             if (!nearestRoom) {
                 var newR = _.max(Game.rooms, (r) => {
-                    return r.find(FIND_MY_SPAWNS).length > 0 && Game.map.getRoomLinearDistance(r.name, flag.pos.roomName) < 11 ? r.energyAvailable : 0;
+                    return r.find(FIND_MY_SPAWNS).length > 0 && Game.map.findRoute(r.name, flag.pos.roomName).length < 11 ? r.energyAvailable : 0;
                 });
                 Memory.nr = newR ? newR.name : undefined;
                 nearestRoom = Game.rooms[Memory.nr]
@@ -2415,12 +2415,12 @@ return;
             var nearestRoom = Game.rooms[Memory.nr];
             if (!nearestRoom) {
                 var newR = _.min(Game.rooms, (r) => {
-                    return r.find(FIND_MY_SPAWNS).length > 0 ? Game.map.getRoomLinearDistance(r.name, roomName) : Number.POSITIVE_INFINITY;
+                    return r.find(FIND_MY_SPAWNS).length > 0 ? Game.map.findRoute(r.name, roomName).length : Number.POSITIVE_INFINITY;
                 });
                 Memory.nr = newR ? newR.name : undefined;
                 nearestRoom = Game.rooms[Memory.nr];
                 roomName = Memory.rmN;
-                if (Game.map.getRoomLinearDistance(nearestRoom.name, roomName) > 3) return {response: 'end'}
+                if (Game.map.findRoute(nearestRoom.name, roomName).length > 3) return {response: 'end'}
             }
 
 
