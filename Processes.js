@@ -2559,18 +2559,23 @@ return;
                 else creep.travelTo(new RoomPosition(21, 21, roomName), {range: 21, repath: 0.01});
             }
             else {
-                var toPut = nearestRoom.storage ? nearestRoom.storage : nearestRoom.find(FIND_MY_SPAWNS)[0];
+                if (creep.pos.roomName == nearestRoom.name) {
+                    var toPut = nearestRoom.storage ? nearestRoom.storage : nearestRoom.find(FIND_MY_SPAWNS)[0];
 
-                if (creep.pos.isNearTo(toPut)) {
-                    if (toPut.structureType == STRUCTURE_SPAWN) {
-                        creep.drop(Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
+                    if (creep.pos.isNearTo(toPut)) {
+                        if (toPut.structureType == STRUCTURE_SPAWN) {
+                            creep.drop(Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
+                        }
+                        else {
+                            creep.transfer(toPut, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
+                        }
                     }
                     else {
-                        creep.transfer(toPut, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
+                        creep.moveWithPath(toPut, {range: 1, repath: 0.01, maxRooms: 1});
                     }
                 }
                 else {
-                    creep.moveWithPath(toPut, {range: 1, repath: 0.01, maxRooms: 1});
+                    creep.travelTo(new RoomPosition(21, 21, nearestRoom.name), {range: 21, repath: 0.01});
                 }
             }
         }
