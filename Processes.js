@@ -400,6 +400,7 @@ module.exports = {
                 if (creep == 'dead') {
                     Memory.crp = undefined;
                     creep = undefined;
+return;
                 }
                 creep.talk('claim');
 
@@ -440,6 +441,7 @@ module.exports = {
                 if (creep == 'dead') {
                     Memory.crp = undefined;
                     creep = undefined;
+return;
                 }
                 creep.talk('buildSpawn');
 
