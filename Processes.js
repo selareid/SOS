@@ -33,7 +33,7 @@ const defaultBodyChart = {
     iRmHaul: [[CARRY, CARRY, MOVE], []],
     takeCare: [[WORK, CARRY, MOVE], []],
     claim: [[CLAIM, MOVE, MOVE], [], 1],
-    buildSpawn: [[WORK, MOVE, CARRY], []],
+    buildSpawn: [[WORK, MOVE, CARRY, MOVE], []],
     stealEnergy: [[CARRY, MOVE, MOVE], []],
     healer: [[MOVE, HEAL], []],
     crusher: [[MOVE, ATTACK], []],
