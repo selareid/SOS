@@ -154,6 +154,12 @@ module.exports = {
             }());
 
             (function () {
+                var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'buildSpawn')[0];
+
+                if (flag && (!flag.room || !flag.room.controller.my) && !processExists('buildSpawn')) spawnNewProcess('buildSpawn');
+            }());
+
+            (function () {
                 var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'steal' && Game.rooms[f.name.split(' ')[1]])[0];
 
                 if (flag && !processExists('stealEnergy')) spawnNewProcess('stealEnergy');
@@ -259,7 +265,7 @@ module.exports = {
             }
 
             var crusher = getCreep(Memory.crusher, 'crusher');
-            var healer = getCreep(Memory.healer, 'crusher')
+            var healer = getCreep(Memory.healer, 'crusher');
 
             if (!Memory.complete && !healer) Memory.healer = module.exports.room.addToSQ(room.name, 'healer', {name: Memory.healer});
             if (!Memory.complete && !crusher) Memory.crusher = module.exports.room.addToSQ(room.name, 'crusher', {name: Memory.crusher});
@@ -381,7 +387,7 @@ module.exports = {
             }
 
             if (flag.room && flag.room.controller.my) {
-                if (!processExists('buildSpawn')) spawnNewProcess('buildSpawn');
+                room.createFlag(flag.pos.x - 1, flag.pos.y, 'buildSpawn:' + flag.room.name, COLOR_PURPLE, COLOR_CYAN);
                 return {response: 'end'};
             }
 
@@ -422,7 +428,7 @@ return;
 
             var flag = Game.flags[Memory.f];
             if (!flag) {
-                var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'claim')[0];
+                var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'buildSpawn')[0];
                 return newFlag ? Memory.f = newFlag.name : {response: 'end'};
             }
 
@@ -1244,7 +1250,7 @@ return;
                     }
                     else if (creep.spawning) continue;
 
-                    creep.talk('\u{26cf}');
+                    creep.talk('doHarvest');
 
                     if (room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.p && c.memory.p != 'doHarvest'}).length >= 1) {
                         if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep);
@@ -2164,7 +2170,7 @@ return;
                 else if (creep.spawning) continue;
 
 
-                creep.talk('\u{1f528}');
+                creep.talk('takeCare');
 
                 if (creep.carry.energy == 0) creep.memory.w = 1;
                 else if (creep.carry.energy == creep.carryCapacity) creep.memory.w = 0;
@@ -2471,7 +2477,7 @@ return;
                     continue;
                 }
 
-                creep.talk('\u{26cf}');
+                creep.talk('remoteHandler');
 
                 this.doHarvester(creep, roomName, harvesters);
             }
