@@ -1244,7 +1244,7 @@ return;
                     }
                     else if (creep.spawning) continue;
 
-                    creep.talk('doHarvest');
+                    creep.talk('\u{26cf}');
 
                     if (room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.p && c.memory.p != 'doHarvest'}).length >= 1) {
                         if (creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) this.dropEnergy(Memory, creep);
@@ -2164,7 +2164,7 @@ return;
                 else if (creep.spawning) continue;
 
 
-                creep.talk('takeCare');
+                creep.talk('\u{1f528}');
 
                 if (creep.carry.energy == 0) creep.memory.w = 1;
                 else if (creep.carry.energy == creep.carryCapacity) creep.memory.w = 0;
@@ -2471,7 +2471,7 @@ return;
                     continue;
                 }
 
-                creep.talk('remoteHandler');
+                creep.talk('\u{26cf}');
 
                 this.doHarvester(creep, roomName, harvesters);
             }
