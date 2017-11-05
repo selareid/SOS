@@ -387,7 +387,8 @@ module.exports = {
             }
 
             if (flag.room && flag.room.controller.my) {
-                flag.room.createFlag(flag.pos.x - 1, flag.pos.y, 'buildSpawn:' + flag.room.name, COLOR_PURPLE, COLOR_CYAN);
+                flag.room.createFlag(flag.pos.x, flag.pos.y, 'buildSpawn:' + flag.room.name, COLOR_PURPLE, COLOR_CYAN);
+                flag.remove();
                 return {response: 'end'};
             }
 
