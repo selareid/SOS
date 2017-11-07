@@ -2204,20 +2204,20 @@ return;
                         else creep.upgradeController(room.controller);
                     }
                     else {
-                        var structureToBuild = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
-                        if (structureToBuild) {
-                            if (creep.pos.getRangeTo(structureToBuild) > 3) creep.moveWithPath(structureToBuild, {
-                                range: 3,
-                                repath: 0.01,
-                                maxRooms: 1
-                            });
-                            else creep.build(structureToBuild);
-                        }
-                        else {
                             var towerToRefill = this.getTowerToRefill(Memory, room);
                             if (towerToRefill) {
                                 if (creep.pos.isNearTo(towerToRefill)) creep.transfer(towerToRefill, RESOURCE_ENERGY);
                                 else creep.moveWithPath(towerToRefill, {repath: 0.01, maxRooms: 1});
+                            }
+                        else {
+                            var structureToBuild = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
+                            if (structureToBuild) {
+                                if (creep.pos.getRangeTo(structureToBuild) > 3) creep.moveWithPath(structureToBuild, {
+                                    range: 3,
+                                    repath: 0.01,
+                                    maxRooms: 1
+                                });
+                                else creep.build(structureToBuild);
                             }
                             else {
                                 var defenseToRepair = this.findDefence(Memory, room, creep);
@@ -2232,7 +2232,7 @@ return;
                                 else creep.runInSquares();
                             }
                         }
-                    }
+                        }
 
                 }
             }
