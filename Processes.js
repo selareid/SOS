@@ -2509,7 +2509,7 @@ return;
                 this.doHaulers(creep, roomName, nearestRoom);
             }
 
-            if (haulers.length < this.getNumberOfHarvesters(roomName)*2) Memory.haulers.push(module.exports.room.addToSQ(nearestRoom.name, 'haulers'));
+            if (haulers.length < this.getNumberOfHarvesters(roomName)) Memory.haulers.push(module.exports.room.addToSQ(nearestRoom.name, 'haulers'));
         },
 
         getNumberOfHarvesters: function (roomName) {
