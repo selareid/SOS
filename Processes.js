@@ -436,7 +436,7 @@ return;
             var nearestRoom = Game.rooms[Memory.nr];
             if (!nearestRoom) {
                 var newR = _.max(Game.rooms, (r) => {
-                    return r.find(FIND_MY_SPAWNS).length > 0 && Game.map.findRoute(r.name, flag.pos.roomName).length < 11 ? r.energyAvailable : 0;
+                    return r.find(FIND_MY_SPAWNS).length > 0 && Game.map.findRoute(r.name, flag.pos.roomName).length < 11 ? r.energyCapacityAvailable : 0;
                 });
                 Memory.nr = newR ? newR.name : undefined;
                 nearestRoom = Game.rooms[Memory.nr]
