@@ -62,6 +62,7 @@ module.exports = () => {
         while (Memory.p[tag]);
 
         global.Mem.p[tag] = new Process(processType, roomName, oNCreation);
+        console.logKernel('NEW PROCESS ' + tag);
     };
 
     makeid = function ()
