@@ -146,7 +146,7 @@ class Traveler {
      * @returns {RoomMemory|number}
      */
     static checkAvoid(roomName) {
-        return Memory.rooms && Memory.rooms[roomName] && Memory.rooms[roomName].avoid;
+        return Memory.rooms && Memory.rooms[roomName] && (Memory.rooms[roomName].avoid || (Memory.rooms[roomName].scoutData && Memory.rooms[roomName].scoutData.owned == OWNED_ENEMY));
     }
     /**
      * check if a position is an exit
