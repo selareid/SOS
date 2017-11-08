@@ -105,6 +105,7 @@ var Kernel = {
                             if (rsl) {
                                 switch (rsl.response) {
                                     case 'end':
+                                        console.logKernel('KILLED PROCESS ' + processTag);
                                         delete Memory.p[processTag];
                                         break;
                                     case 'idle':
