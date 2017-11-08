@@ -1273,7 +1273,7 @@ return;
         },
 
         getHarvesters: function (room) {
-            if (room.controller.level > 3) return !room.memory.minimal ? room.find(FIND_SOURCES).length : 1;
+            return !room.memory.minimal ? room.find(FIND_SOURCES).length : 1;
         },
 
         harvest: function (Memory, room, creep) {
