@@ -1274,7 +1274,6 @@ return;
 
         getHarvesters: function (room) {
             if (room.controller.level > 3) return !room.memory.minimal ? room.find(FIND_SOURCES).length : 1;
-            else return 4;
         },
 
         harvest: function (Memory, room, creep) {
