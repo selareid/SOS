@@ -588,7 +588,7 @@ return;
                         if (room.terminal && !processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
 
                         var mineral = room.find(FIND_MINERALS)[0];
-                        if (mineral && ((mineral.mineralAmount > 1 || mineral.ticksToRegeneration < 200) && room.getStructures(STRUCTURE_EXTRACTOR).length > 0 && !processExists('mine', Memory.rmN))) spawnNewProcess('mine', Memory.rmN);
+                        if (mineral && ((mineral.mineralAmount > 1 || mineral.ticksToRegeneration < 200) && !processExists('mine', Memory.rmN))) spawnNewProcess('mine', Memory.rmN);
                     }
 
                     if (!processExists('doHarvest', Memory.rmN)) spawnNewProcess('doHarvest', Memory.rmN);
