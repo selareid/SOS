@@ -1121,7 +1121,7 @@ return;
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room || !room.storage || !room.terminal || room.controller.level < 8) return {response: 'end'};
+            if (!room || !room.storage || !room.terminal) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
             if (!global.Mem.market) global.Mem.market = {};
 
