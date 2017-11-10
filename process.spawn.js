@@ -5,6 +5,8 @@ var sortedParts = function (body) {
     return _(body).sortBy(function (part) {
         if (part === TOUGH)
             return 0;
+        else if (part === MOVE)
+            return 1;
         else if (part === HEAL)
             return BODYPARTS_ALL.length;
         else

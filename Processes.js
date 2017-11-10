@@ -2519,10 +2519,40 @@ return;
             }
 
             if (haulers.length < this.getNumberOfHarvesters(roomName)) Memory.haulers.push(module.exports.room.addToSQ(nearestRoom.name, 'haulers'));
+
+
+            //guards
+            if (!Memory.guards) Memory.guards = [];
+
+            var guards = Memory.guards;
+
+            for (var creepName_it in guards) {
+                if (typeof guards[creepName_it] == 'number') guards[creepName_it] = guards[creepName_it].toString();
+
+                var creep = getCreep(guards[creepName_it].split(':')[0], 'remoteHandler');
+                if (creep == 'dead') {
+                    creep = undefined;
+                }
+
+                if (!creep) {
+                    if (!nearestRoom.memory.spawnQueue[guards[creepName_it]]) guards.splice(creepName_it, 1);
+                    continue;
+                }
+
+                creep.talk('remoteHandler');
+
+                this.doGuards(creep, roomName);
+            }
+    
+            if (guards.length < this.getNumberOfGuards(roomName) || reservers[0].ticksToLive < 200) Memory.guards.push(module.exports.room.addToSQ(nearestRoom.name, 'guards'));
         },
 
         getNumberOfHarvesters: function (roomName) {
             return Game.rooms[roomName] ? Game.rooms[roomName].find(FIND_SOURCES).length : 1;
+        },
+
+        getNumberOfGuards: function (roomName) {
+            return Game.rooms[roomName] ? Game.rooms[roomName].getStructures(STRUCTURE_KEEPER_LAIR).length > 0 ? 2 : 0 : 0;
         },
 
         doReserver: function (creep, roomName) {
@@ -2532,6 +2562,33 @@ return;
                     if (!room.controller.reservation || room.controller.reservation.ticksToEnd < CONTROLLER_RESERVE_MAX-(CONTROLLER_RESERVE*3)) creep.reserveController(room.controller);
                 }
                 else creep.moveWithPath(room.controller);
+            }
+            else creep.travelTo(new RoomPosition(21, 21, roomName), {range: 21, repath: 0.01})
+        },
+
+        doGuards: function (creep, roomName) {
+            var room = Game.rooms[roomName];
+            if (creep.pos.roomName == roomName) {
+                if (creep.hits < creep.hitsMax) creep.heal(creep);
+
+                var hostile = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())});
+
+                if (hostile) {
+                    if (creep.pos.isNearTo(hostile.pos)) {
+                        creep.attack(hostile);
+                        creep.move(creep.pos.getDirectionTo(hostile.pos));
+                    }
+                    else {
+                        creep.moveTo(hostile, {repath: 2});
+                    }
+
+                    if (creep.pos.getRangeTo(hostile.pos) < 3) creep.rangedAttack(hostile);
+                }
+                else {
+                    var lair = _.min(room.getStructures(STRUCTURE_KEEPER_LAIR), (kl) => kl.ticksToSpawn);
+
+                    if (lair && !creep.pos.isNearTo(lair.pos)) creep.travelTo(lair);
+                }
             }
             else creep.travelTo(new RoomPosition(21, 21, roomName), {range: 21, repath: 0.01})
         },
