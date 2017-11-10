@@ -14,6 +14,7 @@ var Kernel = {
             if (SegMemory.getSegment('alliesControllerSigns') == SegMemory.ERR_INVALID_ARGS) SegMemory.setActive('alliesControllerSigns');
             else {
                 segment0 = SegMemory.getSegment('alliesControllerSigns');
+                SegMemory.setCrucial("alliesControllerSigns");
             }
             global.allies = segment0 && segment0.allies ? segment0.allies : [];
             global.controllerSigns = segment0 && segment0.controllerSigns ? segment0.controllerSigns : [];
