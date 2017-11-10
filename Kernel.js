@@ -9,13 +9,14 @@ var Kernel = {
 
         SegMemory.init();
 
-        if (!global.allies || !global.controllerSigns) {
+        if (!global.allies || global.allies.length < 1 || !global.controllerSigns || global.controllerSigns.length < 1) {
             var segment0;
-            if (SegMemory.getSegment('alliesControllerSigns') == SegMemory.ERR_INVALID_ARGS) SegMemory.setActive('alliesControllerSigns');
+            if (SegMemory.getSegment('alliesControllerSigns') == SegMemory.ERR_NOT_ACTIVE) SegMemory.setActive('alliesControllerSigns');
             else {
                 segment0 = SegMemory.getSegment('alliesControllerSigns');
                 SegMemory.setCrucial("alliesControllerSigns");
             }
+
             global.allies = segment0 && segment0.allies ? segment0.allies : [];
             global.controllerSigns = segment0 && segment0.controllerSigns ? segment0.controllerSigns : [];
         }
