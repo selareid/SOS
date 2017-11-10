@@ -2094,13 +2094,21 @@ return;
                 return 10;
             }
             else {
-                if (room.controller.level < 8) {
+                if (room.controller.level < 6) {
                     var storage = room.storage;
 
                     if (!storage) return 1;
 
                     var terminalEnergy = room.terminal && room.terminal.store ? room.terminal.store[RESOURCE_ENERGY] : 0;
-                    return Math.floor(((storage.store.energy + terminalEnergy) - 20000) / 20000) > 1 ? Math.min(Math.floor(((storage.store.energy + terminalEnergy) - 20000) / 20000), 3) : 1;
+                    return Math.floor(((storage.store.energy + terminalEnergy) - 20000) / 20000) > 1 ? Math.min(Math.floor(((storage.store.energy + terminalEnergy) - 20000) / 20000), 7) : 1;
+                }
+                else if (room.controller.level < 8) {
+                    var storage = room.storage;
+
+                    if (!storage) return 1;
+
+                    var terminalEnergy = room.terminal && room.terminal.store ? room.terminal.store[RESOURCE_ENERGY] : 0;
+                    return Math.floor(((storage.store.energy + terminalEnergy) - 20000) / 20000) > 1 ? Math.min(Math.floor(((storage.store.energy + terminalEnergy) - 20000) / 20000), 2) : 1;
                 }
                 else return room.controller.ticksToDowngrade <= CONTROLLER_DOWNGRADE[room.controller.level]*0.5 ? 1 : 0;
             }
