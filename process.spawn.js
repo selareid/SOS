@@ -1,5 +1,18 @@
 module.exports = {run: spawn, canAfford: canAfford, reCalcBody: reCalcBody};
 
+var sortedParts = function (body) {
+    if (body == undefined) return undefined;
+    return _(body).sortBy(function (part) {
+        if (part === TOUGH)
+            return 0;
+        else if (part === HEAL)
+            return BODYPARTS_ALL.length;
+        else
+            return _.random(1, BODYPARTS_ALL.length - 1);
+    })
+        .value();
+};
+
 function getBodyCost(body) {
     var cost = 0;
     _.forEach(body, (s) => cost+=BODYPART_COST[s]);
@@ -26,6 +39,8 @@ function spawn(room, looped = [], single = [], defMaxParts) {
     }
 
     var cost = costs.single+(numberOfParts*costs.looped);
+
+    body = sortedParts(body);
 
     return {body, cost};
 }
@@ -78,6 +93,8 @@ function reCalcBody(energy, looped = [], single = [], defMaxParts) {
     }
 
     var cost = costs.single + (numberOfParts * costs.looped);
+
+    body = sortedParts(body);
 
     return {body, cost};
 }
