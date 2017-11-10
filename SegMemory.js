@@ -3,7 +3,7 @@ SEGMEMORY_INTER_TICK_GLOBAL.loadedDataCache = {};
 SEGMEMORY_INTER_TICK_GLOBAL.crucialData = {};
 
 global.CONST_MEMORY_SEGMENT_MAX_SIZE = 102399;
-segMem = class SegMemory {
+var segMem = class SegMemory {
 
     static get CONFIG_DEFAULTS() {
         return {
@@ -514,4 +514,5 @@ segMem = class SegMemory {
     }
 }
 
+SegMemory = segMem;
 module.exports = segMem;
