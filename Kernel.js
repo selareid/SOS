@@ -1,3 +1,4 @@
+const SegMemory = require('SegMemory');
 const Processes = require('Processes');
 
 const lowBucketAmount = 5000;
@@ -7,7 +8,17 @@ var Kernel = {
     startup: function () {
         console.log("<p style=\"display:inline; color: #00ed1b\">" + '[Initializing Kernel]' + "</p>");
 
-        if (!global.stats) global.stats = {rooms: {}};
+        SegMemory.init();
+
+        if (!global.allies || !global.controllerSigns) {
+            var segment0;
+            if (SegMemory.getSegment('alliesControllerSigns') == SegMemory.ERR_INVALID_ARGS) SegMemory.setActive('alliesControllerSigns');
+            else {
+                segment0 = SegMemory.getSegment('alliesControllerSigns');
+            }
+            global.allies = segment0 && segment0.allies ? segment0.allies : [];
+            global.controllerSigns = segment0 && segment0.controllerSigns ? segment0.controllerSigns : [];
+        }
 
         global.Mem = Memory;
         global.processesRun = 0;
@@ -18,18 +29,30 @@ var Kernel = {
 
     shutdown: function () {
         if (Game.time % 101 == 0) Memory.market = {};
-        
-        if (Game.cpu.limit >= 10) {
-            if (global.stats.cpu) {
-                global.stats.cpu.processUse = _.clone(global.processCost);
-                global.stats.cpu.getUsed = _.clone(Game.cpu.getUsed());
-            }
 
-            if (isUndefinedOrNull(RawMemory.segments[1])) RawMemory.setActiveSegments([0, 1]);
-            else if (global.stats) {
-                RawMemory.segments[1] = JSON.stringify(global.stats);
+        // if (Game.cpu.limit >= 10) {
+        //     if (global.stats.cpu) {
+        //         global.stats.cpu.processUse = _.clone(global.processCost);
+        //         global.stats.cpu.getUsed = _.clone(Game.cpu.getUsed());
+        //     }
+        //
+        //     if (isUndefinedOrNull(RawMemory.segments[1])) RawMemory.setActiveSegments([0, 1]);
+        //     else if (global.stats) {
+        //         RawMemory.segments[1] = JSON.stringify(global.stats);
+        //     }
+        // }
+
+        var toEnable = SegMemory.endTick();
+        var activeSegments = SegMemory.endTick();// Creates a list of segments that should be active/set
+        if(activeSegments.rawMemorySegmentData){
+            for(var data in RawMemory.segments){
+                delete RawMemory.segments[data];
+            }
+            for(var data in activeSegments.rawMemorySegmentData){
+                RawMemory.segments[data] = activeSegments.rawMemorySegmentData[data];
             }
         }
+        RawMemory.setActiveSegments(activeSegments.nextEnabled);
     },
 
     run: function () {
