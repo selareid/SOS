@@ -621,10 +621,10 @@ return;
             
             // if (Game.cpu.bucket > 5000) this.doStats(room);
             
-            if (room.controller.level < 8 && room.terminal && room.terminal.store.energy < 50000) {
-                if (!global.needsEnergy) global.needsEnergy = {};
-                global.needsEnergy[room.name] = 50000-room.terminal.store.energy;
-            }
+//             if (room.controller.level < 8 && room.terminal && room.terminal.store.energy < 50000) {
+//                 if (!global.needsEnergy) global.needsEnergy = {};
+//                 global.needsEnergy[room.name] = 50000-room.terminal.store.energy;
+//             }
         },
 
         addToSQ: function (roomName, process, creepMem = {}) {
@@ -1131,26 +1131,26 @@ return;
             };
             else if (room.terminal.cooldown) return {response: 'idle', time: Game.time + room.terminal.cooldown};
             
-            if (_.size(global.needsEnergy) > 0) {
-                if (room.terminal.store[RESOURCE_ENERGY] < 50000) return {response: 'idle', time: Game.time + (1 - (room.terminal.store[RESOURCE_ENERGY] / 50000)) * 10000}; 
+//             if (_.size(global.needsEnergy) > 0) {
+//                 if (room.terminal.store[RESOURCE_ENERGY] < 50000) return {response: 'idle', time: Game.time + (1 - (room.terminal.store[RESOURCE_ENERGY] / 50000)) * 10000}; 
                 
-                var toSend;
+//                 var toSend;
                 
-                for (let roomPotential in global.needsEnergy) {
-                    toSend = roomPotential;
-                }
+//                 for (let roomPotential in global.needsEnergy) {
+//                     toSend = roomPotential;
+//                 }
                 
                 
-                var transCost = Game.market.calcTransactionCost(1, room.name, toSend);
-                var amountToSend = Math.round((room.terminal.store.energy / 3) / transCost) > room.terminal.store.energy ? room.terminal.store.energy : Math.round((room.terminal.store.energy / 3) / transCost);
+//                 var transCost = Game.market.calcTransactionCost(1, room.name, toSend);
+//                 var amountToSend = Math.round((room.terminal.store.energy / 3) / transCost) > room.terminal.store.energy ? room.terminal.store.energy : Math.round((room.terminal.store.energy / 3) / transCost);
                 
-                if (amountToSend) {
-                    var rsl = room.terminal.send(RESOURCE_ENERGY, amountToSend, toSend, 'Get To RCL 8 Faster!');
-                    console.terminalLog(room, 'Sent excess energy to room ' + toSend + ' Amount ' + amountToSend + ' Result ' + rsl);
-                    Memory.lastDid = Game.time;
-                }
-                return {response: 'idle', time: Game.time + 4};
-            }
+//                 if (amountToSend) {
+//                     var rsl = room.terminal.send(RESOURCE_ENERGY, amountToSend, toSend, 'Get To RCL 8 Faster!');
+//                     console.terminalLog(room, 'Sent excess energy to room ' + toSend + ' Amount ' + amountToSend + ' Result ' + rsl);
+//                     Memory.lastDid = Game.time;
+//                 }
+//                 return {response: 'idle', time: Game.time + 4};
+//             }
             
             (() => {
                 for (var orderIndex in global.Mem.market) {
