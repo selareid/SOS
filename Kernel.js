@@ -1,4 +1,3 @@
-const SegMemory = require('SegMemory');
 const Processes = require('Processes');
 
 const lowBucketAmount = 5000;

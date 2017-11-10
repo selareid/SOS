@@ -3,7 +3,7 @@ SEGMEMORY_INTER_TICK_GLOBAL.loadedDataCache = {};
 SEGMEMORY_INTER_TICK_GLOBAL.crucialData = {};
 
 global.CONST_MEMORY_SEGMENT_MAX_SIZE = 102399;
-var segMem = class SegMemory {
+segMem = class SegMemory {
 
     static get CONFIG_DEFAULTS() {
         return {
