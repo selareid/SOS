@@ -17,7 +17,7 @@ var Kernel = {
     },
 
     shutdown: function () {
-        if (Game.time % 13 == 0) Memory.market = {};
+        if (Game.time % 101 == 0) Memory.market = {};
         
         if (Game.cpu.limit >= 10) {
             if (global.stats.cpu) {
