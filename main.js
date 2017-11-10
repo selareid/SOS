@@ -25,21 +25,6 @@ module.exports.run = () => {
         global.controllerSigns = segment0 && segment0.controllerSigns ? segment0.controllerSigns : [];
     }
 
-    if (Game.shard.name == 'shard0' && RawMemory.interShardSegment == "gimme") {
-        var otherCreep = Game.creeps[Memory.otherCreep];
-
-        if (!otherCreep && !Game.spawns['Spawn2'].spawning && Game.spawns['Spawn2'].room.energyAvailable >= 2400) {
-            Memory.otherCreep = 'otherCreep' + Game.time;
-            Game.spawns['Spawn2'].spawnCreep([MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY,MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY], Memory.otherCreep);
-        }
-        else if (otherCreep) {
-            otherCreep.memory.l = Game.time;
-            otherCreep.memory.p = 'insanity';
-            otherCreep.travelTo(new RoomPosition(24, 37, 'E70S40'), {range: 0});
-        }
-    }
-    else if (Game.shard.name == 'shard1') RawMemory.interShardSegment = "stop!";
-
     console.logTickStart();
 
 
