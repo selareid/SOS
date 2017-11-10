@@ -923,7 +923,7 @@ return;
             var amountToBuild = 100 - _.size(Game.constructionSites);
 
             for (let structureType in this.buildings) {
-                if (structureType != STRUCTURE_EXTENSION && room.controller.level < 5) continue;
+                if ((structureType != STRUCTURE_EXTENSION && room.controller.level < 5) || (structureType == STRUCTURE_LINK && room.controller.level < 7)) continue;
                 
                 for (let posXYRAW of this.buildings[structureType]) {
                     let posXY = {x: flag.pos.x+posXYRAW.x, y: flag.pos.y+posXYRAW.y};
