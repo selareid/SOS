@@ -2572,7 +2572,7 @@ return;
                 this.doMiners(creep, roomName);
             }
 
-            if ((Game.rooms[roomName] && Game.rooms[roomName].getStructures(STRUCTURE_EXTRACTOR).length > 0) && (miners.length < Game.rooms[roomName].getStructures(STRUCTURE_EXTRACTOR).length || reservers[0].ticksToLive < 200)) Memory.miners.push(module.exports.room.addToSQ(nearestRoom.name, 'miners'));
+            if ((Game.rooms[roomName] && Game.rooms[roomName].getStructures(STRUCTURE_EXTRACTOR).length > 0) && (miners.length < Game.rooms[roomName].getStructures(STRUCTURE_EXTRACTOR).length || (reservers[0] && reservers[0].ticksToLive < 200))) Memory.miners.push(module.exports.room.addToSQ(nearestRoom.name, 'miners'));
         },
 
         getNumberOfHarvesters: function (roomName) {
