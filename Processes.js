@@ -2544,7 +2544,7 @@ return;
                 this.doGuards(creep, roomName);
             }
     
-            if (guards.length < this.getNumberOfGuards(roomName) || reservers[0].ticksToLive < 200) Memory.guards.push(module.exports.room.addToSQ(nearestRoom.name, 'guards'));
+            if (guards.length < this.getNumberOfGuards(roomName) || (guards[0] && guards[0].ticksToLive < 200)) Memory.guards.push(module.exports.room.addToSQ(nearestRoom.name, 'guards'));
 
 
             //miner
