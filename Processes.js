@@ -2600,7 +2600,7 @@ return;
                 var mineral = room.find(FIND_MINERALS)[0];
                 var extractor = Game.rooms[roomName].getStructures(STRUCTURE_EXTRACTOR)[0];
 
-                if (mineral && extractor) {
+                if (mineral && extractor && mineral.pos.findInRange(FIND_HOSTILE_CREEPS).length < 1) {
                     if (creep.pos.isNearTo(mineral)) { if (!extractor.cooldown) creep.harvest(mineral);}
                     else creep.moveWithPath(mineral);
                 }
@@ -2641,6 +2641,8 @@ return;
                 var source = Game.getObjectById(creep.memory.src);
 
                 if (source) {
+                    if (source.pos.findInRange(FIND_HOSTILE_CREEPS).length > 0) return;
+
                     if (!creep.pos.isNearTo(source)) creep.moveWithPath(source, {repath: 0.01, maxRooms: 1});
                     else if (source.energy) creep.harvest(source)
                 }
