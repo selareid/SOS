@@ -37,10 +37,12 @@ const defaultBodyChart = {
     stealEnergy: [[CARRY, MOVE, MOVE], []],
     healer: [[MOVE, HEAL], []],
     crusher: [[MOVE, ATTACK], []],
+    guards: [[MOVE, MOVE, MOVE, ATTACK, RANGED_ATTACK, HEAL], []],
     defendRoom: [[MOVE, ATTACK], []],
     reserver: [[CLAIM, MOVE, MOVE], [], 3],
     harvesters: [[WORK, CARRY, MOVE, MOVE], [], 6],
-    haulers: [[CARRY, CARRY, MOVE, MOVE], []]
+    haulers: [[CARRY, CARRY, MOVE, MOVE], []],
+    miners: [[WORK, MOVE], [CARRY, MOVE]]
 };
 
 function getBodyChart(room) {
