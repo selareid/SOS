@@ -2466,7 +2466,7 @@ return;
                 this.doReserver(creep, roomName);
             }
 
-            if ((reservers.length < 1 || reservers[0].ticksToLive) < 100 && nearestRoom.energyCapacityAvailable >= 600) Memory.reservers.push(module.exports.room.addToSQ(nearestRoom.name, 'reserver'));
+            if ((Game.rooms[roomName] && Game.rooms[roomName].controller) && (reservers.length < 1 || reservers[0].ticksToLive) < 100 && nearestRoom.energyCapacityAvailable >= 600) Memory.reservers.push(module.exports.room.addToSQ(nearestRoom.name, 'reserver'));
 
 
             //harvesters
@@ -2545,6 +2545,32 @@ return;
             }
     
             if (guards.length < this.getNumberOfGuards(roomName) || reservers[0].ticksToLive < 200) Memory.guards.push(module.exports.room.addToSQ(nearestRoom.name, 'guards'));
+
+
+            //miner
+            if (!Memory.miners) Memory.miners = [];
+
+            var miners = Memory.miners;
+
+            for (var creepName_it in miners) {
+                if (typeof miners[creepName_it] == 'number') miners[creepName_it] = miners[creepName_it].toString();
+
+                var creep = getCreep(miners[creepName_it].split(':')[0], 'remoteHandler');
+                if (creep == 'dead') {
+                    creep = undefined;
+                }
+
+                if (!creep) {
+                    if (!nearestRoom.memory.spawnQueue[miners[creepName_it]]) miners.splice(creepName_it, 1);
+                    continue;
+                }
+
+                creep.talk('remoteHandler');
+
+                this.doMiners(creep, roomName);
+            }
+
+            if ((Game.rooms[roomName] && Game.rooms[roomName].getStructures(STRUCTURE_EXTRACTOR).length > 0) && (miners.length < Game.rooms[roomName].getStructures(STRUCTURE_EXTRACTOR).length || reservers[0].ticksToLive < 200)) Memory.miners.push(module.exports.room.addToSQ(nearestRoom.name, 'miners'));
         },
 
         getNumberOfHarvesters: function (roomName) {
@@ -2562,6 +2588,20 @@ return;
                     if (!room.controller.reservation || room.controller.reservation.ticksToEnd < CONTROLLER_RESERVE_MAX-(CONTROLLER_RESERVE*3)) creep.reserveController(room.controller);
                 }
                 else creep.moveWithPath(room.controller);
+            }
+            else creep.travelTo(new RoomPosition(21, 21, roomName), {range: 21, repath: 0.01})
+        },
+
+        doMiners: function (creep, roomName) {
+            var room = Game.rooms[roomName];
+            if (creep.pos.roomName == roomName) {
+                var mineral = room.find(FIND_MINERALS)[0];
+                var extractor = Game.rooms[roomName].getStructures(STRUCTURE_EXTRACTOR)[0];
+
+                if (mineral && extractor) {
+                    if (creep.pos.isNearTo(mineral)) { if (!extractor.cooldown) creep.harvest(mineral);}
+                    else creep.moveWithPath(mineral);
+                }
             }
             else creep.travelTo(new RoomPosition(21, 21, roomName), {range: 21, repath: 0.01})
         },
