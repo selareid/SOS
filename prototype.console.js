@@ -14,7 +14,7 @@ module.exports = () => {
             console.log(`Invalid parameter to roomLink console function: ${roomArg} of type ${typeof roomArg}`);
         }
         text = text || (id ? roomArg : roomName);
-        return `<a style="color: #c49e4c" href="#!/room/${Game.shards.name}/${roomName}" ${select && id ? `onclick="angular.element('body').injector().get('RoomViewPendingSelector').set('${id}')"` : ``}>${text}</a>`;
+        return `<a style="color: #c49e4c" href="#!/room/${Game.shard.name}/${roomName}" ${select && id ? `onclick="angular.element('body').injector().get('RoomViewPendingSelector').set('${id}')"` : ``}>${text}</a>`;
     };
 
     errorString = "[" + "<p style=\"display:inline; color: #ed4543\">ERROR</p>" + "] ";
