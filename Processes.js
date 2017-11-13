@@ -26,7 +26,7 @@ const defaultBodyChart = {
     minimalist: [[WORK, MOVE, MOVE, CARRY, CARRY], []],
     doHarvest: [[WORK, MOVE, MOVE, CARRY], [], 6],
     praiseRC: [[WORK, CARRY, MOVE], []],
-    mine: [[WORK, CARRY, MOVE, MOVE], []],
+    mine: [[WORK, MOVE], [CARRY, MOVE]],
     strgDistr: [[CARRY], [MOVE], 16],
     fillSpawn: [[CARRY, CARRY, MOVE], [], 6],
     fillExt: [[CARRY, CARRY, MOVE], [], 8],
