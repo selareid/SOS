@@ -1115,6 +1115,87 @@ return;
 
         }
     },
+
+    doLabs: {
+        labPositions: [{"x": 1, "y": 0}, {"x": 2, "y": 0}, {"x": 0, "y": 1}, {"x": 3, "y": 1}, {"x": 0, "y": 2}, {"x": 3, "y": 2}, {"x": 1, "y": 3}, {"x": 2, "y": 3}],
+
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            var room = Game.rooms[Memory.rmN];
+            if (!room || !room.storage || !room.terminal || room.controller.level < 6) return {response: 'end'};
+
+            var flag = Game.flags[Memory.flags];
+
+            if (!flag) return this.placeFlag(room);
+
+            var lab1 = _.filter(room.getPositionAt(flag.pos.x+2, flag.pos.y+1).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_LAB);
+            var lab2 = _.filter(room.getPositionAt(flag.pos.x+1, flag.pos.y+2).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_LAB);
+
+            if (!lab1 || !lab2) {
+                // TODO TODO TODO
+                // Place labs 1, 2, and 3 and then sleep
+            }
+
+            //placing labs every now and then and also on controller change
+
+            //compound choosing based on mineral in the room
+
+
+
+            // creep stuff
+
+            //filling labs
+            //emptying labs
+            //resetting labs
+
+            // creep stuff
+
+        },
+
+        placeFlag: function (room) {
+            const freeRange = 5;
+            var bestPos;
+
+            for (let x = 1; x < 49; x++) {
+                for (let y = 1; y < 49; y++) {
+                    let structures = _.filter(room.lookForAtArea(LOOK_STRUCTURES, y, x, y + freeRange, x + freeRange, true), (s) => s.structureType != STRUCTURE_ROAD);
+                    if (structures.length > 0) continue;
+
+                    let flags = room.lookForAtArea(LOOK_FLAGS, y, x, y + freeRange, x + freeRange, true);
+                    if (flags.length > 0) continue;
+
+                    let terrain = _.filter(room.lookForAtArea(LOOK_TERRAIN, y, x, y + freeRange, x + freeRange, true), (p) => p.type == 'terrain' && p.terrain == 'wall');
+                    if (terrain.length > 0) continue;
+
+                    let goodPos = new RoomPosition(x, y, room.name);
+
+                    let distToStr = room.findPath(goodPos, room.storage.pos, {ignoreCreeps: true, ignoreRoads: true, maxRooms: 1}).length;
+
+                    if (!bestPos) {
+                        bestPos = {
+                            x: goodPos.x,
+                            y: goodPos.y,
+                            s: distToStr
+                        }
+                    }
+
+                    if (bestPos.s > distToStr) {
+                        bestPos = {
+
+                            x: goodPos.x,
+                            y: goodPos.y,
+                            s: distToStr
+                        }
+                    }
+                }
+            }
+
+            room.createFlag(bestPos.x, bestPos.y, 'labFlag:' + room.name, COLOR_YELLOW, COLOR_ORANGE);
+
+            console.notify('Places lab flag,\nROOM: ' + room.name + '\nAt Position: ' + bestPos.x + ' ' + bestPos.y);
+        }
+    },
     
     doTerminal: {
         maxCreditLoss: 5000,
