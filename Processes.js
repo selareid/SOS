@@ -1177,15 +1177,66 @@ return;
             }
 
 
+            var creeps = Memory.crps ? Memory.crps : undefined;
+            if (!creeps) Memory.crps = []; creeps = Memory.crps;
 
-            // creep stuff
 
-            //filling labs
-            //emptying labs
-            //resetting labs
+            if (creeps.length > 0) {
+                //creep loop
+                for (let creep_it_it in creeps) {
+                    if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
+                    let creep = getCreep(creeps[creep_it_it].split(':')[0], 'doLabs');
+                    if (creep == 'dead') {
+                        creep = undefined;
+                    }
 
-            // creep stuff
+                    if (!creep) {
+                        if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
+                        continue;
+                    }
+                    else if (creep.spawning) continue;
 
+                    creep.talk('doLabs');
+
+                    switch (Memory.state) {
+                        case 'fill':
+                            //TODO
+                            break;
+                        case 'empty':
+                            //TODO
+                            break;
+                        case 'react':
+                            creep.suicide();
+                            break;
+                        default: // reset
+                            //TODO
+                    }
+                }
+            }
+
+            //get more creeps
+            if (Memory.state != 'react' && creeps.length < 1) Memory.crps.push(module.exports.room.addToSQ(room.name, 'doLabs'));
+
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
+            //TODO REACTING
         },
 
         placeStrucs: function (room, flag) {
