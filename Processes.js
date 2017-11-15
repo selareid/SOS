@@ -570,7 +570,12 @@ return;
 
             if (!global[room.name].distrSquareFlag) global[room.name].distrSquareFlag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0];
 
-            if (Game.time % 3 == 0 && room.find(FIND_HOSTILE_CREEPS).length > 0 && room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())}).length > 0
+            if (Game.time % 3 == 0
+                && (
+                        (room.find(FIND_HOSTILE_CREEPS).length > 0 && room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())}).length > 0)
+                        ||
+                        (room.find(FIND_CREEPS, {filter: (c) => c.hits < c.hitsMax && (c.my || global.allies.includes(c.owner.username.toLowerCase()))}).length > 0)
+                    )
                 && !processExists('doTowers', Memory.rmN)) spawnNewProcess('doTowers', Memory.rmN);
 
             if (room.memory.type == 'jump') {
@@ -704,30 +709,45 @@ return;
     },
 
     doTowers: {
+        killIdiot: function (tower, idiot) {
+            if (!tower || !idiot || tower.energy == 0) return;
+            tower.attack(idiot);
+        },
+
+        healIdiot: function (tower, idiot) {
+            if (!tower || !idiot || tower.energy == 0) return;
+            tower.heal(idiot);
+        },
+
         run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room || room.find(FIND_HOSTILE_CREEPS).length < 1) {
+
+            var baddies = room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())});
+
+            var toHeal = room.find(FIND_CREEPS, {filter: (c) => c.hits < c.hitsMax && (c.my || global.allies.includes(c.owner.username.toLowerCase()))});
+
+            if (!room || (baddies.length < 1 && toHeal.length < 1)) {
                 if (Memory.counter >= 7) return {response: 'end'};
                 else return Memory.counter = Memory.counter+1 || 1;
             }
+
             if (!global[room.name]) global[room.name] = {};
             if (room.getStructures(STRUCTURE_TOWER).length < 1) return {response: 'end'};
 
-            var baddies = room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())});
-            if (baddies.length < 1) return {response: 'end'};
+            if (baddies) {
+                _.forEach(room.getStructures(STRUCTURE_TOWER), (tower) => {
+                    this.killIdiot(tower, tower.pos.findClosestByRange(baddies));
+                });
 
-            StructureTower.prototype.killIdiot = function (idiot) {
-                if (!idiot || this.energy == 0) return;
-                this.attack(idiot);
-            };
-
-            _.forEach(room.getStructures(STRUCTURE_TOWER), (tower) => {
-                tower.killIdiot(tower.pos.findClosestByRange(baddies));
-            });
-
-            if (!processExists('defendRoom', Memory.rmN) && _.filter(baddies, (c) => c.hasActiveBodyparts(HEAL)).length > 0) spawnNewProcess('defendRoom', Memory.rmN);
+                if (!processExists('defendRoom', Memory.rmN) && _.filter(baddies, (c) => c.hasActiveBodyparts(HEAL)).length > 0) spawnNewProcess('defendRoom', Memory.rmN);
+            }
+            else if (toHeal) {
+                _.forEach(room.getStructures(STRUCTURE_TOWER), (tower) => {
+                    this.healIdiot(tower, tower.pos.findClosestByRange(toHeal));
+                });
+            }
         }
     },
 
