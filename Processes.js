@@ -1168,6 +1168,8 @@ return;
             if (!Memory.mineral1 || !Memory.mineral2) {
                 var newMinerals = this.choosingCompound(room);
 
+                if (!newMinerals[1] || !newMinerals[2]) return {response: 'idle', time: Game.time + 301};
+
                 Memory.mineral1 = newMinerals[1];
                 Memory.mineral2 = newMinerals[2];
 
