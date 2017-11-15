@@ -1153,13 +1153,26 @@ return;
             var lab2 = _.filter(room.getPositionAt(flag.pos.x+1, flag.pos.y+2).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_LAB);
 
             if (!lab1 || !lab2) {
-                // TODO TODO TODO
-                // Place labs 1, 2, and 3 and then sleep
+                var rsl1 = room.createConstructionSite(room.getPositionAt(flag.pos.x+2, flag.pos.y+1));
+                var rsl2 = room.createConstructionSite(room.getPositionAt(flag.pos.x+1, flag.pos.y+2));
+
+                if (rsl1 == OK && rsl2 == OK) return {response: 'idle', time: Game.time + 1001};
+                    else return {response: 'idle', time: Game.time + 7};
             }
 
-            //placing labs every now and then and also on controller change
+            if (Game.time % 1201 == 0 || !Memory.lastLevel || Memory.lastLevel != room.controller.level) {
+                Memory.lastLevel = room.controller.level;
+                this.placeStrucs(room, flag);
+            }
 
-            //compound choosing based on mineral in the room
+            if (!Memory.mineral1 || !Memory.mineral2) {
+                var newMinerals = this.choosingCompound(room);
+
+                Memory.mineral1 = newMinerals[1];
+                Memory.mineral2 = newMinerals[2];
+
+                Memory.state = 'reset';
+            }
 
 
 
@@ -1171,6 +1184,30 @@ return;
 
             // creep stuff
 
+        },
+
+        placeStrucs: function (room, flag) {
+            for (let pos of this.labPositions) {
+                if (_.size(Game.constructionSites) < 100
+                    && CONTROLLER_STRUCTURES[STRUCTURE_LAB][room.controller.level] > room.getStructures(STRUCTURE_LAB).length) {
+                    let strucPos = new RoomPosition(flag.pos.x + pos.x, flag.pos.y + pos.y, room.name);
+                    let lookAt = strucPos.lookFor(LOOK_STRUCTURES);
+
+                    if (!_.filter(lookAt, (s) => s.structureType == STRUCTURE_LAB)[0]) room.createConstructionSite(strucPos.x, strucPos.y, STRUCTURE_LAB);
+                }
+            }
+        },
+
+        choosingCompound: function (room) {
+            var mineral = room.find(FIND_MINERALS);
+
+            var chosen;
+
+            for (let mineral2Type in REACTIONS[mineral.mineralType]) {
+                if (room.storage.store[mineral2Type] > 1000) chosen = mineral2Type;
+            }
+
+            return !chosen ? undefined : [mineral.mineralType, chosen];
         },
 
         placeFlag: function (room) {
