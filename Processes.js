@@ -282,7 +282,7 @@ module.exports = {
                     if (!healer.pos.isNearTo(crusher)) healer.moveTo(crusher, {reusePath: 2});
                     else {
                         if (crusher.pos.roomName != flag.pos.roomName) {
-                            crusher.travelTo(flag, {range: 23, repath: 0.01});
+                            crusher.travelTo(flag.r, {range: 15, repath: 0.01});
                             healer.move(healer.pos.getDirectionTo(crusher.pos));
                             healer.heal(crusher);
                         }
