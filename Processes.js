@@ -317,7 +317,7 @@ module.exports = {
                                     }
                                 }
 
-                                Memory.target = newTarget ? Memory.target.id : undefined;
+                                Memory.target = newTarget ? newTarget.id : undefined;
                                 target = newTarget;
 
                                 if (!target) Memory.complete = true;
