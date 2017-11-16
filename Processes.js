@@ -296,7 +296,6 @@ module.exports = {
                             if (!target) {
                                 var newTarget = crusher.pos.findClosestByPath(crusher.room.getStructures(STRUCTURE_TOWER));
                                 if (!newTarget) newTarget = crusher.pos.findClosestByPath(FIND_HOSTILE_SPAWNS);
-                                if (!newTarget) newTarget = crusher.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES);
                                 if (!newTarget) newTarget = crusher.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
 
                                 if (!newTarget) {
@@ -324,11 +323,7 @@ module.exports = {
                             }
 
                             if (crusher.pos.isNearTo(target)) crusher.attack(target);
-                            else {
-                                if (crusher.moveTo(target, {reUsePath: 1, ignoreCreeps: true, ignoreRoads: true, swampCost: 1}) == ERR_NO_PATH) {
-                                    crusher.attack(crusher.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_WALL}));
-                                }
-                            }
+                            else crusher.moveTo(target, {maxRooms: 1, reUsePath: 1, ignoreCreeps: true, ignoreRoads: true, swampCost: 1});
                         }
                     }
                 }
