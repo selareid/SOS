@@ -1368,7 +1368,10 @@ return;
                 for (var orderIndex in global.Mem.market) {
                     var order = Game.market.getOrderById(global.Mem.market[orderIndex]);
                     
-                    if (!order || order.amount < 10) continue;
+                    if (!order || order.amount < 10) {
+                        delete global.Mem.market[orderIndex];
+                        continue;
+                    }
                     
                     if (order.resourceType == RESOURCE_POWER && room.storage.store[RESOURCE_POWER] >= 100) continue;
 
