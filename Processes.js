@@ -39,7 +39,7 @@ const defaultBodyChart = {
     crusher: [[MOVE, ATTACK], []],
     guards: [[MOVE, MOVE, MOVE, ATTACK, RANGED_ATTACK, HEAL], []],
     defendRoom: [[MOVE, ATTACK], []],
-    reserver: [[CLAIM, MOVE, MOVE], [], 3],
+    reserver: [[CLAIM, MOVE, MOVE], [], 2],
     harvesters: [[WORK, CARRY, MOVE, MOVE], [], 6],
     haulers: [[CARRY, CARRY, MOVE, MOVE], []],
     miners: [[WORK, MOVE], [CARRY, MOVE]]
