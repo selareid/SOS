@@ -2083,7 +2083,7 @@ return;
 
                 for (let resourceType in room.storage.store) {
                     if (resourceType == RESOURCE_ENERGY) {
-                        if ((terminal.store[RESOURCE_ENERGY] < 15000 || room.controller.level > 7) && room.storage.store[resourceType]-800 > storageEnergy && room.terminal.store[RESOURCE_ENERGY] < 100000) {
+                        if ((room.terminal.store[RESOURCE_ENERGY] < 15000 || room.controller.level > 7) && room.storage.store[resourceType]-800 > storageEnergy && room.terminal.store[RESOURCE_ENERGY] < 100000) {
                             resourceToMove = resourceType;
                             break;
                         }
