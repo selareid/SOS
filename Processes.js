@@ -1408,7 +1408,7 @@ return;
 
                             var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[order.resourceType] ? room.terminal.store[order.resourceType] : Math.round((room.terminal.store.energy / 2) / transCost);
                             if (amountToSend > order.amount) amountToSend = order.amount;
-                            if (room.terminal.store[order.resourceType]-amountToSend < 500) amountToSend = 500-room.terminal.store[order.resourceType];
+                            if (room.terminal.store[order.resourceType]-amountToSend < 500) amountToSend = room.terminal.store[order.resourceType]-500;
 
                             if (amountToSend) {
                                 var rsl = Game.market.deal(order.id, amountToSend, room.name);
