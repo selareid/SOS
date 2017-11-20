@@ -1320,6 +1320,18 @@ return;
             console.notify('Places lab flag,\nROOM: ' + room.name + '\nAt Position: ' + bestPos.x + ' ' + bestPos.y);
         }
     },
+
+    shuffleOrdering: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            var room = Game.rooms[Memory.rmN];
+            if (!room || !room.storage || !room.terminal) return {response: 'end'};
+            if (!global[room.name]) global[room.name] = {};
+
+            //TODO TODO TODO
+        }
+    },
     
     doTerminal: {
         maxCreditLoss: 5000,
@@ -1390,13 +1402,13 @@ return;
                             }
                             return {response: 'idle', time: Game.time + 10};
                         case ORDER_BUY: //you sell
-                            if (!room.terminal.store[order.resourceType] || room.terminal.store[order.resourceType] < 10) continue;
+                            if (!room.terminal.store[order.resourceType] || room.terminal.store[order.resourceType] < 500) continue;
 
                             var transCost = Game.market.calcTransactionCost(1, room.name, order.roomName);
 
                             var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[order.resourceType] ? room.terminal.store[order.resourceType] : Math.round((room.terminal.store.energy / 2) / transCost);
                             if (amountToSend > order.amount) amountToSend = order.amount;
-                            if (amountToSend > room.terminal.store[order.resourceType]) amountToSend = room.terminal.store[order.resourceType];
+                            if (room.terminal.store[order.resourceType]-amountToSend < 500) amountToSend = 500-room.terminal.store[order.resourceType];
 
                             if (amountToSend) {
                                 var rsl = Game.market.deal(order.id, amountToSend, room.name);
@@ -1424,7 +1436,7 @@ return;
 
             var powerSpawn = room.getStructures(STRUCTURE_POWER_SPAWN)[0];
 
-            if (powerSpawn && powerSpawn.energy >= 50 && powerSpawn.power >= 1 && room.storage && room.storage.store[RESOURCE_ENERGY] >= 50000) powerSpawn.processPower();
+            if (powerSpawn && powerSpawn.energy >= 50 && powerSpawn.power >= 1 && room.storage && room.storage.store[RESOURCE_ENERGY] >= 10000) powerSpawn.processPower();
 
             return {response: 'idle', time: Game.time + 7};
         }
@@ -2048,6 +2060,7 @@ return;
             }
             else {
                 var resourceToMove;
+                var amountToMove;
 
                 for (let resourceType in room.terminal.store) {
                     if (!room.terminal.store[RESOURCE_ENERGY]) continue;
@@ -2058,7 +2071,8 @@ return;
                             break;
                         }
                     }
-                    else if (room.terminal.store[resourceType]-800 > terminalGoals[resourceType]) {
+                    else if ((!room.storage.store[resourceType] || room.storage.store[resourceType] < 500) || room.terminal.store[resourceType]-800 > terminalGoals[resourceType]) {
+                        amountToMove = 500-room.storage.store[resourceType] > 0 ? 500-room.storage.store[resourceType] : undefined;
                         resourceToMove = resourceType;
                         break;
                     }
@@ -2066,7 +2080,7 @@ return;
 
                 if (resourceToMove) {
                     creep.memory.w = true;
-                    creep.withdraw(room.terminal, resourceToMove);
+                    creep.withdraw(room.terminal, resourceToMove, amountToMove);
                     return OK;
                 }
             }
@@ -2080,6 +2094,7 @@ return;
             }
             else {
                 var resourceToMove;
+                var amountToMove;
 
                 for (let resourceType in room.storage.store) {
                     if (resourceType == RESOURCE_ENERGY) {
@@ -2088,7 +2103,8 @@ return;
                             break;
                         }
                     }
-                    else if (!room.terminal.store[resourceType] || room.terminal.store[resourceType]+800 < terminalGoals[resourceType]) {
+                    else if (room.storage.store[resourceType]-500 > 0 && (!room.terminal.store[resourceType] || room.terminal.store[resourceType]+800 < terminalGoals[resourceType])) {
+                        amountToMove = room.storage.store[resourceType]-500;
                         resourceToMove = resourceType;
                         break;
                     }
