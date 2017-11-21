@@ -1362,28 +1362,44 @@ return;
                 time: Game.time + (1 - (room.terminal.store[RESOURCE_ENERGY] / 10000)) * 1000
             };
             else if (room.terminal.cooldown) return {response: 'idle', time: Game.time + room.terminal.cooldown};
-            
-//             if (_.size(global.needsEnergy) > 0) {
-//                 if (room.terminal.store[RESOURCE_ENERGY] < 50000) return {response: 'idle', time: Game.time + (1 - (room.terminal.store[RESOURCE_ENERGY] / 50000)) * 10000}; 
-                
-//                 var toSend;
-                
-//                 for (let roomPotential in global.needsEnergy) {
-//                     toSend = roomPotential;
-//                 }
-                
-                
-//                 var transCost = Game.market.calcTransactionCost(1, room.name, toSend);
-//                 var amountToSend = Math.round((room.terminal.store.energy / 3) / transCost) > room.terminal.store.energy ? room.terminal.store.energy : Math.round((room.terminal.store.energy / 3) / transCost);
-                
-//                 if (amountToSend) {
-//                     var rsl = room.terminal.send(RESOURCE_ENERGY, amountToSend, toSend, 'Get To RCL 8 Faster!');
-//                     console.terminalLog(room, 'Sent excess energy to room ' + toSend + ' Amount ' + amountToSend + ' Result ' + rsl);
-//                     Memory.lastDid = Game.time;
-//                 }
-//                 return {response: 'idle', time: Game.time + 4};
-//             }
-            
+
+    //shuffling
+            for (let resourceType in room.terminal) {
+                if (global.shuffle && global.shuffle[resourceType]) {
+                    var closestRoomThatNeedsResources;
+
+                    for (let roomName in global.shuffle[resourceType]) {
+                        var transCost = Game.market.calcTransactionCost(1, room.name, roomName);
+
+                        if (!closestRoomThatNeedsResources || closestRoomThatNeedsResources.cost > transCost) {
+                            closestRoomThatNeedsResources = {
+                                roomName: roomName,
+                                cost: transCost
+                            };
+                        }
+                    }
+
+                    if (closestRoomThatNeedsResources && closestRoomThatNeedsResources.roomName && Game.rooms[closestRoomThatNeedsResources.roomName]
+                        && Game.rooms[closestRoomThatNeedsResources.roomName].controller && Game.rooms[closestRoomThatNeedsResources.roomName].controller.level >= 6
+                        && Game.rooms[closestRoomThatNeedsResources.roomName].terminal) {
+
+                        var amountToSend = Math.round((room.terminal.store.energy / 2) / transCost) > room.terminal.store[resourceType] ? room.terminal.store[resourceType] : Math.round((room.terminal.store.energy / 2) / transCost);
+                        if (amountToSend > global.shuffle[resourceType][closestRoomThatNeedsResources.roomName]) amountToSend = global.shuffle[resourceType][closestRoomThatNeedsResources.roomName];
+
+
+                        if (amountToSend) {
+                            var rsl = room.terminal.send(resourceType, amountToSend, closestRoomThatNeedsResources.roomName, 'Shuffling... \n long live the empire!');
+
+                            console.terminalLog(room, 'Tried to send ' + resourceType + ' Amount ' + amountToSend + ' To Room ' + closestRoomThatNeedsResources.roomName + ' With Result ' + rsl);
+
+                            if (rsl == OK) return {response: 'idle', time: Game.time + 10};
+                        }
+                    }
+                }
+            }
+    //shuffling
+
+
             (() => {
                 for (var orderIndex in global.Mem.market) {
                     var order = Game.market.getOrderById(global.Mem.market[orderIndex]);
