@@ -200,7 +200,7 @@ module.exports = {
         run: function () {
 
             _.forEach(Game.creeps, (creep) => {
-                if (!creep.memory.p || !creep.memory.l || Game.time - creep.memory.l > 4) {
+                if (!creep.memory.p || !creep.memory.l || Game.time - creep.memory.l > 7) {
                     if (isUndefinedOrNull(creep.memory.nc)) creep.memory.nc = 0;
                     else creep.memory.nc++;
 
