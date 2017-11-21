@@ -607,6 +607,7 @@ return;
                 if (!room.memory.minimal && Game.time % 11 == 0) {
                     if (room.storage) {
                         if (room.terminal && !processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
+                        if (room.terminal && !processExists('shuffleOrdering', Memory.rmN)) spawnNewProcess('shuffleOrdering', Memory.rmN);
 
                         var mineral = room.find(FIND_MINERALS)[0];
                         if (mineral && room.controller.level >= 6 && ((mineral.mineralAmount > 1 || mineral.ticksToRegeneration < 200) && !processExists('mine', Memory.rmN))) spawnNewProcess('mine', Memory.rmN);
@@ -1328,8 +1329,20 @@ return;
             var room = Game.rooms[Memory.rmN];
             if (!room || !room.storage || !room.terminal) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
+            if (!global.shuffle) global.shuffle = {};
 
-            //TODO TODO TODO
+            _.forEach(RESOURCES_ALL, (resourceType) => {
+                if (room.storage.store[resourceType] < 500) {
+                    if (!global.shuffle[resourceType]) global.shuffle[resourceType] = {};
+
+                    global.shuffle[resourceType][room.name] = 500-room.storage.store[resourceType];
+                }
+                else if (global.shuffle[resourceType][room.name]) {
+                    delete global.shuffle[resourceType][room.name];
+                }
+            });
+
+            return {response: 'idle', time: Game.time + 17};
         }
     },
     
