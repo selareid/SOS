@@ -1335,7 +1335,7 @@ return;
                 if (!room.storage.store[resourceType] || room.storage.store[resourceType] < 500) {
                     if (!global.shuffle[resourceType]) global.shuffle[resourceType] = {};
 
-                    global.shuffle[resourceType][room.name] = 500-room.storage.store[resourceType];
+                    global.shuffle[resourceType][room.name] = 500-room.storage.store[resourceType] || 500;
                 }
                 else if (global.shuffle[resourceType] && global.shuffle[resourceType][room.name]) {
                     delete global.shuffle[resourceType][room.name];
