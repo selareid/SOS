@@ -31,7 +31,7 @@ Creep.prototype.getConsumerEnergy = function (room = this.room, creep = this) {
 };
 
 Creep.prototype.getCarrierResources = function (room = this.room, creep = this) {
-    var droppedResource = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
+    var droppedResource = _.max(room.find(FIND_DROPPED_RESOURCES), s => s.amount);
 
     if (droppedResource) {
         pickFromDroppedEnergy(creep, droppedResource);
