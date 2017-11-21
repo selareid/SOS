@@ -1252,6 +1252,7 @@ return;
             //TODO REACTING
             //TODO REACTING
             //TODO REACTING
+            //TODO REACTING
         },
 
         placeStrucs: function (room, flag) {
