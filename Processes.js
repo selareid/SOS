@@ -1332,7 +1332,7 @@ return;
             if (!global.shuffle) global.shuffle = {};
 
             _.forEach(RESOURCES_ALL, (resourceType) => {
-                if (room.storage.store[resourceType] < 500) {
+                if (!room.storage.store[resourceType] || room.storage.store[resourceType] < 500) {
                     if (!global.shuffle[resourceType]) global.shuffle[resourceType] = {};
 
                     global.shuffle[resourceType][room.name] = 500-room.storage.store[resourceType];
