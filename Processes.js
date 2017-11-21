@@ -1427,9 +1427,8 @@ return;
                                 var rsl = Game.market.deal(order.id, amountToSend, room.name);
                                 console.terminalLog(room, 'Tried to buy ' + order.resourceType + ' Amount ' + amountToSend + ' At Price ' + order.price + ' Result ' + rsl);
 
-                                if (rsl == OK) return;
+                                if (rsl == OK) return {response: 'idle', time: Game.time + 10};
                             }
-                            return {response: 'idle', time: Game.time + 10};
                         case ORDER_BUY: //you sell
                             if (!room.terminal.store[order.resourceType] || room.terminal.store[order.resourceType] < 500) continue;
 
@@ -1443,9 +1442,8 @@ return;
                                 var rsl = Game.market.deal(order.id, amountToSend, room.name);
                                 console.terminalLog(room, 'Tried to sell ' + order.resourceType + ' Amount ' + amountToSend + ' At Price ' + order.price + ' Result ' + rsl);
 
-                                if (rsl == OK) return;
+                                if (rsl == OK) return {response: 'idle', time: Game.time + 10};
                             }
-                            return {response: 'idle', time: Game.time + 10};
 
                     }
 
