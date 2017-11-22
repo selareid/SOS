@@ -296,25 +296,8 @@ module.exports = {
                             if (!target) {
                                 var newTarget = crusher.pos.findClosestByPath(crusher.room.getStructures(STRUCTURE_TOWER));
                                 if (!newTarget) newTarget = crusher.pos.findClosestByPath(FIND_HOSTILE_SPAWNS);
-                                if (!newTarget) newTarget = crusher.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
-
-                                if (!newTarget) {
-                                    var trying = crusher.pos.findClosestByRange(crusher.room.getStructures(STRUCTURE_TOWER)) || crusher.pos.findClosestByRange(FIND_HOSTILE_SPAWNS);
-
-                                    if (trying) {
-                                        var wallToKill;
-
-                                        _.forEach(PathFinder.search(crusher.pos, {pos: trying.pos, range: 1}, {maxRooms: 1}).path, (pos) => {
-                                            var foundObstacle = _.filter(pos.lookFor(LOOK_STRUCTURES), (s) => OBSTACLE_OBJECT_TYPES[s.structureType])[0];
-                                            if (foundObstacle) {
-                                                wallToKill = foundObstacle;
-                                                return false;
-                                            }
-                                        });
-
-                                        if (wallToKill) newTarget = wallToKill;
-                                    }
-                                }
+                                if (!newTarget) newTarget = crusher.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())});
+                                if (!newTarget) newTarget = crusher.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES);
 
                                 Memory.target = newTarget ? newTarget.id : undefined;
                                 target = newTarget;
