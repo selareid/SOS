@@ -1395,7 +1395,10 @@ return;
 
                             console.terminalLog(room, 'Tried to send ' + resourceType + ' Amount ' + amountToSend + ' To Room ' + closestRoomThatNeedsResources.roomName + ' With Result ' + rsl);
 
-                            if (rsl == OK) return {response: 'idle', time: Game.time + 10};
+                            if (rsl == OK) {
+                                global.shuffle[resourceType][closestRoomThatNeedsResources.roomName] = global.shuffle[resourceType][closestRoomThatNeedsResources.roomName]-amountToSend;
+                                return {response: 'idle', time: Game.time + 10};
+                            }
                         }
                     }
                 }
