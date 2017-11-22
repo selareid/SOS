@@ -1365,7 +1365,7 @@ return;
             else if (room.terminal.cooldown) return {response: 'idle', time: Game.time + room.terminal.cooldown};
 
     //shuffling
-            for (let resourceType in room.terminal) {
+            for (let resourceType in room.terminal.store) {
                 if (global.shuffle && global.shuffle[resourceType]) {
                     var closestRoomThatNeedsResources;
 
