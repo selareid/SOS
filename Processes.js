@@ -2477,7 +2477,10 @@ return;
                                     });
                                     else creep.repair(defenseToRepair);
                                 }
-                                else creep.runInSquares();
+                                else {
+                                    creep.runInSquares();
+                                    return {response: 'idle', time: Game.time+3};
+                                }
                             }
                         }
                         }
@@ -2532,6 +2535,7 @@ return;
 
             if (!structure || !goal || structure > goal) {
                 structure = _.min(room.getStructures(STRUCTURE_RAMPART).concat(room.getStructures(STRUCTURE_RAMPART)), (s) => s.hits);
+                if (structure.hits > 30000000) return;//30M rampart hp cap
                 Memory.gl = structure.hits + 10000 > structure.hitsMax ? structure.hitsMax : structure.hits + 10000;
             }
 
