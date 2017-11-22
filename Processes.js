@@ -2140,7 +2140,7 @@ return;
 
                 if (resourceToMove) {
                     creep.memory.w = true;
-                    creep.withdraw(room.storage, resourceToMove);
+                    creep.withdraw(room.storage, resourceToMove, amountToMove);
                     return OK;
                 }
             }
