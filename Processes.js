@@ -1370,6 +1370,8 @@ return;
                     var closestRoomThatNeedsResources;
 
                     for (let roomName in global.shuffle[resourceType]) {
+                        if (room.name == roomName) continue;
+                        
                         var transCost = Game.market.calcTransactionCost(1, room.name, roomName);
 
                         if (!closestRoomThatNeedsResources || closestRoomThatNeedsResources.cost > transCost) {
