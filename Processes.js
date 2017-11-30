@@ -2122,7 +2122,7 @@ return;
                         }
                     }
                     else if (room.storage.store[resourceType]-500 > 0 && (!room.terminal.store[resourceType] || room.terminal.store[resourceType]+800 < terminalGoals[resourceType])) {
-                        amountToMove = room.storage.store[resourceType]-500 > 0 ? room.storage.store[resourceType]-500 : undefined;
+                        amountToMove = room.storage.store[resourceType]-500 < creep.carryCapacity-_.sum(creep.carry) ? room.storage.store[resourceType]-500 : undefined;
                         resourceToMove = resourceType;
                         break;
                     }
