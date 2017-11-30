@@ -2174,7 +2174,7 @@ return;
                  creep.talk('mine');
 
                  if (_.sum(creep.carry) == 0) Memory.w = 0;
-                 else if (_.sum(creep.carry) == creep.carryCapacity) Memory.w = 1;
+                 else if (_.sum(creep.carry) >= (creep.carryCapacity - HARVEST_MINERAL_POWER * creep.getActiveBodyparts(WORK))) == creep.carryCapacity) Memory.w = 1;
 
                  if (Memory.w == 1) {
                      if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
@@ -2909,7 +2909,7 @@ return;
                     }
                 }
 
-                if (creep.carry.energy && creep.carry.energy >= (creep.carryCapacity - 2 * creep.getActiveBodyparts(WORK))) creep.drop(RESOURCE_ENERGY);
+                if (creep.carry.energy && creep.carry.energy >= (creep.carryCapacity - HARVEST_POWER * creep.getActiveBodyparts(WORK))) creep.drop(RESOURCE_ENERGY);
             }
             else creep.travelTo(new RoomPosition(21, 21, roomName), {range: 21, repath: 0.01})
         },
