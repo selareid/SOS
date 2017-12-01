@@ -957,7 +957,7 @@ return;
                     if (room.getStructures(structureType).length >= CONTROLLER_STRUCTURES[structureType][room.controller.level]) break;
 
                     if (room.lookForAt(LOOK_STRUCTURES, posXY.x, posXY.y).length < 1 && room.lookForAt(LOOK_CONSTRUCTION_SITES, posXY.x, posXY.y).length < 1) {
-                        room.createConstructionSite(posXY.x, posXY.y, structureType);
+                        if (room.createConstructionSite(posXY.x, posXY.y, structureType) == ERR_RCL_NOT_ENOUGH) break;
                         console.roomLog(room, 'Places Construcion Site ' + structureType + ' At ' + posXY.x + ' ' + posXY.y);
                         amountToBuild--;
                     }
