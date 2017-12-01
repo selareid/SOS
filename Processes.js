@@ -280,6 +280,10 @@ module.exports = {
             if (healer) {
                 if (crusher) {
                     if (!healer.pos.isNearTo(crusher) && healer.pos.roomName == crusher.pos.roomName) healer.moveTo(crusher, {reusePath: 2});
+                    else if (healer.pos.roomName != crusher.pos.roomName) {
+                        if (!crusher.pos.isNearTo(flag.pos)) crusher.travelTo(flag, {range: 2, repath: 0.01});
+                        if (!healer.pos.isNearTo(flag.pos)) healer.travelTo(flag, {range: 2, repath: 0.01});
+                    }
                     else {
                         if (crusher.pos.roomName != flag.pos.roomName) {
                             crusher.travelTo(flag, {range: 2, repath: 0.01});
