@@ -420,8 +420,7 @@ return;
                 else {
                     if (creep.pos.isNearTo(creep.room.controller.pos)) {
                         if (creep.claimController(creep.room.controller) != OK) {
-                            creep.attackController(creep.room.controller);
-                            return {response: 'idle', time: Game.time + (Game.map.findRoute(creep.pos.roomName, nearestRoom.name).length*50)};
+                            if (creep.attackController(creep.room.controller) == OK) return {response: 'idle', time: Game.time + (CONTROLLER_ATTACK_BLOCKED_UPGRADE-Game.map.findRoute(creep.pos.roomName, nearestRoom.name).length*50)};
                         }
                     }
                     else creep.moveWithPath(creep.room.controller, {range: 1, repath: 0.01, maxRooms: 1});
