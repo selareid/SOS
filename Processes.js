@@ -386,6 +386,7 @@ module.exports = {
             var flag = Game.flags[Memory.f];
             if (!flag) {
                 var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'claim')[0];
+                Memory.nr = undefined;
                 return newFlag ? Memory.f = newFlag.name : {response: 'end'};
             }
 
