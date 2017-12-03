@@ -32,7 +32,7 @@ const defaultBodyChart = {
     fillExt: [[CARRY, CARRY, MOVE], [], 8],
     iRmHaul: [[CARRY, CARRY, MOVE], []],
     takeCare: [[WORK, CARRY, MOVE], []],
-    claim: [[CLAIM, MOVE], [], 1],
+    claim: [[CLAIM, MOVE, MOVE], [], 1],
     buildSpawn: [[WORK, MOVE, CARRY, MOVE], []],
     stealEnergy: [[CARRY, MOVE, MOVE], []],
     healer: [[MOVE, HEAL], []],
@@ -51,6 +51,8 @@ function getBodyChart(room) {
     if (room) {
         if (room.controller.level < 7) newChart['fillExt'][0] = [CARRY, CARRY, MOVE, MOVE];
         newChart['fillSpawn'][2] = room.find(FIND_MY_SPAWNS).length*3;
+        
+        if (room.energyAvailable < 700) newChart['claim'][0] = [CLAIM, MOVE];
 
         // if (room.controller.level >= 7 && room.find(FIND_SOURCES).length >= 2) {
         //     if (!room.memory.hrvstPrts) {
@@ -399,7 +401,7 @@ module.exports = {
             var nearestRoom = Game.rooms[Memory.nr];
             if (!nearestRoom) {
                 var newR = _.min(Game.rooms, (r) => {
-                    return r.find(FIND_MY_SPAWNS).length > 0 && r.energyCapacityAvailable >= 550 ? Game.map.findRoute(r.name, flag.pos.roomName).length : Number.POSITIVE_INFINITY;
+                    return r.find(FIND_MY_SPAWNS).length > 0 && r.energyCapacityAvailable >= 650 ? Game.map.findRoute(r.name, flag.pos.roomName).length : Number.POSITIVE_INFINITY;
                 });
                 Memory.nr = newR ? newR.name : undefined;
                 nearestRoom = Game.rooms[Memory.nr]
