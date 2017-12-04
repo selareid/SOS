@@ -2839,7 +2839,10 @@ return;
             var room = Game.rooms[roomName];
             if (creep.pos.roomName == roomName) {
                 if (creep.pos.isNearTo(room.controller)) {
-                    if (!room.controller.reservation || room.controller.reservation.ticksToEnd < CONTROLLER_RESERVE_MAX-(CONTROLLER_RESERVE*3)) creep.reserveController(room.controller);
+                    if (!room.controller.reservation || room.controller.reservation.ticksToEnd < CONTROLLER_RESERVE_MAX-(CONTROLLER_RESERVE*3)) {
+                        creep.reserveController(room.controller);
+                        if (Game.cpu.bucket > 9000 && (!room.controller.sign || Game.time-room.controller.sign.time > 501 || room.controller.sign.username != creep.owner.username)) creep.signController(creep.room.controller, global.controllerSigns[Math.round(Game.time % global.controllerSigns.length)]);
+                    }
                 }
                 else creep.moveWithPath(room.controller);
             }
