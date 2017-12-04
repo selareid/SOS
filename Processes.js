@@ -37,7 +37,7 @@ const defaultBodyChart = {
     stealEnergy: [[CARRY, MOVE, MOVE], []],
     healer: [[MOVE, HEAL], []],
     crusher: [[MOVE, ATTACK], []],
-    drainer: [[MOVE, HEAL], []],
+    drainer: [[MOVE, HEAL, TOUGH], []],
     guards: [[MOVE, MOVE, MOVE, ATTACK, RANGED_ATTACK, HEAL], []],
     defendRoom: [[MOVE, ATTACK], []],
     reserver: [[CLAIM, MOVE, MOVE], [], 2],
@@ -288,7 +288,8 @@ module.exports = {
                 drainer.heal(drainer);
 
                 if (drainer.pos.roomName != flag.pos.roomName) {
-                    drainer.travelTo(flag, {range: 2, repath: 0.01});
+                    if (drainer.hits == drainer.hitsMax) drainer.travelTo(flag, {range: 2, repath: 0.01});
+                    else creep.move(new RoomPosition(21, 21, drainer.room.name).getDirectionTo(creep.pos));
                 }
                 else if (drainer.room.find(FIND_HOSTILE_SPAWNS).length < 1) Memory.complete = true;
             }
