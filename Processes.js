@@ -37,6 +37,7 @@ const defaultBodyChart = {
     stealEnergy: [[CARRY, MOVE, MOVE], []],
     healer: [[MOVE, HEAL], []],
     crusher: [[MOVE, ATTACK], []],
+    drainer: [[MOVE, HEAL], []],
     guards: [[MOVE, MOVE, MOVE, ATTACK, RANGED_ATTACK, HEAL], []],
     defendRoom: [[MOVE, ATTACK], []],
     reserver: [[CLAIM, MOVE, MOVE], [], 2],
@@ -175,6 +176,12 @@ module.exports = {
                 if (flag && !processExists('crusher')) spawnNewProcess('crusher');
             }());
 
+            (function () {
+                var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'drainer' && Game.rooms[f.name.split(' ')[1]])[0];
+
+                if (flag && !processExists('drainer')) spawnNewProcess('drainer');
+            }());
+
             return {response: 'idle', time: Game.time + 100 + Math.round(Math.random() * 100)};
         }
     },
@@ -252,6 +259,40 @@ module.exports = {
 
             if (creep.pos.isNearTo(creep.room.storage)) creep.transfer(creep.room.storage, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
             else creep.moveWithPath(creep.room.storage, {range: 1, repath: 0.01, maxRooms: 1});
+        }
+    },
+
+    drainer: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            var room = Game.rooms[Memory.rmN];
+            var flag = Game.flags[Memory.f];
+
+            if (!Memory.complete && (!flag || !room)) {
+                var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'drainer' && Game.rooms[f.name.split(' ')[1]])[0];
+                Memory.rmN = newFlag ? newFlag.name.split(' ')[1] : undefined;
+                return newFlag ? Memory.f = newFlag.name : {response: 'end'};
+            }
+
+            var drainer = getCreep(Memory.drainer, 'drainer');
+
+            if (!Memory.complete && !drainer) Memory.drainer = module.exports.room.addToSQ(room.name, 'drainer', {name: Memory.drainer});
+
+            if (Memory.complete && !drainer) {
+                flag.remove();
+                return {response: 'end'};
+            }
+
+            if (drainer) {
+                drainer.heal(drainer);
+
+                if (drainer.pos.roomName != flag.pos.roomName) {
+                    drainer.travelTo(flag, {range: 2, repath: 0.01});
+                }
+                else if (drainer.room.find(FIND_HOSTILE_SPAWNS).length < 1) Memory.complete = true;
+            }
+
         }
     },
 
