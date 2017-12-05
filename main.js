@@ -42,7 +42,7 @@ if (Game.spawns['Spawn1']) {
         var otherCreep = Game.creeps[Memory.otherCreep];
 
         if (!otherCreep && !Game.spawns['Spawn7'].spawning && Game.spawns['Spawn7'].room.energyAvailable >= 2400) {
-            Memory.otherCreep = 'otherCreep' + Game.time;
+            if (!Memory.otherCreep) Memory.otherCreep = 'otherCreep' + Game.time;
             Game.spawns['Spawn7'].spawnCreep([MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY,MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY], Memory.otherCreep);
         }
         else if (otherCreep) {
@@ -54,7 +54,7 @@ if (Game.spawns['Spawn1']) {
         var claimerOther = Game.creeps[Memory.claimerOther];
 
         if (!claimerOther && !Game.spawns['Spawn7'].spawning && Game.spawns['Spawn7'].room.energyAvailable >= 700) {
-            Memory.claimerOther = 'claimerOther' + Game.time;
+            if (!Memory.claimerOther) Memory.claimerOther = 'claimerOther' + Game.time;
             Game.spawns['Spawn7'].spawnCreep([MOVE, MOVE, CLAIM], Memory.claimerOther);
         }
         else if (claimerOther) {
