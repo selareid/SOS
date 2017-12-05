@@ -1206,11 +1206,11 @@ return;
             var lab2 = _.filter(room.getPositionAt(flag.pos.x+1, flag.pos.y+2).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_LAB);
 
             if (!lab1 || !lab2) {
-                var rsl1 = room.createConstructionSite(room.getPositionAt(flag.pos.x+2, flag.pos.y+1));
-                var rsl2 = room.createConstructionSite(room.getPositionAt(flag.pos.x+1, flag.pos.y+2));
+                var rsl1 = room.createConstructionSite(room.getPositionAt(flag.pos.x + 2, flag.pos.y + 1));
+                var rsl2 = room.createConstructionSite(room.getPositionAt(flag.pos.x + 1, flag.pos.y + 2));
 
                 if (rsl1 == OK && rsl2 == OK) return {response: 'idle', time: Game.time + 1001};
-                    else return {response: 'idle', time: Game.time + 7};
+                else return {response: 'idle', time: Game.time + 7};
             }
 
             if (Game.time % 1201 == 0 || !Memory.lastLevel || Memory.lastLevel != room.controller.level) {
