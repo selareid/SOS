@@ -1323,6 +1323,8 @@ return;
 
                     let goodPos = new RoomPosition(x, y, room.name);
 
+                    if (room.storage.pos.getRangeTo(goodPos) < 2) continue;
+
                     let distToStr = room.findPath(goodPos, room.storage.pos, {ignoreCreeps: true, ignoreRoads: true, maxRooms: 1}).length;
 
                     if (!bestPos) {
