@@ -1295,7 +1295,7 @@ return;
         },
 
         choosingCompound: function (room) {
-            var mineral = room.find(FIND_MINERALS);
+            var mineral = room.find(FIND_MINERALS)[0];
 
             var chosen;
 
