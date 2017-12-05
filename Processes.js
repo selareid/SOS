@@ -1202,8 +1202,8 @@ return;
 
             if (!flag) return this.placeFlag(room);
 
-            var lab1 = _.filter(room.getPositionAt(flag.pos.x+2, flag.pos.y+1).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_LAB);
-            var lab2 = _.filter(room.getPositionAt(flag.pos.x+1, flag.pos.y+2).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_LAB);
+            var lab1 = _.filter(room.getPositionAt(flag.pos.x+2, flag.pos.y+1).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_LAB)[0];
+            var lab2 = _.filter(room.getPositionAt(flag.pos.x+1, flag.pos.y+2).lookFor(LOOK_STRUCTURES), (s) => s.structureType == STRUCTURE_LAB)[0];
 
             if (!lab1 || !lab2) {
                 var rsl1 = room.createConstructionSite(room.getPositionAt(flag.pos.x + 2, flag.pos.y + 1));
