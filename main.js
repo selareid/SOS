@@ -103,7 +103,7 @@ else {
                     if (creep.pos.isNearTo(constructionSite)) creep.build(constructionSite);
                     else creep.travelTo(constructionSite);
                 }
-                else creep.room.createConstructionSite(new RoomPosition(27, 11, roomToGoTo), STRUCTURE_SPAWN);
+                else creep.room.createConstructionSite(new RoomPosition(27, 16, roomToGoTo), STRUCTURE_SPAWN);
             }
             else {
                 var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
