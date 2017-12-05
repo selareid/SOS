@@ -43,7 +43,8 @@ const defaultBodyChart = {
     reserver: [[CLAIM, MOVE, MOVE], [], 2],
     harvesters: [[WORK, CARRY, MOVE, MOVE], [], 6],
     haulers: [[CARRY, CARRY, MOVE, MOVE], []],
-    miners: [[WORK, MOVE], [CARRY, MOVE]]
+    miners: [[WORK, MOVE], [CARRY, MOVE]],
+    doLabs: [[CARRY, MOVE]]
 };
 
 function getBodyChart(room) {
@@ -643,6 +644,7 @@ return;
                 if (!room.memory.minimal && Game.time % 11 == 0) {
                     if (room.storage) {
                         if (room.terminal && !processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
+                        if (room.terminal && !processExists('doLabs', Memory.rmN)) spawnNewProcess('doLabs', Memory.rmN);
                         if (room.terminal && !processExists('shuffleOrdering', Memory.rmN)) spawnNewProcess('shuffleOrdering', Memory.rmN);
 
                         var mineral = room.find(FIND_MINERALS)[0];
@@ -1251,13 +1253,16 @@ return;
 
                     switch (Memory.state) {
                         case 'fill':
-                            //TODO
+                            if (this.fillLabs(creep, room, lab1, lab2, Memory.mineral1, Memory.mineral2) == 'done') Memory.state = 'react';
                             break;
                         case 'empty':
-                            //TODO
+                            if (this.emptyLabs(creep,room) == 'done') Memory.state = 'fill';
                             break;
                         case 'react':
-                            creep.suicide();
+                            if (_.sum(creep.carry) > 0) {
+                                if (creep.pos.isNearTo(room.storage)) creep.transferAll(room.storage);
+                                else creep.moveWithPath(room.storage, {maxRooms: 1});
+                            }
                             break;
                         default: // reset
                             Memory.state = 'empty';
@@ -1342,6 +1347,25 @@ return;
             console.notify('Places lab flag,\nROOM: ' + room.name + '\nAt Position: ' + bestPos.x + ' ' + bestPos.y);
         },
 
+        fillLabs: function (creep, room, lab1, lab2, mineral1, mineral2) {
+            var labToDo = lab1.mineralCapacity - lab1.mineralAmount > 0 ? lab : lab2.mineralCapacity - lab2.mineralAmount > 0 ? lab2 : undefined;
+
+            if (labToDo) {
+                var mineralAmountNeeded = labToDo.mineralCapacity - labToDo.mineralAmount;
+                var mineralNeeded = labToDo.id = lab1.id ? mineral1 : mineral2;
+
+                if (creep.carry[mineralNeeded] >= mineralAmountNeeded) {
+                    if (creep.pos.isNearTo(labToDo)) creep.transfer(labToDo, mineralNeeded);
+                    else creep.moveWithPath(labToDo, {maxRooms: 1});
+                }
+                else {
+                    if (creep.pos.isNearTo(room.storage)) creep.withdraw(room.storage, mineralAmountNeeded);
+                    else creep.moveWithPath(room.storage, {maxRooms: 1});
+                }
+            }
+            else return 'done';
+        },
+
         emptyLabs: function (creep, room) {
             if (_.sum(creep.carry) == 0) creep.memory.w = 1;
             else if (_.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
@@ -1358,7 +1382,8 @@ return;
                 else return 'done';
             }
             else {
-                if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
+                if (creep.pos.isNearTo(room.storage)) creep.transferAll(room.storage);
+                else creep.moveWithPath(room.storage, {maxRooms: 1});
             }
         }
     },
