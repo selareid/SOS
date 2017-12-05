@@ -1308,8 +1308,8 @@ return;
             const freeRange = 5;
             var bestPos;
 
-            for (let x = 3; x < 46; x++) {
-                for (let y = 3; y < 46; y++) {
+            for (let x = 1+freeRange; x < 49-freeRange; x++) {
+                for (let y = 1+freeRange; y < 49-freeRange; y++) {
                     let structures = _.filter(room.lookForAtArea(LOOK_STRUCTURES, y, x, y + freeRange, x + freeRange, true), (s) => s.structureType != STRUCTURE_ROAD);
                     if (structures.length > 0) continue;
 
