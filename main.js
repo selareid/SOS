@@ -55,7 +55,7 @@ if (Game.spawns['Spawn1']) {
 
     var claimerOther = Game.creeps[Memory.claimerOther];
 
-    if (!claimerOther && !Game.spawns['Spawn7'].spawning && Game.spawns['Spawn7'].room.energyAvailable >= 2400) {
+    if (!claimerOther && !Game.spawns['Spawn7'].spawning && Game.spawns['Spawn7'].room.energyAvailable >= 700) {
         Memory.claimerOther = 'claimerOther' + Game.time;
         Game.spawns['Spawn7'].spawnCreep([MOVE, MOVE, CLAIM], Memory.claimerOther);
     }
