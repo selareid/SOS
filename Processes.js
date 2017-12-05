@@ -1298,7 +1298,7 @@ return;
             var chosen;
 
             for (let mineral2Type in REACTIONS[mineral.mineralType]) {
-                if (room.storage.store[mineral2Type] > 1000) chosen = mineral2Type;
+                if (room.storage.store[mineral2Type] >= 500) chosen = mineral2Type;
             }
 
             return !chosen ? undefined : [mineral.mineralType, chosen];
@@ -1348,7 +1348,7 @@ return;
         },
 
         fillLabs: function (creep, room, lab1, lab2, mineral1, mineral2) {
-            var labToDo = lab1.mineralCapacity - lab1.mineralAmount > 0 ? lab : lab2.mineralCapacity - lab2.mineralAmount > 0 ? lab2 : undefined;
+            var labToDo = lab1.mineralCapacity - lab1.mineralAmount > 0 && room.storage.store[mineral1] > 0 ? lab : lab2.mineralCapacity - lab2.mineralAmount > 0  && room.storage.store[mineral2] > 0? lab2 : undefined;
 
             if (labToDo) {
                 var mineralAmountNeeded = labToDo.mineralCapacity - labToDo.mineralAmount;
