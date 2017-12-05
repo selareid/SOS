@@ -10,7 +10,7 @@ var sortedParts = function (body) {
         else if (part === HEAL)
             return BODYPARTS_ALL.length;
         else
-            return _.random(1, BODYPARTS_ALL.length - 1);
+            return 2;
     })
         .value();
 };
