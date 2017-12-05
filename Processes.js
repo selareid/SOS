@@ -1224,7 +1224,7 @@ return;
                 Memory.mineral1 = newMinerals[1];
                 Memory.mineral2 = newMinerals[2];
 
-                Memory.state = 'reset';
+                Memory.state = 'empty';
             }
 
 
@@ -1260,7 +1260,7 @@ return;
                             creep.suicide();
                             break;
                         default: // reset
-                            //TODO
+                            Memory.state = 'empty';
                     }
                 }
             }
@@ -1268,27 +1268,11 @@ return;
             //get more creeps
             if (Memory.state != 'react' && creeps.length < 1) Memory.crps.push(module.exports.room.addToSQ(room.name, 'doLabs'));
 
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
-            //TODO REACTING
+            if (Memory.state = 'react') {
+                var labToReactWith = room.getStructures(STRUCTURE_LAB, (s) => s.id != lab1.id && s.id != lab2.id && !s.cooldown && s.mineralAmount < s.mineralCapacity && s.pos.getRangeTo(lab1.pos) <= 2 && s.pos.getRangeTo(lab2.pos) <= 2);
+
+                if (labToReactWith) labToReactWith.runReaction(lab1, lab2);
+            }
         },
 
         placeStrucs: function (room, flag) {
@@ -1356,6 +1340,26 @@ return;
             room.createFlag(bestPos.x, bestPos.y, 'labFlag:' + room.name, COLOR_YELLOW, COLOR_ORANGE);
 
             console.notify('Places lab flag,\nROOM: ' + room.name + '\nAt Position: ' + bestPos.x + ' ' + bestPos.y);
+        },
+
+        emptyLabs: function (creep, room) {
+            if (_.sum(creep.carry) == 0) creep.memory.w = 1;
+            else if (_.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
+
+            if (creep.memory.w) {
+                var labToEmpty = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_LAB, (s) => s.mineralAmount > 0));
+
+                if (labToEmpty) {
+                    if (creep.pos.isNearTo(labToEmpty.pos)) {
+                        if (creep.withdraw(labToEmpty.mineralType) == OK) creep.memory.w = 0;
+                    }
+                    else creep.moveWithPath(labToEmpty, {maxRooms: 1});
+                }
+                else return 'done';
+            }
+            else {
+                if (creep.pos.isNearTo(room.storage)) creep.transfer(room.storage, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
+            }
         }
     },
 

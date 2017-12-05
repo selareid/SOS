@@ -129,3 +129,21 @@ Creep.prototype.hasActiveBodyparts = function (type) {
     }
     return false;
 };
+
+Creep.prototype.transferAll = function (target) {
+    if (_.sum(this.carry) <= 0) {
+        return ERR_NOT_ENOUGH_RESOURCES
+    }
+    if (!this.pos.isNearTo(target)) {
+        return ERR_NOT_IN_RANGE
+    }
+    const resources = Object.keys(this.carry);
+    let resource;
+    for (resource of resources) {
+        if (this.carry[resource] > 0) {
+            return this.transfer(target, resource)
+        }
+    }
+    // this line should never get reached
+    return false
+};
