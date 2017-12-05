@@ -1198,7 +1198,7 @@ return;
             var room = Game.rooms[Memory.rmN];
             if (!room || !room.storage || !room.terminal || room.controller.level < 6) return {response: 'end'};
 
-            var flag = Game.flags[Memory.flags];
+            var flag = room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'labFlag'})[0];
 
             if (!flag) return this.placeFlag(room);
 
