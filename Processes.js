@@ -1356,7 +1356,7 @@ return;
             var labToDo = Game.getObjectById(creep.memory.lf);
 
             if (!labToDo) {
-                creep.memory.lf = lab1.mineralCapacity - lab1.mineralAmount > 0 && room.storage.store[mineral1] > 0 ? lab1.id : lab2.mineralCapacity - lab2.mineralAmount > 0 && room.storage.store[mineral2] > 0 ? lab2.id : undefined;
+                creep.memory.lf = lab1.mineralCapacity - lab1.mineralAmount > 0 && (room.storage.store[mineral1] || 0) > 0 ? lab1.id : lab2.mineralCapacity - lab2.mineralAmount > 0 && (room.storage.store[mineral2] || 0) > 0 ? lab2.id : undefined;
                 labToDo = Game.getObjectById(creep.memory.lf);
 
                 if (!labToDo) return 'done';
@@ -1365,7 +1365,7 @@ return;
             var mineralAmountNeeded = labToDo.mineralCapacity - labToDo.mineralAmount > creep.carryCapacity ? creep.carryCapacity : labToDo.mineralCapacity - labToDo.mineralAmount;
             var mineralNeeded = labToDo.id == lab1.id ? mineral1 : mineral2;
 
-            if (mineralAmountNeeded < 1 || room.storage.store[mineralNeeded] < 1) return creep.memory.lf = undefined;
+            if (mineralAmountNeeded < 1 || (room.storage.store[mineralNeeded] < 1 || 0)) return creep.memory.lf = undefined;
 
             if (_.sum(creep.carry) == 0) creep.memory.w = 1;
             else if (_.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
