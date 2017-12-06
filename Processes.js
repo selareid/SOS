@@ -1275,7 +1275,11 @@ return;
 
                 if (labToReactWith) labToReactWith.runReaction(lab1, lab2);
 
-                if (lab1.mineralAmount == 0 || lab2.mineralAmount == 0) Memory.state = 'empty';
+                if (lab1.mineralAmount == 0 || lab2.mineralAmount == 0) {
+                    Memory.mineral1 = undefined;
+                    Memory.mineral2 = undefined;
+                    Memory.state = 'empty';
+                }
             }
         },
 
