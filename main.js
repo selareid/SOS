@@ -48,7 +48,7 @@ if (Game.spawns['Spawn1']) {
             else if (claimerOther) {
                 claimerOther.memory.l = Game.time;
                 claimerOther.memory.p = 'insanity';
-                claimerOther.travelTo(new RoomPosition(24, 4, 'W10S20'), {range: 0});
+                claimerOther.travelTo(new RoomPosition(24, 44, 'W10S20'), {range: 0});
             }
         }
         else if (Game.shard.name == 'shard1') RawMemory.interShardSegment = "stop!";
