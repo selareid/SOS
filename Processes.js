@@ -1256,13 +1256,10 @@ return;
                             if (this.fillLabs(creep, room, lab1, lab2, Memory.mineral1, Memory.mineral2) == 'done') Memory.state = 'react';
                             break;
                         case 'empty':
-                            if (this.emptyLabs(creep,room) == 'done') Memory.state = 'fill';
+                            if (this.emptyLabs(creep, room) == 'done') Memory.state = 'fill';
                             break;
                         case 'react':
-                            if (_.sum(creep.carry) > 0) {
-                                if (creep.pos.isNearTo(room.storage)) creep.transferAll(room.storage);
-                                else creep.moveWithPath(room.storage, {maxRooms: 1});
-                            }
+                            this.emptyLabs(creep, room, creep.pos.findClosestByRange(room.getStructures(STRUCTURE_LAB, (s) => s.mineralAmount > 0 && s.id != lab1.id && s.id != lab2.id)));
                             break;
                         default: // reset
                             Memory.state = 'empty';
@@ -1370,13 +1367,11 @@ return;
             else return 'done';
         },
 
-        emptyLabs: function (creep, room) {
+        emptyLabs: function (creep, room, labToEmpty = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_LAB, (s) => s.mineralAmount > 0))) {
             if (_.sum(creep.carry) == 0) creep.memory.w = 1;
             else if (_.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
 
             if (creep.memory.w) {
-                var labToEmpty = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_LAB, (s) => s.mineralAmount > 0));
-
                 if (labToEmpty) {
                     if (creep.pos.isNearTo(labToEmpty.pos)) {
                         if (creep.withdraw(labToEmpty.mineralType) == OK) creep.memory.w = 0;
