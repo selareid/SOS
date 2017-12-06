@@ -1356,7 +1356,7 @@ return;
 
             if (labToDo) {
                 var mineralAmountNeeded = labToDo.mineralCapacity - labToDo.mineralAmount;
-                var mineralNeeded = labToDo.id = lab1.id ? mineral1 : mineral2;
+                var mineralNeeded = labToDo.id == lab1.id ? mineral1 : mineral2;
 
                 if (creep.carry[mineralNeeded] >= mineralAmountNeeded) {
                     if (creep.pos.isNearTo(labToDo)) creep.transfer(labToDo, mineralNeeded);
