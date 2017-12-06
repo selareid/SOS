@@ -1274,7 +1274,7 @@ return;
             if (Memory.state != 'react' && creeps.length < 1) Memory.crps.push(module.exports.room.addToSQ(room.name, 'doLabs'));
 
             if (Memory.state = 'react') {
-                var labToReactWith = room.getStructures(STRUCTURE_LAB, (s) => s.id != lab1.id && s.id != lab2.id && !s.cooldown && s.mineralAmount < s.mineralCapacity && s.pos.getRangeTo(lab1.pos) <= 2 && s.pos.getRangeTo(lab2.pos) <= 2);
+                var labToReactWith = room.getStructures(STRUCTURE_LAB, (s) => s.id != lab1.id && s.id != lab2.id && !s.cooldown && s.mineralAmount < s.mineralCapacity && s.pos.getRangeTo(lab1.pos) <= 2 && s.pos.getRangeTo(lab2.pos) <= 2)[0];
 
                 if (labToReactWith) labToReactWith.runReaction(lab1, lab2);
 
