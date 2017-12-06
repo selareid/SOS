@@ -36,7 +36,7 @@ if (Game.spawns['Spawn1']) {
             else if (otherCreep) {
                 otherCreep.memory.l = Game.time;
                 otherCreep.memory.p = 'insanity';
-                otherCreep.travelTo(new RoomPosition(24, 4, 'W10S20'), {range: 0});
+                otherCreep.travelTo(new RoomPosition(24, 44, 'W10S20'), {range: 0});
             }
         }
         else if (Game.shard.name == 'shard1') RawMemory.interShardSegment = "stop!";
