@@ -1301,7 +1301,7 @@ return;
             var chosen;
 
             for (let mineral2Type in REACTIONS[mineral.mineralType]) {
-                if (room.storage.store[mineral2Type] >= 500) chosen = mineral2Type;
+                if (room.storage.store[mineral2Type] >= 500 && room.terminal.store[REACTIONS[mineral.mineralType][mineral2Type]] < 100) chosen = mineral2Type;
             }
 
             return !chosen ? undefined : [mineral.mineralType, chosen];
