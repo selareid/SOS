@@ -1352,7 +1352,7 @@ return;
         },
 
         fillLabs: function (creep, room, lab1, lab2, mineral1, mineral2) {
-            var labToDo = lab1.mineralCapacity - lab1.mineralAmount > 0 && room.storage.store[mineral1] > 0 ? lab : lab2.mineralCapacity - lab2.mineralAmount > 0  && room.storage.store[mineral2] > 0? lab2 : undefined;
+            var labToDo = lab1.mineralCapacity - lab1.mineralAmount > 0 && room.storage.store[mineral1] > 0 ? lab1 : lab2.mineralCapacity - lab2.mineralAmount > 0  && room.storage.store[mineral2] > 0? lab2 : undefined;
 
             if (labToDo) {
                 var mineralAmountNeeded = labToDo.mineralCapacity - labToDo.mineralAmount;
