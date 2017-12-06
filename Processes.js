@@ -1363,7 +1363,7 @@ return;
                     else creep.moveWithPath(labToDo, {maxRooms: 1});
                 }
                 else {
-                    if (creep.pos.isNearTo(room.storage)) creep.withdraw(room.storage, mineralAmountNeeded);
+                    if (creep.pos.isNearTo(room.storage)) creep.withdraw(room.storage, (mineralAmountNeeded > room.storage.store[mineralNeeded] ? room.storage.store[mineralNeeded] : mineralAmountNeeded));
                     else creep.moveWithPath(room.storage, {maxRooms: 1});
                 }
             }
