@@ -1259,7 +1259,7 @@ return;
                             if (this.emptyLabs(creep, room) == 'done') Memory.state = 'fill';
                             break;
                         case 'react':
-                            this.emptyLabs(creep, room, creep.pos.findClosestByRange(room.getStructures(STRUCTURE_LAB, (s) => s.mineralAmount > 0 && s.id != lab1.id && s.id != lab2.id)));
+                            if (lab2.mineralAmount < 100) this.emptyLabs(creep, room, creep.pos.findClosestByRange(room.getStructures(STRUCTURE_LAB, (s) => s.mineralAmount > 0 && s.id != lab1.id && s.id != lab2.id)));
                             break;
                         default: // reset
                             Memory.state = 'empty';
