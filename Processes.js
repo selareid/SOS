@@ -1223,8 +1223,8 @@ return;
 
                 if (!newMinerals || !newMinerals[0] || !newMinerals[1]) return {response: 'idle', time: Game.time + 11};
 
-                Memory.mineral1 = newMinerals[1];
-                Memory.mineral2 = newMinerals[2];
+                Memory.mineral1 = newMinerals[0];
+                Memory.mineral2 = newMinerals[1];
 
                 Memory.state = 'empty';
             }
