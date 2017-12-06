@@ -1353,22 +1353,33 @@ return;
         },
 
         fillLabs: function (creep, room, lab1, lab2, mineral1, mineral2) {
-            var labToDo = lab1.mineralCapacity - lab1.mineralAmount > 0 && room.storage.store[mineral1] > 0 ? lab1 : lab2.mineralCapacity - lab2.mineralAmount > 0  && room.storage.store[mineral2] > 0? lab2 : undefined;
+            var labToDo = Game.getObjectById(creep.memory.lf);
 
-            if (labToDo) {
-                var mineralAmountNeeded = labToDo.mineralCapacity - labToDo.mineralAmount > creep.carryCapacity ? creep.carryCapacity : labToDo.mineralCapacity - labToDo.mineralAmount;
-                var mineralNeeded = labToDo.id == lab1.id ? mineral1 : mineral2;
+            if (!labToDo) {
+                creep.memory.lf = lab1.mineralCapacity - lab1.mineralAmount > 0 && room.storage.store[mineral1] > 0 ? lab1 : lab2.mineralCapacity - lab2.mineralAmount > 0 && room.storage.store[mineral2] > 0 ? lab2 : undefined;
+                labToDo = Game.getObjectById(creep.memory.lf);
 
-                if (creep.carry[mineralNeeded] >= mineralAmountNeeded) {
-                    if (creep.pos.isNearTo(labToDo)) creep.transfer(labToDo, mineralNeeded);
-                    else creep.moveWithPath(labToDo, {maxRooms: 1});
-                }
-                else {
-                    if (creep.pos.isNearTo(room.storage)) creep.withdraw(room.storage, mineralNeeded, (mineralAmountNeeded > room.storage.store[mineralNeeded] ? room.storage.store[mineralNeeded] : mineralAmountNeeded));
-                    else creep.moveWithPath(room.storage, {maxRooms: 1});
-                }
+                if (!labToDo) return 'done';
             }
-            else return 'done';
+
+            var mineralAmountNeeded = labToDo.mineralCapacity - labToDo.mineralAmount > creep.carryCapacity ? creep.carryCapacity : labToDo.mineralCapacity - labToDo.mineralAmount;
+            var mineralNeeded = labToDo.id == lab1.id ? mineral1 : mineral2;
+
+            if (mineralAmountNeeded < 1) creep.memory.lf = undefined;
+
+            if (_.sum(creep.carry) == 0) creep.memory.w = 1;
+            else if (_.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
+
+            if (creep.memory.w) {
+                if (creep.pos.isNearTo(room.storage)) {
+                    if (creep.withdraw(room.storage, mineralNeeded, (mineralAmountNeeded > room.storage.store[mineralNeeded] ? room.storage.store[mineralNeeded] : mineralAmountNeeded)) == OK) creep.memory.w = 0;
+                }
+                else creep.moveWithPath(room.storage, {maxRooms: 1});
+            }
+            else {
+                if (creep.pos.isNearTo(labToDo)) creep.transfer(labToDo, mineralNeeded);
+                else creep.moveWithPath(labToDo, {maxRooms: 1});
+            }
         },
 
         emptyLabs: function (creep, room, labToEmpty = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_LAB, (s) => s.mineralAmount > 0))) {
