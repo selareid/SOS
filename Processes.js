@@ -1374,7 +1374,7 @@ return;
             if (creep.memory.w) {
                 if (labToEmpty) {
                     if (creep.pos.isNearTo(labToEmpty.pos)) {
-                        if (creep.withdraw(labToEmpty.mineralType) == OK) creep.memory.w = 0;
+                        if (creep.withdraw(labToEmpty, labToEmpty.mineralType) == OK) creep.memory.w = 0;
                     }
                     else creep.moveWithPath(labToEmpty, {maxRooms: 1});
                 }
