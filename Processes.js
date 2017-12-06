@@ -44,7 +44,7 @@ const defaultBodyChart = {
     harvesters: [[WORK, CARRY, MOVE, MOVE], [], 6],
     haulers: [[CARRY, CARRY, MOVE, MOVE], []],
     miners: [[WORK, MOVE], [CARRY, MOVE]],
-    doLabs: [[CARRY, MOVE], []]
+    doLabs: [[CARRY, MOVE], [], 21]
 };
 
 function getBodyChart(room) {
