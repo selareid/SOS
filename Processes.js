@@ -2175,8 +2175,6 @@ return;
                 var amountToMove;
 
                 for (let resourceType in room.terminal.store) {
-                    if (!room.terminal.store[RESOURCE_ENERGY]) continue;
-                    
                     if (resourceType == RESOURCE_ENERGY) {
                         if ((room.terminal.store[RESOURCE_ENERGY]-800 > 15000 && room.controller.level < 7) || room.storage.store[resourceType]+800 < storageEnergy) {
                             resourceToMove = resourceType;
@@ -2191,6 +2189,9 @@ return;
                 }
 
                 if (resourceToMove) {
+                    if (amountToMove > room.terminal.store[amountToMove]) amountToMove = room.terminal.store[amountToMove];
+                    if (amountToMove > creep.carryCapacity) amountToMove = creep.carryCapacity;
+                    
                     creep.memory.w = true;
                     creep.withdraw(room.terminal, resourceToMove, amountToMove);
                     return OK;
