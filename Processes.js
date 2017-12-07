@@ -2184,7 +2184,7 @@ return;
                         }
                     }
                     else if ((!room.storage.store[resourceType] || room.storage.store[resourceType] < 500) || room.terminal.store[resourceType]-800 > terminalGoals[resourceType]) {
-                        amountToMove = 500-room.storage.store[resourceType] > 0 ? 500-room.storage.store[resourceType] : undefined;
+                        amountToMove = 500-(room.storage.store[resourceType] || 0) > 0 ? 500-(room.storage.store[resourceType] || 0) : undefined;
                         resourceToMove = resourceType;
                         break;
                     }
