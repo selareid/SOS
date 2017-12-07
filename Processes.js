@@ -1367,7 +1367,7 @@ return;
 
             if (mineralAmountNeeded < 1 || (room.storage.store[mineralNeeded] || 0) < 1) return creep.memory.lf = undefined;
 
-            if (creep.carry[mineralNeeded] == 0) creep.memory.w = 1;
+            if (!creep.carry[mineralNeeded]) creep.memory.w = 1;
             else if (_.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
 
             if (creep.memory.w) {
