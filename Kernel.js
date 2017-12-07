@@ -7,18 +7,10 @@ var Kernel = {
     startup: function () {
         console.log("<p style=\"display:inline; color: #00ed1b\">" + '[Initializing Kernel]' + "</p>");
 
-        SegMemory.init();
-
         if (!global.allies || global.allies.length < 1 || !global.controllerSigns || global.controllerSigns.length < 1) {
             var segment0;
-            if (SegMemory.getSegment('alliesControllerSigns') == SegMemory.ERR_NOT_ACTIVE) {
-                SegMemory.storeSegment('alliesControllerSigns',{ "allies":["lur", "apemanzilla","dangermouse","dewjunkie","hiryus","jedislight","leonyx","lisp","rexalicious","rubra","starwar15432","thekraken","utiuti", "redijedi"], "controllerSigns":["““◯””", "Territory Of INTEGER_MAX","CIRCLE WORLD!","INTEGER_MAX","Cake!","Delicious Cake!","My Cake Is Real","The Cake Is A Lie","Territory Of STARWAR15432, An INTEGER_MAX MEMBER","Cake, and grief counseling, will be available at the conclusion of the test -GLaDOS","In layman's terms, speedy thing goes in, speedy thing comes out -GLaDOS","It's been a long time. I've been *really* busy being dead. You know, after you MURDERED ME? -GLaDOS","When life gives you lemons, don't make lemonade! Make life take the lemons back! -Portal 2","Do you know who I am? I'm the man whose gonna burn your house down - with the lemons! -Portal 2","It's your friend deadly neurotoxin. If I were you, I'd take a deep breath. And hold it. -Portal 2","See that? That is a potato battery. It's a toy for children. And now she lives in it. -Portal 2","Violence is the last refuge of the incompetent.","People who think they know everything are a great annoyance to those of us who do.", "The essence of strategy is choosing what not to do.", "Failure is simply the opportunity to begin again, this time more intelligently.", "You can buy ad space here! Message me for more details"] });
-                SegMemory.setActive('alliesControllerSigns');
-            }
-            else {
-                segment0 = SegMemory.getSegment('alliesControllerSigns');
-                SegMemory.setCrucial("alliesControllerSigns");
-            }
+            if (!RawMemory.segments[0]) RawMemory.setActiveSegments([0, 1]);
+            else segment0 = JSON.stringify(RawMemory.segments[0]);
 
             global.allies = segment0 && segment0.allies ? segment0.allies : [];
             global.controllerSigns = segment0 && segment0.controllerSigns ? segment0.controllerSigns : [];
@@ -45,18 +37,6 @@ var Kernel = {
         //         RawMemory.segments[1] = JSON.stringify(global.stats);
         //     }
         // }
-
-        var toEnable = SegMemory.endTick();
-        var activeSegments = SegMemory.endTick();// Creates a list of segments that should be active/set
-        if(activeSegments.rawMemorySegmentData){
-            for(var data in RawMemory.segments){
-                delete RawMemory.segments[data];
-            }
-            for(var data in activeSegments.rawMemorySegmentData){
-                RawMemory.segments[data] = activeSegments.rawMemorySegmentData[data];
-            }
-        }
-        RawMemory.setActiveSegments(activeSegments.nextEnabled);
     },
 
     run: function () {

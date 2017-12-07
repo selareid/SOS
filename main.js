@@ -1,6 +1,5 @@
 require('global')();
 require('prototype.console')();
-require('SegMemory');
 
 const Traveler = require('Traveler');
 
