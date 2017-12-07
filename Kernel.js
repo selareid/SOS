@@ -10,7 +10,7 @@ var Kernel = {
         if (!global.allies || global.allies.length < 1 || !global.controllerSigns || global.controllerSigns.length < 1) {
             var segment0;
             if (!RawMemory.segments[0]) RawMemory.setActiveSegments([0, 1]);
-            else segment0 = JSON.stringify(RawMemory.segments[0]);
+            else segment0 = JSON.parse(RawMemory.segments[0]);
 
             global.allies = segment0 && segment0.allies ? segment0.allies : [];
             global.controllerSigns = segment0 && segment0.controllerSigns ? segment0.controllerSigns : [];
