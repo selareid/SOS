@@ -17,6 +17,9 @@ var Kernel = {
         }
 
         global.Mem = Memory;
+
+        global.stats = {};
+
         global.processesRun = 0;
         global.processCost = {};
 
