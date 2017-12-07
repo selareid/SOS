@@ -18,7 +18,7 @@ var Kernel = {
 
         global.Mem = Memory;
 
-        global.stats = {};
+        global.stats = {rooms: {}};
 
         global.processesRun = 0;
         global.processCost = {};
