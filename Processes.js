@@ -117,27 +117,27 @@ module.exports = {
 
     doStats: {
         run: function () {return {response: 'idle', time: Game.time + 101};
-            //if (Game.cpu.limit < 10) return {response: 'idle', time: Game.time + 1001};
-            //
-            // global.stats.tick = Game.time;
-            // global.stats.gcl = Game.gcl;
-            // global.stats.constructionSites = _.size(Game.constructionSites);
-            // global.stats.tokens = Game.resources.token;
-            // global.stats.power = Game.resources[RESOURCE_POWER];
-            //
-            // global.stats.cpu = {
-            //     limit: Game.cpu.limit,
-            //     bucket: Game.cpu.bucket
-            // };
-            //
-            // global.stats.memory = {
-            //     used: RawMemory.get().length
-            // };
-            //
-            // global.stats.market = {
-            //     credits: Game.market.credits,
-            //     num_orders: Game.market.orders ? Object.keys(Game.market.orders).length : 0,
-            // };
+            if (Game.cpu.limit < 10) return {response: 'idle', time: Game.time + 1001};
+
+            global.stats.tick = Game.time;
+            global.stats.gcl = Game.gcl;
+            global.stats.constructionSites = _.size(Game.constructionSites);
+            global.stats.tokens = Game.resources.token;
+            global.stats.power = Game.resources[RESOURCE_POWER];
+
+            global.stats.cpu = {
+                limit: Game.cpu.limit,
+                bucket: Game.cpu.bucket
+            };
+
+            global.stats.memory = {
+                used: RawMemory.get().length
+            };
+
+            global.stats.market = {
+                credits: Game.market.credits,
+                num_orders: Game.market.orders ? Object.keys(Game.market.orders).length : 0,
+            };
         }
     },
 
@@ -737,27 +737,27 @@ return;
         },
 
         doStats: function (room) {
-            // if (!global.stats.rooms[room.name]) global.stats.rooms[room.name] = {};
-            //
-            // global.stats.rooms[room.name].controller = {
-            //     level: room.controller.level,
-            //     ticksToDowngrade: room.controller.ticksToDowngrade,
-            //     progress: room.controller.progress,
-            //     progressTotal: room.controller.progressTotal
-            // };
-            //
-            // var sortedCreeps = _.groupBy(room.find(FIND_MY_CREEPS), (creep) => {return creep.memory.p});
-            //
-            // for (let group in sortedCreeps) {
-            //     sortedCreeps[group] = _.size(sortedCreeps[group]);
-            // }
-            //
-            // global.stats.rooms[room.name].creeps = sortedCreeps;
-            // global.stats.rooms[room.name].storage = room.storage ? room.storage.store : {};
-            // global.stats.rooms[room.name].terminal = room.terminal ? room.terminal.store : {};
-            //
-            // global.stats.rooms[room.name].energyAvailable = room.energyAvailable;
-            // global.stats.rooms[room.name].energyCapacityAvailable = room.energyCapacityAvailable;
+            if (!global.stats.rooms[room.name]) global.stats.rooms[room.name] = {};
+
+            global.stats.rooms[room.name].controller = {
+                level: room.controller.level,
+                ticksToDowngrade: room.controller.ticksToDowngrade,
+                progress: room.controller.progress,
+                progressTotal: room.controller.progressTotal
+            };
+
+            var sortedCreeps = _.groupBy(room.find(FIND_MY_CREEPS), (creep) => {return creep.memory.p});
+
+            for (let group in sortedCreeps) {
+                sortedCreeps[group] = _.size(sortedCreeps[group]);
+            }
+
+            global.stats.rooms[room.name].creeps = sortedCreeps;
+            global.stats.rooms[room.name].storage = room.storage ? room.storage.store : {};
+            global.stats.rooms[room.name].terminal = room.terminal ? room.terminal.store : {};
+
+            global.stats.rooms[room.name].energyAvailable = room.energyAvailable;
+            global.stats.rooms[room.name].energyCapacityAvailable = room.energyCapacityAvailable;
         }
     },
 

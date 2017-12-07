@@ -26,17 +26,17 @@ var Kernel = {
     shutdown: function () {
         if (Game.time % 101 == 0) Memory.market = {};
 
-        // if (Game.cpu.limit >= 10) {
-        //     if (global.stats.cpu) {
-        //         global.stats.cpu.processUse = _.clone(global.processCost);
-        //         global.stats.cpu.getUsed = _.clone(Game.cpu.getUsed());
-        //     }
-        //
-        //     if (isUndefinedOrNull(RawMemory.segments[1])) RawMemory.setActiveSegments([0, 1]);
-        //     else if (global.stats) {
-        //         RawMemory.segments[1] = JSON.stringify(global.stats);
-        //     }
-        // }
+        if (Game.cpu.limit >= 10) {
+            if (global.stats.cpu) {
+                global.stats.cpu.processUse = _.clone(global.processCost);
+                global.stats.cpu.getUsed = _.clone(Game.cpu.getUsed());
+            }
+
+            if (isUndefinedOrNull(RawMemory.segments[1])) RawMemory.setActiveSegments([0, 1]);
+            else if (global.stats) {
+                RawMemory.segments[1] = JSON.stringify(global.stats);
+            }
+        }
     },
 
     run: function () {
