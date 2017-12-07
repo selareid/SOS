@@ -2418,7 +2418,7 @@ return;
                     }
                     else {
                         if (creep.upgradeController(room.controller) == ERR_NOT_IN_RANGE) creep.moveWithPath(room.controller, {range: 1, repath: 0.01, maxRooms: 1, ignoreCreeps: false});
-                        else if (creeps.length > 2 && creep.pos.getRangeTo(room.controller) > 2) creep.moveTo(room.controller);
+                        else if (creeps.length >= 2 && creep.pos.getRangeTo(room.controller) > 2) creep.moveTo(room.controller);
                     }
 
                 }
