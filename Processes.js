@@ -1296,15 +1296,13 @@ return;
         },
 
         choosingCompound: function (room) {
-            var mineral = room.find(FIND_MINERALS)[0];
-
-            var chosen;
-
-            for (let mineral2Type in REACTIONS[mineral.mineralType]) {
-                if (room.storage.store[mineral2Type] >= 500 && (room.terminal.store[REACTIONS[mineral.mineralType][mineral2Type]] || 0) < terminalGoals[REACTIONS[mineral.mineralType][mineral2Type]]) chosen = mineral2Type;
+            for (let mineral1Type in REACTIONS) {
+                if (!room.storage.store[mineral1Type] || room.storage.store[mineral1Type] < 500) continue;
+                
+                for (let mineral2Type in REACTIONS[mineral1Type]) {
+                    if (room.storage.store[mineral2Type] >= 500 && (room.terminal.store[REACTIONS[mineral1Type][mineral2Type]] || 0) < terminalGoals[REACTIONS[mineral1Type][mineral2Type]]) return [mineral1Type, mineral2Type];
+                }
             }
-
-            return !chosen ? undefined : [mineral.mineralType, chosen];
         },
 
         placeFlag: function (room) {
