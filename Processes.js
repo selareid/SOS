@@ -2175,6 +2175,8 @@ return;
                 var amountToMove;
 
                 for (let resourceType in room.terminal.store) {
+                    if (room.terminal.store[resourceType] < 1) continue
+                    
                     if (resourceType == RESOURCE_ENERGY) {
                         if ((room.terminal.store[RESOURCE_ENERGY]-800 > 15000 && room.controller.level < 7) || room.storage.store[resourceType]+800 < storageEnergy) {
                             resourceToMove = resourceType;
@@ -2210,6 +2212,8 @@ return;
                 var amountToMove;
 
                 for (let resourceType in room.storage.store) {
+                    if (room.storage.store[resourceType] < 1) continue
+                    
                     if (resourceType == RESOURCE_ENERGY) {
                         if ((room.terminal.store[RESOURCE_ENERGY]+800 < 15000 || room.controller.level > 7) && room.storage.store[resourceType]-800 > storageEnergy && room.terminal.store[RESOURCE_ENERGY] < 100000) {
                             resourceToMove = resourceType;
