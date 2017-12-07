@@ -29,14 +29,26 @@ if (Game.spawns['Spawn1']) {
         if (Game.shard.name == 'shard2' && RawMemory.interShardSegment == "gimme") {
             var otherCreep = Game.creeps[Memory.otherCreep];
 
-            if (!otherCreep && !Game.spawns['Spawn7'].spawning && Game.spawns['Spawn7'].room.energyAvailable >= 1000) {
+            if (!otherCreep && !Game.spawns['Spawn7'].spawning && Game.spawns['Spawn7'].room.energyAvailable >= 2400) {
                 if (!Memory.otherCreep) Memory.otherCreep = 'otherCreep' + Game.time;
-                Game.spawns['Spawn7'].spawnCreep([MOVE, WORK, CARRY, MOVE, WORK, CARRY,MOVE, WORK, CARRY, MOVE, WORK, CARRY,MOVE, WORK, CARRY, MOVE, WORK, CARRY,MOVE, WORK, CARRY, MOVE, WORK, CARRY], Memory.otherCreep);
+                Game.spawns['Spawn7'].spawnCreep([MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY,MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY], Memory.otherCreep);
             }
             else if (otherCreep) {
                 otherCreep.memory.l = Game.time;
                 otherCreep.memory.p = 'insanity';
-                otherCreep.travelTo(new RoomPosition(24, 44, 'W10S20'), {range: 0});
+                otherCreep.travelTo(new RoomPosition(44, 16, 'W20S20'), {range: 0});
+            }
+
+            var claimerOther = Game.creeps[Memory.claimerOther];
+
+            if (!claimerOther && !Game.spawns['Spawn7'].spawning && Game.spawns['Spawn7'].room.energyAvailable >= 700) {
+                if (!Memory.claimerOther) Memory.claimerOther = 'claimerOther' + Game.time;
+                Game.spawns['Spawn7'].spawnCreep([MOVE, MOVE, CLAIM], Memory.claimerOther);
+            }
+            else if (claimerOther) {
+                claimerOther.memory.l = Game.time;
+                claimerOther.memory.p = 'insanity';
+                claimerOther.travelTo(new RoomPosition(44, 16, 'W20S20'), {range: 0});
             }
         }
         else if (Game.shard.name == 'shard1') RawMemory.interShardSegment = "stop!";
@@ -56,7 +68,7 @@ if (Game.spawns['Spawn1']) {
 
 }
 else {
-    const roomToGoTo = 'W12S21';
+    const roomToGoTo = 'W21S18';
 
     require('prototype.creep');
 
@@ -91,7 +103,7 @@ else {
                     if (creep.pos.isNearTo(constructionSite)) creep.build(constructionSite);
                     else creep.travelTo(constructionSite);
                 }
-                else creep.room.createConstructionSite(new RoomPosition(28, 22, roomToGoTo), STRUCTURE_SPAWN);
+                else creep.room.createConstructionSite(new RoomPosition(27, 16, roomToGoTo), STRUCTURE_SPAWN);
             }
             else {
                 var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
