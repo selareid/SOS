@@ -1363,7 +1363,7 @@ return;
             var mineralAmountNeeded = labToDo.mineralCapacity - labToDo.mineralAmount > creep.carryCapacity ? creep.carryCapacity : labToDo.mineralCapacity - labToDo.mineralAmount;
             var mineralNeeded = labToDo.id == lab1.id ? mineral1 : mineral2;
 
-            if (mineralAmountNeeded < 1 || (room.storage.store[mineralNeeded] || 0)+(room.terminal.store[mineralNeeded] || 0)+creep.carry[mineralNeeded] < 1) return creep.memory.lf = undefined;
+            if (mineralAmountNeeded < 1 || (room.storage.store[mineralNeeded] || 0)+(room.terminal.store[mineralNeeded] || 0)+(creep.carry[mineralNeeded] || 0) < 1) return creep.memory.lf = undefined;
 
             if (!creep.carry[mineralNeeded]) creep.memory.w = 1;
             else if (_.sum(creep.carry) >= creep.carryCapacity) creep.memory.w = 0;
