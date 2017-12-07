@@ -116,7 +116,7 @@ module.exports = {
     },
 
     doStats: {
-        run: function () {return {response: 'idle', time: Game.time + 101};
+        run: function () {
             if (Game.cpu.limit < 10) return {response: 'idle', time: Game.time + 1001};
 
             global.stats.tick = Game.time;
