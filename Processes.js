@@ -2808,7 +2808,7 @@ return;
                 this.doReserver(creep, roomName);
             }
 
-            if ((Game.rooms[roomName] && Game.rooms[roomName].controller) && (reservers.length < 1 || reservers[0].ticksToLive) < 100 && nearestRoom.energyCapacityAvailable >= 600) Memory.reservers.push(module.exports.room.addToSQ(nearestRoom.name, 'reserver'));
+            if ((Game.rooms[roomName] && Game.rooms[roomName].controller) && (reservers.length < 1 || reservers[0].ticksToLive) < 100 && nearestRoom.energyCapacityAvailable >= 700) Memory.reservers.push(module.exports.room.addToSQ(nearestRoom.name, 'reserver'));
 
 
             //harvesters
