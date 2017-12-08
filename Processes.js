@@ -2039,6 +2039,7 @@ return;
                 var toPut = room.terminal && room.controller.level > 7 && room.storage.store[RESOURCE_ENERGY]-800 > storageEnergy && room.terminal.store[RESOURCE_ENERGY] < terminalGoals[RESOURCE_ENERGY]? room.terminal : room.storage;
                 creep.transfer(toPut, RESOURCE_ENERGY);
                 creep.memory.w = false;
+                room.memory.fromLink = (room.memory.fromLink || 0) + creep.carry[RESOURCE_ENERGY];
             }
             else {
                 //if carry is empty
