@@ -406,18 +406,11 @@ module.exports = {
                     }
                 }
                 else {
-                    if (creep.pos.roomName != room.name) {
+                    if (creep.pos.roomName == flag.pos.roomName) {
                         creep.moveWithPath(new RoomPosition(25, 25, room.name), {range: 23, repath: 0.01, maxRooms: 16});
                     }
                     else {
-                        if (!room.storage) {
-                            flag.remove();
-                            return {response: 'end'};
-                        }
-
-                        if (creep.pos.isNearTo(room.storage.pos)) creep.transfer(room.storage, RESOURCE_ENERGY);
-                        else creep.moveWithPath(room.storage, {range: 1, repath: 0.01, maxRooms: 1});
-                    }
+                        creep.drop(RESOURCE_ENERGY);
                 }
             }
             else Memory.crp = module.exports.room.addToSQ(room.name, 'stealEnergy');
