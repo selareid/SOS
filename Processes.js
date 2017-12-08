@@ -1057,7 +1057,9 @@ return;
                     }
                 }
             }
-
+            
+            if (!bestPos) console.notify('Unable to place extension flag in room ' + room.name);
+            
             room.createFlag(bestPos.x, bestPos.y, 'extensionFlag:' + room.name, COLOR_YELLOW, COLOR_ORANGE);
 
             console.notify('Places extension flag,\nROOM: ' + room.name + '\nAt Position: ' + bestPos.x + ' ' + bestPos.y);
