@@ -111,7 +111,6 @@ module.exports = {
             spawnNewProcess('checkGlobalProcesses');
             spawnNewProcess('checkStructRepair');
             spawnNewProcess('garbageCollection');
-            spawnNewProcess('scout');
         }
     },
 
@@ -546,58 +545,6 @@ return;
         }
     },
 
-    scout: {
-        run: function (Memory_it) {console.log('PLEASE REWRITE SCOUT PROCESS '); return {response: 'idle', time: Game.time + 101};
-            var Memory = global.Mem.p[Memory_it];
-
-            if (!Memory.crps) Memory.crps = [];
-
-            var creeps = Memory.crps;
-
-            for (let creep_it_it in creeps) {
-                if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
-                let creep = getCreep(creeps[creep_it_it].split(':')[0], 'scout');
-                if (creep == 'dead') {
-                    creep = undefined;
-                }
-
-                if (!creep) {
-                    if (!nearestRoom.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
-                    continue;
-                }
-                else if (creep.spawning) continue;
-
-                creep.talk('scout');
-
-                creep.travelTo(new RoomPosition(25, 25, toScout), {range: 23, repath: 0.001, maxRooms: 16, ignoreRoads: true});
-
-
-                // else if (Game.time-creep.room.memory.scoutData.lastCheck < 1250) Memory.toScout.splice(0, 1);
-            }
-
-            if (creeps.length < 1) {
-                Memory.crps.push(module.exports.room.addToSQ(nearestRoom.name, 'scout'));
-            }
-        }
-
-//         var whoOwnsRoom = !creep.room.controller ? OWNED_IMPOSSIBLE : creep.room.controller.my ? OWNED_ME : creep.room.controller.owner && _.includes(global.allies, creep.room.controller.owner.username) ? OWNED_ALLY : OWNED_NEUTRAL;
-//
-// if (!creep.room || !creep.room.memory.scoutData || Game.time - creep.room.memory.scoutData.lastCheck > 1250) {
-//     creep.room.memory.scoutData = {
-//         lastCheck: Game.time,
-//         owned: whoOwnsRoom,
-//         sources: creep.room.find(FIND_SOURCES).length,
-//         mineral: creep.room.find(FIND_MINERALS).length
-//     };
-//
-//     Memory.toScout.splice(0, 1);
-//
-//     _.forEach(Game.map.describeExits(creep.room), (r) => {
-//         if (!_.includes(Memory.toScout, r) && (!Game.rooms[r] || !Game.rooms[r].memory.scoutData || Game.time - Game.rooms[r].memory.scoutData.lastCheck > 1250) && Game.map.getRoomLinearDistance(nearestRoom, toScout) < 10) Memory.scout.push(r);
-//     });
-// }
-    },
-
     //room processes
 
     room: {
@@ -751,6 +698,35 @@ return;
 
             global.stats.rooms[room.name].energyAvailable = room.energyAvailable;
             global.stats.rooms[room.name].energyCapacityAvailable = room.energyCapacityAvailable;
+        }
+    },
+
+    scout: {
+        run: function (Memory_it) {return {response: 'end'};
+            var Memory = global.Mem.p[Memory_it];
+
+            var room = Game.rooms[Memory.rmN];
+
+            if (!Memory.scoutQueue) Memory.scoutQueue = [];
+
+            var toScout = _.sortBy(Memory.scoutQueue, (r) => Memory.rooms[r] && Memory.rooms[r].scoutData && Memory.rooms[r].scoutData.lastCheck ? Memory.rooms[r].scoutData.lastCheck : Number.POSITIVE_INFINITY);
+
+            //         var whoOwnsRoom = !creep.room.controller ? OWNED_IMPOSSIBLE : creep.room.controller.my ? OWNED_ME : creep.room.controller.owner && _.includes(global.allies, creep.room.controller.owner.username) ? OWNED_ALLY : OWNED_NEUTRAL;
+//
+// if (!creep.room || !creep.room.memory.scoutData || Game.time - creep.room.memory.scoutData.lastCheck > 1250) {
+//     creep.room.memory.scoutData = {
+//         lastCheck: Game.time,
+//         owned: whoOwnsRoom,
+//         sources: creep.room.find(FIND_SOURCES).length,
+//         mineral: creep.room.find(FIND_MINERALS).length
+//     };
+//
+//     Memory.toScout.splice(0, 1);
+//
+//     _.forEach(Game.map.describeExits(creep.room), (r) => {
+//         if (!_.includes(Memory.toScout, r) && (!Game.rooms[r] || !Game.rooms[r].memory.scoutData || Game.time - Game.rooms[r].memory.scoutData.lastCheck > 1250) && Game.map.getRoomLinearDistance(nearestRoom, toScout) < 10) Memory.scout.push(r);
+//     });
+// }
         }
     },
 
