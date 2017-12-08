@@ -2162,7 +2162,7 @@ return;
                 }
 
                 if (resourceToMove) {
-                    if (amountToMove > room.terminal.store[amountToMove]) amountToMove = room.terminal.store[amountToMove];
+                    if (amountToMove > room.terminal.store[resourceType]) amountToMove = room.terminal.store[amountToMove];
                     if (amountToMove > creep.carryCapacity) amountToMove = creep.carryCapacity;
                     
                     creep.memory.w = true;
