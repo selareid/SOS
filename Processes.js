@@ -409,8 +409,7 @@ module.exports = {
                     if (creep.pos.roomName == flag.pos.roomName) {
                         creep.moveWithPath(new RoomPosition(25, 25, room.name), {range: 23, repath: 0.01, maxRooms: 16});
                     }
-                    else {
-                        creep.drop(RESOURCE_ENERGY);
+                    else creep.drop(RESOURCE_ENERGY);
                 }
             }
             else Memory.crp = module.exports.room.addToSQ(room.name, 'stealEnergy');
