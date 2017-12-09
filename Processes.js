@@ -591,7 +591,7 @@ return;
                     }
 
                     if (!processExists('scout', Memory.rmN)) spawnNewProcess('scout', Memory.rmN);
-                    
+
                     if (!processExists('doHarvest', Memory.rmN)) spawnNewProcess('doHarvest', Memory.rmN);
                     if (!processExists('takeCare', Memory.rmN)) spawnNewProcess('takeCare', Memory.rmN);
                     if (!processExists('fillSpawn', Memory.rmN)) spawnNewProcess('fillSpawn', Memory.rmN);
@@ -708,6 +708,7 @@ return;
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
+            if (!room) return {response: 'end'};
 
             if (!Memory.creeps) Memory.creeps = [];
             if (!Memory.scoutQueue) Memory.scoutQueue = _.map(Game.map.describeExits(room.name), (rN) => rN);
