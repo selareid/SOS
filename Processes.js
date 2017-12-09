@@ -704,7 +704,7 @@ return;
     },
 
     scout: {
-        run: function (Memory_it) {return {response: 'end'};
+        run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
@@ -716,7 +716,7 @@ return;
             var toScout = Memory.toScout;
 
             if (!toScout) {
-                var newRoom = _.sortBy(Memory.scoutQueue, (r) => Memory.rooms && Memory.rooms[r] && Memory.rooms[r].scoutData && Memory.rooms[r].scoutData.lastCheck ? Memory.rooms[r].scoutData.lastCheck : Number.POSITIVE_INFINITY)[0];
+                var newRoom = _.sortBy(Memory.scoutQueue, (r) => Memory.rooms && Memory.rooms[r] && Memory.rooms[r].scoutData && Memory.rooms[r].scoutData.lastCheck ? Memory.rooms[r].scoutData.lastCheck : Number.NEGATIVE_INFINITY)[0];
 
                 Memory.toScout = newRoom;
                 toScout = Memory.toScout;
@@ -744,7 +744,7 @@ return;
                 else {
                     //add rooms to scoutQueue if not already in and also if near enough to home room
                     _.forEach(Game.map.describeExits(room.name), (roomName) => {
-                        if (Memory.scoutQueue.includes(roomName) && Game.map.getRoomLinearDistance(room.name, roomName) < SCOUT_LINEAR_DISTANCE) Memory.scoutQueue.push(roomName);
+                        if (!Memory.scoutQueue.includes(roomName) && Game.map.getRoomLinearDistance(room.name, roomName) < SCOUT_LINEAR_DISTANCE) Memory.scoutQueue.push(roomName);
                     });
 
 
