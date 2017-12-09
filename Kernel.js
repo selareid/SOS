@@ -96,6 +96,7 @@ var Kernel = {
                     if (!process.pN) {
                         console.logKernel('KILLED PROCESS ' + processTag + ' CAUSE NO PROCESS NAME');
                         delete Memory.p[processTag];
+                        continue;
                     }
 
                     if (Processes[process.pN.split(':')]) {
