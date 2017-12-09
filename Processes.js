@@ -704,7 +704,7 @@ return;
     },
 
     scout: {
-        run: function (Memory_it) {
+        run: function (Memory_it) {return {response: 'idle', time: Game.time + 101};
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
