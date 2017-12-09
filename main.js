@@ -38,17 +38,17 @@ if (Game.spawns['Spawn1']) {
                 otherCreep.travelTo(new RoomPosition(24, 44, 'W10S20'), {range: 0});
             }
 
-            var claimerOther = Game.creeps[Memory.claimerOther];
-
-            if (!claimerOther && !Game.spawns['Spawn10'].spawning && Game.spawns['Spawn10'].room.energyAvailable >= 650) {
-                if (!Memory.claimerOther) Memory.claimerOther = 'claimerOther' + Game.time;
-                Game.spawns['Spawn10'].spawnCreep([MOVE, CLAIM], Memory.claimerOther);
-            }
-            else if (claimerOther) {
-                claimerOther.memory.l = Game.time;
-                claimerOther.memory.p = 'insanity';
-                claimerOther.travelTo(new RoomPosition(24, 44, 'W10S20'), {range: 0});
-            }
+            // var claimerOther = Game.creeps[Memory.claimerOther];
+            //
+            // if (!claimerOther && !Game.spawns['Spawn10'].spawning && Game.spawns['Spawn10'].room.energyAvailable >= 650) {
+            //     if (!Memory.claimerOther) Memory.claimerOther = 'claimerOther' + Game.time;
+            //     Game.spawns['Spawn10'].spawnCreep([MOVE, CLAIM], Memory.claimerOther);
+            // }
+            // else if (claimerOther) {
+            //     claimerOther.memory.l = Game.time;
+            //     claimerOther.memory.p = 'insanity';
+            //     claimerOther.travelTo(new RoomPosition(24, 44, 'W10S20'), {range: 0});
+            // }
         }
         else if (Game.shard.name == 'shard1') RawMemory.interShardSegment = "stop!";
         //normal code
