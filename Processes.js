@@ -754,7 +754,7 @@ return;
                 else {
                     //add rooms to scoutQueue if not already in and also if near enough to home room
                     _.forEach(Game.map.describeExits(room.name), (roomName) => {
-                        if (!Memory.scoutQueue.includes(roomName) && Game.map.getRoomLinearDistance(room.name, roomName) < SCOUT_LINEAR_DISTANCE) Memory.scoutQueue.push(roomName);
+                        if (!_.includes(Memory.scoutQueue, roomName) && Game.map.getRoomLinearDistance(room.name, roomName) < SCOUT_LINEAR_DISTANCE) Memory.scoutQueue.push(roomName);
                     });
 
 
