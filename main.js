@@ -67,7 +67,7 @@ if (Game.spawns['Spawn1']) {
 
 }
 else {
-    const roomToGoTo = 'W9S21';
+    const roomToGoTo = 'W12S21';
 
     require('prototype.creep');
 
@@ -102,7 +102,7 @@ else {
                     if (creep.pos.isNearTo(constructionSite)) creep.build(constructionSite);
                     else creep.travelTo(constructionSite);
                 }
-                else creep.room.createConstructionSite(new RoomPosition(18, 31, roomToGoTo), STRUCTURE_SPAWN);
+                else creep.room.createConstructionSite(new RoomPosition(28, 22, roomToGoTo), STRUCTURE_SPAWN);
             }
             else {
                 var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
