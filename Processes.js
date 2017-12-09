@@ -753,7 +753,7 @@ return;
                 if (creep.pos.roomName != toScout) creep.travelTo(new RoomPosition(21, 21, toScout), {range: 21, repath: 0.01});
                 else {
                     //add rooms to scoutQueue if not already in and also if near enough to home room
-                    _.forEach(Game.map.describeExits(room.name), (roomName) => {
+                    _.forEach(Game.map.describeExits(toScout), (roomName) => {
                         if (!_.includes(Memory.scoutQueue, roomName) && Game.map.getRoomLinearDistance(room.name, roomName) < SCOUT_LINEAR_DISTANCE) Memory.scoutQueue.push(roomName);
                     });
 
