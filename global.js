@@ -140,4 +140,6 @@ module.exports = () => {
     OWNED_NEUTRAL = 2;
     OWNED_ENEMY = 3;
     OWNED_IMPOSSIBLE = 4;
+
+    SCOUT_LINEAR_DISTANCE = 5;
 };

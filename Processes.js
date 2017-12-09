@@ -325,8 +325,8 @@ module.exports = {
                 if (crusher) {
                     if (!healer.pos.isNearTo(crusher) && healer.pos.roomName == crusher.pos.roomName) healer.moveTo(crusher, {reusePath: 2});
                     else if (healer.pos.roomName != crusher.pos.roomName) {
-                        if (!crusher.pos.isNearTo(flag.pos)) crusher.travelTo(flag, {range: 2, repath: 0.01});
-                        if (!healer.pos.isNearTo(flag.pos)) healer.travelTo(flag, {range: 2, repath: 0.01});
+                        if (!crusher.pos.isNearTo(flag.pos)) crusher.travelTo(flag, {repath: 0.01});
+                        if (!healer.pos.isNearTo(flag.pos)) healer.travelTo(crusher, {repath: 0.01});
                     }
                     else {
                         if (crusher.pos.roomName != flag.pos.roomName) {
@@ -707,11 +707,50 @@ return;
 
             var room = Game.rooms[Memory.rmN];
 
-            if (!Memory.scoutQueue) Memory.scoutQueue = [];
+            if (!Memory.creeps) Memory.creeps = [];
+            if (!Memory.scoutQueue) Memory.scoutQueue = _.map(Game.map.describeExits(room.name), (rN) => rN);
 
-            var toScout = _.sortBy(Memory.scoutQueue, (r) => Memory.rooms[r] && Memory.rooms[r].scoutData && Memory.rooms[r].scoutData.lastCheck ? Memory.rooms[r].scoutData.lastCheck : Number.POSITIVE_INFINITY);
+            var toScout = Memory.toScout;
 
-            //         var whoOwnsRoom = !creep.room.controller ? OWNED_IMPOSSIBLE : creep.room.controller.my ? OWNED_ME : creep.room.controller.owner && _.includes(global.allies, creep.room.controller.owner.username) ? OWNED_ALLY : OWNED_NEUTRAL;
+            if (toScout) {
+                var newRoom = _.sortBy(Memory.scoutQueue, (r) => Memory.rooms[r] && Memory.rooms[r].scoutData && Memory.rooms[r].scoutData.lastCheck ? Memory.rooms[r].scoutData.lastCheck : Number.POSITIVE_INFINITY)[0];
+
+                Memory.toScout = newRoom;
+                toScout = Memory.toScout;
+            }
+
+            var creeps = Memory.creeps;
+
+            for (let creep_it_it in creeps) {
+                if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
+                let creep = getCreep(creeps[creep_it_it].split(':')[0], 'scout');
+                if (creep == 'dead') {
+                    creep = undefined;
+                }
+
+                if (!creep) {
+                    if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
+                    continue;
+                }
+                else if (creep.spawning) continue;
+
+                creep.talk('scout');
+
+
+                if (creep.pos.roomName != toScout) creep.travelTo(new RoomPosition(21, 21, toScout), {range: 21, repath: 0.01});
+                else {
+                    //add rooms to scoutQueue if not already in and also if near enough to home room
+                    _.forEach(Game.map.describeExits(room.name), (roomName) => {
+                        if (Memory.scoutQueue.includes(roomName) && Game.map.getRoomLinearDistance(room.name, roomName) < SCOUT_LINEAR_DISTANCE) Memory.scoutQueue.push(roomName);
+                    });
+
+                    //TODO put scout data in room memory
+                }
+            }
+
+            if (Memory.creeps.length < 1) Memory.creeps.push(module.exports.room.addToSQ(room.name, 'scout'));
+
+                    // var whoOwnsRoom = !creep.room.controller ? OWNED_IMPOSSIBLE : creep.room.controller.my ? OWNED_ME : creep.room.controller.owner && _.includes(global.allies, creep.room.controller.owner.username) ? OWNED_ALLY : OWNED_NEUTRAL;
 //
 // if (!creep.room || !creep.room.memory.scoutData || Game.time - creep.room.memory.scoutData.lastCheck > 1250) {
 //     creep.room.memory.scoutData = {
@@ -789,7 +828,7 @@ return;
             if (baddies.length < 1) return {response: 'end'};
             
             var creeps = Memory.creeps;
-            
+
             for (let creep_it_it in creeps) {
                 if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
                 let creep = getCreep(creeps[creep_it_it].split(':')[0], 'defendRoom');
