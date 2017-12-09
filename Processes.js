@@ -590,6 +590,8 @@ return;
                         if (mineral && room.controller.level >= 6 && ((mineral.mineralAmount > 1 || mineral.ticksToRegeneration < 200) && !processExists('mine', Memory.rmN))) spawnNewProcess('mine', Memory.rmN);
                     }
 
+                    if (!processExists('scout', Memory.rmN)) spawnNewProcess('scout', Memory.rmN);
+                    
                     if (!processExists('doHarvest', Memory.rmN)) spawnNewProcess('doHarvest', Memory.rmN);
                     if (!processExists('takeCare', Memory.rmN)) spawnNewProcess('takeCare', Memory.rmN);
                     if (!processExists('fillSpawn', Memory.rmN)) spawnNewProcess('fillSpawn', Memory.rmN);
@@ -702,7 +704,7 @@ return;
     },
 
     scout: {
-        run: function (Memory_it) {return {response: 'end'};
+        run: function (Memory_it) {
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
@@ -744,28 +746,36 @@ return;
                         if (Memory.scoutQueue.includes(roomName) && Game.map.getRoomLinearDistance(room.name, roomName) < SCOUT_LINEAR_DISTANCE) Memory.scoutQueue.push(roomName);
                     });
 
-                    //TODO put scout data in room memory
+
+                    var whoOwnsRoom = !creep.room.controller ? OWNED_IMPOSSIBLE : creep.room.controller.my ? OWNED_ME : creep.room.controller.owner ? _.includes(global.allies, creep.room.controller.owner.username) ? OWNED_ALLY : OWNED_ENEMY : OWNED_NEUTRAL;
+
+                    creep.room.memory.scoutData = {
+                        lastCheck: Game.time,
+                        owned: whoOwnsRoom
+                    };
+
+                    var sources = creep.room.find(FIND_SOURCES);
+                    if (sources && sources.length > 0) creep.room.memory.scoutData.sources = {
+                        amount: sources.length
+                    };
+
+                    var powerBank = creep.room.getStructures(STRUCTURE_POWER_BANK)[0];
+                    if (powerBank) creep.room.memory.scoutData.powerBank = {
+                        power: powerBank.power,
+                        decayTime: Game.time+powerBank.ticksToDecay
+                    };
+
+                    var mineral = creep.room.find(FIND_MINERALS)[0];
+                    if (mineral) creep.room.memory.scoutData.mineral = {
+                        mineralType: mineral.mineralType
+                    };
+
+                    Memory.toScout = undefined;
                 }
             }
 
             if (Memory.creeps.length < 1) Memory.creeps.push(module.exports.room.addToSQ(room.name, 'scout'));
 
-                    // var whoOwnsRoom = !creep.room.controller ? OWNED_IMPOSSIBLE : creep.room.controller.my ? OWNED_ME : creep.room.controller.owner && _.includes(global.allies, creep.room.controller.owner.username) ? OWNED_ALLY : OWNED_NEUTRAL;
-//
-// if (!creep.room || !creep.room.memory.scoutData || Game.time - creep.room.memory.scoutData.lastCheck > 1250) {
-//     creep.room.memory.scoutData = {
-//         lastCheck: Game.time,
-//         owned: whoOwnsRoom,
-//         sources: creep.room.find(FIND_SOURCES).length,
-//         mineral: creep.room.find(FIND_MINERALS).length
-//     };
-//
-//     Memory.toScout.splice(0, 1);
-//
-//     _.forEach(Game.map.describeExits(creep.room), (r) => {
-//         if (!_.includes(Memory.toScout, r) && (!Game.rooms[r] || !Game.rooms[r].memory.scoutData || Game.time - Game.rooms[r].memory.scoutData.lastCheck > 1250) && Game.map.getRoomLinearDistance(nearestRoom, toScout) < 10) Memory.scout.push(r);
-//     });
-// }
         }
     },
 
