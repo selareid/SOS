@@ -93,7 +93,10 @@ var Kernel = {
                     process.queue = process.queue == 0 ? 0 : process.queue - 1;
                 }
                 else {
-                    if (!process.pN) return; //Todo add something here
+                    if (!process.pN) {
+                        console.logKernel('KILLED PROCESS ' + processTag + ' CAUSE NO PROCESS NAME');
+                        delete Memory.p[processTag];
+                    }
 
                     if (Processes[process.pN.split(':')]) {
                         try {
