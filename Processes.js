@@ -716,11 +716,7 @@ return;
             var toScout = Memory.toScout;
 
             if (!toScout) {
-                var newRoom;
-
-                _.forEach(Memory.scoutQueue, (r) => {
-                    if ((Memory.rooms && Memory.rooms[newRoom] && Memory.rooms[newRoom].scoutData && Memory.rooms[newRoom].scoutData.lastCheck || 0) > (Memory.rooms && Memory.rooms[r] && Memory.rooms[r].scoutData && Memory.rooms[r].scoutData.lastCheck || 0)) newRoom = r;
-                });
+                var newRoom = _.sortBy(Memory.scoutQueue, (r) => Memory.rooms && Memory.rooms[r] && Memory.rooms[r].scoutData && Memory.rooms[r].scoutData.lastCheck ? Memory.rooms[r].scoutData.lastCheck : 0);
 
                 Memory.toScout = newRoom;
                 toScout = Memory.toScout;
