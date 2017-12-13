@@ -649,7 +649,7 @@ return;
             var room = Game.rooms[Memory.rmN];
 
             var nextToSpawn = _.sortBy(room.memory.spawnQueue, (c) => {
-                if (c.body && c.body.cost && c.body.cost > room.energyCapacityAvailable) return Number.POSITIVE_INFINITY;
+                if (!c.body || !c.body.cost || c.body.cost > room.energyCapacityAvailable) return Number.POSITIVE_INFINITY;
                 return c.proc == 'doHarvest' || c.proc == 'guards' || c.proc == 'defendRoom' ? 0 : c.proc == 'fillSpawn' ? 1 : c.proc == 'strgDistr' ? 2 : c.proc == 'fillExt' ? 3 : c.proc == 'claim' || c.proc == 'scout' ? 4 : c.proc == 'praiseRC' && room.controller.ticksToDowngrade*2 >= CONTROLLER_DOWNGRADE && room.controller.progress < room.controller.progressTotal ? 6 : c.proc == 'doLabs' ? 7 : 5;
             })[0];
 
