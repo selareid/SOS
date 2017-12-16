@@ -1471,7 +1471,7 @@ return;
 
     //shuffling
             for (let resourceType in room.terminal.store) {
-                if (global.shuffle && global.shuffle[resourceType]) {
+                if (global.shuffle && global.shuffle[resourceType] && room.terminal.store[resourceType] >= 100) {
                     var closestRoomThatNeedsResources;
 
                     for (let roomName in global.shuffle[resourceType]) {
