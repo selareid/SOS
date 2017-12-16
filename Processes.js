@@ -1504,6 +1504,9 @@ return;
                                 global.shuffle[resourceType][closestRoomThatNeedsResources.roomName] = global.shuffle[resourceType][closestRoomThatNeedsResources.roomName]-amountToSend;
                                 return {response: 'idle', time: Game.time + 10};
                             }
+                            else {console.notify('Tried to send ' + resourceType + ' Amount ' + amountToSend + ' To Room ' + closestRoomThatNeedsResources.roomName
+                                + ' With Result ' + rsl + ' With energy ' + room.terminal.store[RESOURCE_ENERGY] + ' Amount in terminal of the resource to send '
+                                + room.terminal.store[resourceType] + ' Transfer cost ' + transCost);}
                         }
                     }
                 }
