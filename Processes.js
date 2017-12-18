@@ -1038,7 +1038,7 @@ return;
                 }
             }
 
-            return room.controller.level < 8 ? {response: 'idle', time: Game.time + Math.round((room.controller.progressTotal/room.controller.progress)*100)} : {response: 'idle', time: Game.time + 10001};;
+            return room.controller.level < 8 ? {response: 'idle', time: Game.time + Math.round((room.controller.progressTotal/room.controller.progress)*2)} : {response: 'idle', time: Game.time + 10001};;
         },
 
         placeFlag: function (room) {
