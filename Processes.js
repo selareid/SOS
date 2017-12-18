@@ -582,7 +582,7 @@ return;
 
                 if (!room.memory.minimal && Game.time % 11 == 0) {
                     if (room.storage) {
-                        if (room.terminal && !processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
+                        if (room.terminal && room.controller.level >= 8 && !processExists('doTerminal', Memory.rmN)) spawnNewProcess('doTerminal', Memory.rmN);
                         if (room.terminal && !processExists('doLabs', Memory.rmN)) spawnNewProcess('doLabs', Memory.rmN);
                         if (room.terminal && !processExists('shuffleOrdering', Memory.rmN)) spawnNewProcess('shuffleOrdering', Memory.rmN);
 
@@ -1471,7 +1471,7 @@ return;
             var Memory = global.Mem.p[Memory_it];
 
             var room = Game.rooms[Memory.rmN];
-            if (!room || !room.storage || !room.terminal) return {response: 'end'};
+            if (!room || !room.storage || !room.terminal || room.controller.level < 8) return {response: 'end'};
             if (!global[room.name]) global[room.name] = {};
             if (!global.Mem.market) global.Mem.market = {};
 
@@ -2217,7 +2217,7 @@ return;
                     if (room.terminal.store[resourceType] < 1) continue
                     
                     if (resourceType == RESOURCE_ENERGY) {
-                        if ((room.terminal.store[RESOURCE_ENERGY]-800 > 15000 && room.controller.level < 7) || room.storage.store[resourceType]+800 < storageEnergy) {
+                        if ((room.terminal.store[RESOURCE_ENERGY]-800 > 15000 && room.controller.level < 8) || room.storage.store[resourceType]+800 < storageEnergy) {
                             resourceToMove = resourceType;
                             break;
                         }
@@ -2254,7 +2254,7 @@ return;
                     if (room.storage.store[resourceType] < 1) continue
                     
                     if (resourceType == RESOURCE_ENERGY) {
-                        if ((room.terminal.store[RESOURCE_ENERGY]+800 < 15000 || room.controller.level > 7) && room.storage.store[resourceType]-800 > storageEnergy && room.terminal.store[RESOURCE_ENERGY] < 100000) {
+                        if ((room.terminal.store[RESOURCE_ENERGY]+800 < 15000 || room.controller.level > 8) && room.storage.store[resourceType]-800 > storageEnergy && room.terminal.store[RESOURCE_ENERGY] < 100000) {
                             resourceToMove = resourceType;
                             break;
                         }
