@@ -2488,8 +2488,10 @@ return;
                     var storage = room.storage;
 
                     if (!storage) return 1;
+                    
+                    var totalEnergy = room.terminal ? (storage.store.energy || 0)+(room.terminal.store.energy || 0) : storage.store.energy;
 
-                    return Math.floor((storage.store.energy - 20000) / 20000) > 1 ? Math.min(Math.floor((storage.store.energy - 20000) / 20000), 2) : 1;
+                    return Math.floor(totalEnergy / 20000) > 1 ? Math.min(Math.floor(totalEnergy / 20000), 7) : 1;
                 }
                 else return room.controller.ticksToDowngrade <= CONTROLLER_DOWNGRADE[room.controller.level]*0.5 ? 1 : 0;
             }
