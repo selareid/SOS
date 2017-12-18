@@ -748,11 +748,11 @@ return;
                 if (creep.pos.roomName != toScout) {
                     var rsl = creep.travelTo(new RoomPosition(21, 21, toScout), {range: 21, repath: 0.01});
 
-                    if (Game.time % 1001 && Game.map.getRoomLinearDistance(creep.room.name, toScout) < 2) Memory.cutOut =  Game.map.getRoomLinearDistance(creep.room.name, toScout)*75;
+                    if (Game.time % 1001 && Game.map.getRoomLinearDistance(creep.room.name, toScout) < 2) Memory.cutOut =  Game.time+Game.map.getRoomLinearDistance(creep.room.name, toScout)*75;
 
                     if (rsl == ERR_NO_PATH || Game.time > Memory.cutOut) {
-                        if (!Memory.rooms[toScout]) Memory.rooms[toScout] = {};
-                        Memory.rooms[toScout].scoutData = {lastCheck: Game.time+1001};
+                        if (!global.Mem[toScout]) global.Mem[toScout] = {};
+                        global.Mem[toScout].scoutData = {lastCheck: Game.time+1001};
                         Memory.toScout = undefined;
                         delete Memory.cutOut;
                     }
