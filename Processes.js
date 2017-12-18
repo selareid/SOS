@@ -742,6 +742,10 @@ return;
                 }
                 else if (creep.spawning) continue;
 
+                if (!creep.memory.notifyingOnDeath) {
+                    if (creep.notifyWhenAttacked(false) == OK) creep.memory.notifyingOnDeath = 1; 
+                }
+                
                 creep.talk('scout');
 
 
