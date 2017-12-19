@@ -718,32 +718,34 @@ return;
             if (!toScout) this.getNewRoomToScout(Memory);
 
             if (Game.rooms[toScout]) {
+                var roomScouting = Game.rooms[toScout];
+
                 //add rooms to scoutQueue if not already in and also if near enough to home room
                 _.forEach(Game.map.describeExits(toScout), (roomName) => {
                     if (!_.includes(Memory.scoutQueue, roomName) && Game.map.getRoomLinearDistance(room.name, roomName) < SCOUT_LINEAR_DISTANCE) Memory.scoutQueue.push(roomName);
                 });
 
 
-                var whoOwnsRoom = !creep.room.controller ? OWNED_IMPOSSIBLE : creep.room.controller.my ? OWNED_ME : creep.room.controller.owner ? _.includes(global.allies, creep.room.controller.owner.username) ? OWNED_ALLY : OWNED_ENEMY : OWNED_NEUTRAL;
+                var whoOwnsRoom = !roomScouting.controller ? OWNED_IMPOSSIBLE : roomScouting.controller.my ? OWNED_ME : roomScouting.controller.owner ? _.includes(global.allies, roomScouting.controller.owner.username) ? OWNED_ALLY : OWNED_ENEMY : OWNED_NEUTRAL;
 
-                creep.room.memory.scoutData = {
+                roomScouting.memory.scoutData = {
                     lastCheck: Game.time,
                     owned: whoOwnsRoom
                 };
 
-                var sources = creep.room.find(FIND_SOURCES);
-                if (sources && sources.length > 0) creep.room.memory.scoutData.sources = {
+                var sources = roomScouting.find(FIND_SOURCES);
+                if (sources && sources.length > 0) roomScouting.memory.scoutData.sources = {
                     amount: sources.length
                 };
 
-                var powerBank = creep.room.getStructures(STRUCTURE_POWER_BANK)[0];
-                if (powerBank) creep.room.memory.scoutData.powerBank = {
+                var powerBank = roomScouting.getStructures(STRUCTURE_POWER_BANK)[0];
+                if (powerBank) roomScouting.memory.scoutData.powerBank = {
                     power: powerBank.power,
                     decayTime: Game.time + powerBank.ticksToDecay
                 };
 
-                var mineral = creep.room.find(FIND_MINERALS)[0];
-                if (mineral) creep.room.memory.scoutData.mineral = {
+                var mineral = roomScouting.find(FIND_MINERALS)[0];
+                if (mineral) roomScouting.memory.scoutData.mineral = {
                     mineralType: mineral.mineralType
                 };
 
