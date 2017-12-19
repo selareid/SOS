@@ -270,7 +270,7 @@ module.exports = {
             var flag = Game.flags[Memory.f];
             var roomToRally = Memory.RTRLY;
 
-            if (!Memory.complete && (!flag || !room)) {
+            if (!Memory.complete && (!flag || !room || !roomToRally)) {
                 var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'drainer' && Game.rooms[f.name.split(' ')[1]])[0];
                 Memory.rmN = newFlag ? newFlag.name.split(' ')[1] : undefined;
                 Memory.roomToRally = newFlag ? newFlag.name.split(' ')[2] : undefined;
