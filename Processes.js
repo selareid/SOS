@@ -715,89 +715,100 @@ return;
 
             var toScout = Memory.toScout;
 
-            if (!toScout) {
-                var newRoom = {};
+            if (!toScout) this.getNewRoomToScout(Memory);
 
-                _.forEach(Memory.scoutQueue, (r) => {
-                    var lastCheck = Memory.rooms && Memory.rooms[r] && Memory.rooms[r].scoutData && Memory.rooms[r].scoutData.lastCheck ? Memory.rooms[r].scoutData.lastCheck : 0;
-                    if (!newRoom.lastCheck || lastCheck < newRoom.lastCheck) newRoom = {r, lastCheck};
+            if (Game.rooms[toScout]) {
+                //add rooms to scoutQueue if not already in and also if near enough to home room
+                _.forEach(Game.map.describeExits(toScout), (roomName) => {
+                    if (!_.includes(Memory.scoutQueue, roomName) && Game.map.getRoomLinearDistance(room.name, roomName) < SCOUT_LINEAR_DISTANCE) Memory.scoutQueue.push(roomName);
                 });
 
-                Memory.toScout = newRoom.r;
+
+                var whoOwnsRoom = !creep.room.controller ? OWNED_IMPOSSIBLE : creep.room.controller.my ? OWNED_ME : creep.room.controller.owner ? _.includes(global.allies, creep.room.controller.owner.username) ? OWNED_ALLY : OWNED_ENEMY : OWNED_NEUTRAL;
+
+                creep.room.memory.scoutData = {
+                    lastCheck: Game.time,
+                    owned: whoOwnsRoom
+                };
+
+                var sources = creep.room.find(FIND_SOURCES);
+                if (sources && sources.length > 0) creep.room.memory.scoutData.sources = {
+                    amount: sources.length
+                };
+
+                var powerBank = creep.room.getStructures(STRUCTURE_POWER_BANK)[0];
+                if (powerBank) creep.room.memory.scoutData.powerBank = {
+                    power: powerBank.power,
+                    decayTime: Game.time + powerBank.ticksToDecay
+                };
+
+                var mineral = creep.room.find(FIND_MINERALS)[0];
+                if (mineral) creep.room.memory.scoutData.mineral = {
+                    mineralType: mineral.mineralType
+                };
+
+                Memory.toScout = undefined;
+                if (Memory.cutOut) delete Memory.cutOut;
                 toScout = Memory.toScout;
             }
 
-            var creeps = Memory.creeps;
+            var observer = room.getStructures(STRUCTURE_OBSERVER)[0];
 
-            for (let creep_it_it in creeps) {
-                if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
-                let creep = getCreep(creeps[creep_it_it].split(':')[0], 'scout');
-                if (creep == 'dead') {
-                    creep = undefined;
-                }
+            if (observer) {
+                observer.observeRoom(toScout);
+            }
+            else {
 
-                if (!creep) {
-                    if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
-                    continue;
-                }
-                else if (creep.spawning) continue;
+                var creeps = Memory.creeps;
 
-                if (!creep.memory.notifyingOnDeath) {
-                    if (creep.notifyWhenAttacked(false) == OK) creep.memory.notifyingOnDeath = 1; 
-                }
-                
-                creep.talk('scout');
+                for (let creep_it_it in creeps) {
+                    if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
+                    let creep = getCreep(creeps[creep_it_it].split(':')[0], 'scout');
+                    if (creep == 'dead') {
+                        creep = undefined;
+                    }
+
+                    if (!creep) {
+                        if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
+                        continue;
+                    }
+                    else if (creep.spawning) continue;
+
+                    if (!creep.memory.notifyingOnDeath) {
+                        if (creep.notifyWhenAttacked(false) == OK) creep.memory.notifyingOnDeath = 1;
+                    }
+
+                    creep.talk('scout');
 
 
-                if (creep.pos.roomName != toScout) {
-                    var rsl = creep.travelTo(new RoomPosition(21, 21, toScout), {range: 21, repath: 0.01});
+                    if (creep.pos.roomName != toScout) {
+                        var rsl = creep.travelTo(new RoomPosition(21, 21, toScout), {range: 21, repath: 0.01});
 
-                    if (Game.time % 1001 && Game.map.getRoomLinearDistance(creep.room.name, toScout) < 2) Memory.cutOut =  Game.time+(Game.map.getRoomLinearDistance(creep.room.name, toScout)*75);
+                        if (Game.time % 1001 && Game.map.getRoomLinearDistance(creep.room.name, toScout) < 2) Memory.cutOut = Game.time + (Game.map.getRoomLinearDistance(creep.room.name, toScout) * 75);
 
-                    if (rsl == ERR_NO_PATH || Game.time > Memory.cutOut) {
-                        if (!global.Mem[toScout]) global.Mem[toScout] = {};
-                        global.Mem[toScout].scoutData = {lastCheck: Game.time+1001};
-                        Memory.toScout = undefined;
-                        delete Memory.cutOut;
+                        if (rsl == ERR_NO_PATH || Game.time > Memory.cutOut) {
+                            if (!global.Mem[toScout]) global.Mem[toScout] = {};
+                            global.Mem[toScout].scoutData = {lastCheck: Game.time + 1001};
+                            Memory.toScout = undefined;
+                            delete Memory.cutOut;
+                        }
                     }
                 }
-                else {
-                    //add rooms to scoutQueue if not already in and also if near enough to home room
-                    _.forEach(Game.map.describeExits(toScout), (roomName) => {
-                        if (!_.includes(Memory.scoutQueue, roomName) && Game.map.getRoomLinearDistance(room.name, roomName) < SCOUT_LINEAR_DISTANCE) Memory.scoutQueue.push(roomName);
-                    });
 
-
-                    var whoOwnsRoom = !creep.room.controller ? OWNED_IMPOSSIBLE : creep.room.controller.my ? OWNED_ME : creep.room.controller.owner ? _.includes(global.allies, creep.room.controller.owner.username) ? OWNED_ALLY : OWNED_ENEMY : OWNED_NEUTRAL;
-
-                    creep.room.memory.scoutData = {
-                        lastCheck: Game.time,
-                        owned: whoOwnsRoom
-                    };
-
-                    var sources = creep.room.find(FIND_SOURCES);
-                    if (sources && sources.length > 0) creep.room.memory.scoutData.sources = {
-                        amount: sources.length
-                    };
-
-                    var powerBank = creep.room.getStructures(STRUCTURE_POWER_BANK)[0];
-                    if (powerBank) creep.room.memory.scoutData.powerBank = {
-                        power: powerBank.power,
-                        decayTime: Game.time+powerBank.ticksToDecay
-                    };
-
-                    var mineral = creep.room.find(FIND_MINERALS)[0];
-                    if (mineral) creep.room.memory.scoutData.mineral = {
-                        mineralType: mineral.mineralType
-                    };
-
-                    Memory.toScout = undefined;
-                    delete Memory.cutOut;
-                }
+                if (Memory.creeps.length < 1) Memory.creeps.push(module.exports.room.addToSQ(room.name, 'scout'));
             }
+        },
 
-            if (Memory.creeps.length < 1) Memory.creeps.push(module.exports.room.addToSQ(room.name, 'scout'));
+        getNewRoomToScout: function (Memory) {
+            var newRoom = {};
 
+            _.forEach(Memory.scoutQueue, (r) => {
+                var lastCheck = Memory.rooms && Memory.rooms[r] && Memory.rooms[r].scoutData && Memory.rooms[r].scoutData.lastCheck ? Memory.rooms[r].scoutData.lastCheck : 0;
+                if (!newRoom.lastCheck || lastCheck < newRoom.lastCheck) newRoom = {r, lastCheck};
+            });
+
+            Memory.toScout = newRoom.r;
+            return Memory.toScout;
         }
     },
 
