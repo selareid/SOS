@@ -268,30 +268,62 @@ module.exports = {
 
             var room = Game.rooms[Memory.rmN];
             var flag = Game.flags[Memory.f];
+            var roomToRally = Memory.RTRLY;
 
             if (!Memory.complete && (!flag || !room)) {
                 var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'drainer' && Game.rooms[f.name.split(' ')[1]])[0];
                 Memory.rmN = newFlag ? newFlag.name.split(' ')[1] : undefined;
+                Memory.roomToRally = newFlag ? newFlag.name.split(' ')[2] : undefined;
                 return newFlag ? Memory.f = newFlag.name : {response: 'end'};
             }
 
-            var drainer = getCreep(Memory.drainer, 'drainer');
+            if (!Memory.creeps) Memory.creeps = [];
+            if (!Memory.state) Memory.state = 0; // rally state
 
-            if (!Memory.complete && !drainer) Memory.drainer = module.exports.room.addToSQ(room.name, 'drainer', {name: Memory.drainer});
+            var creeps = Memory.creeps;
 
-            if (Memory.complete && !drainer) {
-                flag.remove();
-                return {response: 'end'};
+            var rallied = 0;
+
+            for (let creep_it_it in creeps) {
+                if (typeof creeps[creep_it_it] == 'number') creeps[creep_it_it] = creeps[creep_it_it].toString();
+                let creep = getCreep(creeps[creep_it_it].split(':')[0], 'scout');
+                if (creep == 'dead') {
+                    creep = undefined;
+                }
+
+                if (!creep) {
+                    if (!room.memory.spawnQueue[creeps[creep_it_it]]) creeps.splice(creep_it_it, 1);
+                    continue;
+                }
+                else if (creep.spawning) continue;
+
+                switch (Memory.state) {
+                    case 0:  // rally state
+                        if (creep.hits < creep.hitsMax) creep.heal(creep);
+                        creep.travelTo(new RoomPosition(21, 21, roomToRally), {range: 5, repath: 0.01});
+
+                        if (creep.pos.roomName == roomToRally) rallied++;
+                        break;
+                    case 1: //charge state
+                        creep.heal();
+                        
+                        if (creep.pos.roomName != flag.pos.roomName) {
+                            if (creep.hits == creep.hitsMax) creep.travelTo(flag, {range: 2, repath: 0.01});
+                            else creep.move(creep.pos.getDirectionTo(new RoomPosition(21, 21, creep.room.name)));
+                        }
+                        else if (creep.room.find(FIND_HOSTILE_SPAWNS).length < 1) Memory.complete = true;
+                        break;
+                    default:
+                        Memory.state = 0;
+                }
             }
 
-            if (drainer) {
-                drainer.heal(drainer);
+            if (!Memory.complete && creeps.length < 5) Memory.creeps.push(module.exports.room.addToSQ(room.name, 'drainer'));
+            else if (creeps.length >= 5 && creeps.length == rallied) Memory.state = 1;
 
-                if (drainer.pos.roomName != flag.pos.roomName) {
-                    if (drainer.hits == drainer.hitsMax) drainer.travelTo(flag, {range: 2, repath: 0.01});
-                    else drainer.move(new RoomPosition(21, 21, drainer.room.name).getDirectionTo(drainer.pos));
-                }
-                else if (drainer.room.find(FIND_HOSTILE_SPAWNS).length < 1) Memory.complete = true;
+            if (Memory.complete) {
+                flag.remove();
+                return {response: 'end'};
             }
 
         }
