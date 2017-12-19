@@ -751,6 +751,8 @@ return;
 
                 Memory.toScout = undefined;
                 if (Memory.cutOut) delete Memory.cutOut;
+
+                this.getNewRoomToScout(Memory);
                 toScout = Memory.toScout;
             }
 
