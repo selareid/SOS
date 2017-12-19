@@ -756,6 +756,8 @@ return;
                 toScout = Memory.toScout;
             }
 
+            if (!toScout) return;
+
             var observer = room.getStructures(STRUCTURE_OBSERVER)[0];
 
             if (observer) {
