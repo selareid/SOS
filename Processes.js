@@ -44,7 +44,8 @@ const defaultBodyChart = {
     harvesters: [[WORK, CARRY, MOVE, MOVE], [], 6],
     haulers: [[CARRY, CARRY, MOVE, MOVE], []],
     miners: [[WORK, MOVE], [CARRY, MOVE]],
-    doLabs: [[CARRY, MOVE], [], 21]
+    doLabs: [[CARRY, MOVE], [], 21],
+    remoteBadger: [[MOVE, ATTACK], [], 1]
 };
 
 function getBodyChart(room) {
@@ -392,6 +393,46 @@ module.exports = {
                 }
             }
         }
+    },
+
+    remoteBadger: {
+        run: function (Memory_it) {
+            var Memory = global.Mem.p[Memory_it];
+
+            var roomName = Memory.rmN;
+            if (!roomName) return {response: 'end'};
+            if (!global[roomName]) global[roomName] = {};
+
+            var nearestRoom = Game.rooms[Memory.nr];
+            if (!nearestRoom) {
+                var newR = _.min(Game.rooms, (r) => {
+                    return r.find(FIND_MY_SPAWNS).length > 0 ? Game.map.findRoute(r.name, roomName).length : Number.POSITIVE_INFINITY;
+                });
+                Memory.nr = newR ? newR.name : undefined;
+                nearestRoom = Game.rooms[Memory.nr];
+                roomName = Memory.rmN;
+                if (Game.map.findRoute(nearestRoom.name, roomName).length > 10) return {response: 'end'}
+            }
+
+            var remoteBadger = getCreep(Memory.remoteBadger, 'remoteBadger');
+
+            if (!remoteBadger) Memory.remoteBadger = module.exports.room.addToSQ(nearestRoom.name, 'remoteBadger', {name: Memory.remoteBadger});
+
+            if (remoteBadger) {
+                if (remoteBadger.pos.roomName != roomName) {
+                    remoteBadger.travelTo(new RoomPosition(21, 21, roomName), {range: 21});
+                }
+                else {
+                    var target = remoteBadger.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())});
+
+                    if (!target) return {response: 'idle', time: Game.time+3};
+
+                    remoteBadger.moveTo(target, {range: 0});
+
+                    if (remoteBadger.pos.isNearTo(target)) remoteBadger.attack(target);
+                }
+            }
+        }//TODO TODO TODO REVIEW TODO TODO TODO
     },
 
     stealEnergy: {
