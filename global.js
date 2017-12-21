@@ -142,4 +142,6 @@ module.exports = () => {
     OWNED_IMPOSSIBLE = 4;
 
     SCOUT_LINEAR_DISTANCE = 5;
+
+    WALL_RAMPART_MAX_HITS = 50000000;
 };
