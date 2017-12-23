@@ -947,7 +947,7 @@ return;
             if (!Memory.creeps) Memory.creeps = [];
 
             var baddies = room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())});
-            if (baddies.length < 1) return {response: 'end'};
+            if (!Memory.creeps && baddies.length < 1) return {response: 'end'};
             
             var creeps = Memory.creeps;
 
