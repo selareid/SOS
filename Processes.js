@@ -967,8 +967,11 @@ return;
                 creep.talk('defendRoom');
 
                 var myBaddy = creep.pos.findClosestByRange(baddies);
-                if (creep.pos.isNearTo(myBaddy)) creep.attack(myBaddy);
-                else creep.moveTo(myBaddy, {reusePath: 2});
+                if (myBaddy) {            
+                    if (creep.pos.isNearTo(myBaddy)) creep.attack(myBaddy);
+                    else creep.moveTo(myBaddy, {reusePath: 2});
+                }
+                else creep.runInSquares();
             }
 
             if (Memory.creeps.length < baddies.length) Memory.creeps.push(module.exports.room.addToSQ(room.name, 'defendRoom'));
