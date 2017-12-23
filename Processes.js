@@ -967,7 +967,7 @@ return;
                 creep.talk('defendRoom');
 
                 var myBaddy = creep.pos.findClosestByRange(baddies);
-                if (myBaddy && (myBaddy.getActiveBodyparts(ATTACK)+myBaddy.getActiveBodyparts(RANGED_ATTACK)/)2 > creep.getActiveBodyparts(RANGED_ATTACK)+creep.getActiveBodyparts(ATTACK)) {            
+                if (myBaddy && (myBaddy.getActiveBodyparts(ATTACK)+myBaddy.getActiveBodyparts(RANGED_ATTACK))/2 > creep.getActiveBodyparts(RANGED_ATTACK)+creep.getActiveBodyparts(ATTACK)) {            
                     if (creep.pos.isNearTo(myBaddy)) creep.attack(myBaddy);
                     else creep.moveTo(myBaddy, {reusePath: 2});
                 }
