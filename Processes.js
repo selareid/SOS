@@ -421,7 +421,7 @@ module.exports = {
 
             if (!remoteBadger) Memory.remoteBadger = module.exports.room.addToSQ(nearestRoom.name, 'remoteBadger', {name: Memory.remoteBadger});
 
-            if (remoteBadger) {
+            if (remoteBadger && remoteBadger.pos) {
                 if (remoteBadger.pos.roomName != roomName) {
                     remoteBadger.travelTo(new RoomPosition(21, 21, roomName), {range: 21});
                 }
