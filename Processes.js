@@ -2345,7 +2345,7 @@ return;
         },
 
         STT: function (Memory, room, creep) {
-            if (!room.terminal) return 'no structure';
+            if (!room.terminal || _.sum(room.terminal.store) >= room.terminal.storeCapacity-1000) return 'no structure';
 
             if (creep.memory.w == true) {
                 creep.transfer(room.terminal, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
