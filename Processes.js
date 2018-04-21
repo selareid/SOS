@@ -2575,7 +2575,7 @@ return;
 
         getNumberOfUpgraders: function (room) {
             if (room.controller.level <= 3) {
-                return 10;
+                return 5;
             }
             else {
                 if (room.controller.level < 6) {
