@@ -3174,11 +3174,11 @@ Game.notify(room.name + " " + room.controller.level);
             }
             else {
                 if (creep.pos.roomName == nearestRoom.name) {
-                    var toPut = nearestRoom.storage ? nearestRoom.storage : nearestRoom.find(FIND_MY_SPAWNS)[0];
+                    var toPut = nearestRoom.storage || creep.pos.findClosestByRange(nearestRoom.getStructures(STRUCTURE_CONTAINER)[0]) || nearestRoom.find(FIND_MY_SPAWNS)[0];
 
                     if (creep.pos.isNearTo(toPut)) {
                         if (toPut.structureType == STRUCTURE_SPAWN) {
-                            creep.drop(Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
+                            creep.transfer(toPut, RESOURCE_ENERGY);
                         }
                         else {
                             creep.transfer(toPut, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
