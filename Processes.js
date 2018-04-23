@@ -381,7 +381,6 @@ module.exports = {
                                 var newTarget = crusher.pos.findClosestByPath(crusher.room.getStructures(STRUCTURE_TOWER));
                                 if (!newTarget) newTarget = crusher.pos.findClosestByPath(FIND_HOSTILE_SPAWNS);
                                 if (!newTarget) newTarget = crusher.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {filter: (c) => !global.allies.includes(c.owner.username.toLowerCase())});
-                                if (!newTarget) newTarget = crusher.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => !s.my && s.structureType != STRUCTURE_CONTROLLER});
 
                                 Memory.target = newTarget ? newTarget.id : undefined;
                                 target = newTarget;
