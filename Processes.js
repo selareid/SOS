@@ -2742,7 +2742,7 @@ Game.notify(room.name + " " + room.controller.level);
         },
 
         getNumberOfCaretakers: function (room) {
-            if (room.controller.level < 3) return 3;
+            if (room.controller.level <= 3 || !room.storage) return 3;
             else return 1;
         },
 
