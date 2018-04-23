@@ -1782,7 +1782,7 @@ Game.notify(room.name + " " + room.controller.level);
 
         dropEnergy: function (Memory, creep, room = creep.room) {
 
-            var link = Game.getObjectById(creep.memory.lnk);
+            var link = room.storage && creep.pos.isNearTo(room.storage) ? room.storage : Game.getObjectById(creep.memory.lnk);
 
             if (!link) {
                 var nLink = creep.pos.findClosestByRange(room.getStructures(STRUCTURE_LINK));
