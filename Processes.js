@@ -3174,7 +3174,7 @@ Game.notify(room.name + " " + room.controller.level);
             }
             else {
                 if (creep.pos.roomName == nearestRoom.name) {
-                    var toPut = nearestRoom.storage || creep.pos.findClosestByRange(nearestRoom.getStructures(STRUCTURE_CONTAINER)[0]) || nearestRoom.find(FIND_MY_SPAWNS)[0];
+                    var toPut = nearestRoom.storage || creep.pos.findClosestByRange(nearestRoom.getStructures(STRUCTURE_CONTAINER)) || nearestRoom.find(FIND_MY_SPAWNS)[0];
 
                     if (creep.pos.isNearTo(toPut)) {
                         if (toPut.structureType == STRUCTURE_SPAWN) {
