@@ -1,3 +1,4 @@
+
 require('prototype.room-position');
 require('prototype.room');
 require('prototype.creep');
@@ -456,6 +457,7 @@ module.exports = {
                 if (creep == 'dead') {
                     Memory.crp = undefined;
                     creep = undefined;
+return;
                 }
 
                 creep.talk('stealEnergy');
