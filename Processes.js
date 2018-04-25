@@ -3122,9 +3122,10 @@ Game.notify(room.name + " " + room.controller.level);
                     if (creep.pos.getRangeTo(hostile.pos) < 3) creep.rangedAttack(hostile);
                 }
                 else {
-                    var lair = _.min(room.getStructures(STRUCTURE_KEEPER_LAIR), (kl) => kl.ticksToSpawn);
+var lairs = room.getStructures(STRUCTURE_KEEPER_LAIR);
+                    var lair = _.min(lairs, (kl) => kl.ticksToSpawn);
 
-                    if (lair && !creep.pos.isNearTo(lair.pos)) creep.travelTo(lair);
+                    if (lairs.length > 0 && lair && !creep.pos.isNearTo(lair.pos)) creep.travelTo(lair);
                 }
             }
             else creep.travelTo(new RoomPosition(21, 21, roomName), {range: 21, repath: 0.01})
