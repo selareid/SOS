@@ -3070,7 +3070,7 @@ Game.notify(room.name + " " + room.controller.level);
         },
 
         getNumberOfGuards: function (roomName) {
-            return Game.rooms[roomName] ? Game.rooms[roomName].getStructures(STRUCTURE_KEEPER_LAIR).length > 0 ? 2 : 0 : 0;
+            return Game.rooms[roomName] ? Game.rooms[roomName].getStructures(STRUCTURE_KEEPER_LAIR).length > 0 ? 2 : 1 : 1;
         },
 
         doReserver: function (creep, roomName) {
