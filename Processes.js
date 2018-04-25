@@ -445,7 +445,7 @@ module.exports = {
             var flag = Game.flags[Memory.f];
 
             if (!flag || !room) {
-                var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'steal' && Game.rooms[f.name.split(' ')[1]])[0];
+                var newFlag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'steal')[0];
                 Memory.rmN = newFlag ? newFlag.name.split(' ')[1] : undefined;
                 return newFlag ? Memory.f = newFlag.name : 'end';
             }
