@@ -350,7 +350,7 @@ module.exports = {
             if (!Memory.complete && !healer) Memory.healer = module.exports.room.addToSQ(room.name, 'healer', {name: Memory.healer});
             if (!Memory.complete && !crusher) Memory.crusher = module.exports.room.addToSQ(room.name, 'crusher', {name: Memory.crusher});
 
-            if (Memory.complete && !healer && !crusher) {
+            if ((Memory.complete && !healer && !crusher) || !flag) {
                 if (flag) flag.remove();
                 return {response: 'end'};
             }
