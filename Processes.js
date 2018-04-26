@@ -482,10 +482,19 @@ return;
                     }
                 }
                 else {
-                    if (creep.pos.roomName == flag.pos.roomName) {
-                        creep.moveWithPath(new RoomPosition(25, 25, room.name), {range: 23, repath: 0.01, maxRooms: 16});
+                    var toPut = room.storage || creep.pos.findClosestByRange(room.getStructures(STRUCTURE_CONTAINER)) || room.find(FIND_MY_SPAWNS)[0];
+
+                    if (creep.pos.isNearTo(toPut)) {
+                        if (toPut.structureType == STRUCTURE_SPAWN) {
+                            creep.transfer(toPut, RESOURCE_ENERGY);
+                        }
+                        else {
+                            creep.transfer(toPut, Object.keys(creep.carry)[Math.floor(Game.time % Object.keys(creep.carry).length)]);
+                        }
                     }
-                    else creep.drop(RESOURCE_ENERGY);
+                    else {
+                        creep.moveWithPath(toPut, {range: 1, repath: 0.01, maxRooms: 1});
+                    }
                 }
             }
             else Memory.crp = module.exports.room.addToSQ(room.name, 'stealEnergy');
