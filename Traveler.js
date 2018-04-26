@@ -146,7 +146,7 @@ class Traveler {
      * @returns {RoomMemory|number}
      */
     static checkAvoid(roomName) {
-        return Memory.rooms && Memory.rooms[roomName] && (Memory.rooms[roomName].avoid || (Memory.rooms[roomName].scoutData && Memory.rooms[roomName].scoutData.owned == OWNED_ENEMY));
+        return Memory.rooms && Memory.rooms[roomName] && Memory.rooms[roomName].avoid;
     }
     /**
      * check if a position is an exit
@@ -428,7 +428,7 @@ class Traveler {
         let impassibleStructures = [];
         for (let structure of room.find(FIND_STRUCTURES)) {
             if (structure instanceof StructureRampart) {
-                if (!structure.my && !structure.isPublic && !structure.owner.username.toLowerCase() == 'hiryus') {
+                if (!structure.my && !structure.isPublic) {
                     impassibleStructures.push(structure);
                 }
             }
