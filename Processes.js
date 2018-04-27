@@ -467,7 +467,7 @@ return;
 
                 if (creep.memory.w == 1) {
                     if (creep.pos.roomName != flag.pos.roomName) {
-                        creep.moveWithPath(new RoomPosition(25, 25, flag.pos.roomName), {range: 23, repath: 0.01, maxRooms: 16});
+                        creep.travelTo(new RoomPosition(25, 25, flag.pos.roomName), {range: 23, repath: 0.01, maxRooms: 16});
                     }
                     else {
                         var thingToStealFrom = creep.room.terminal && creep.room.terminal.store[RESOURCE_ENERGY] ? creep.room.terminal : creep.room.storage && creep.room.storage.store[RESOURCE_ENERGY] ? creep.room.storage : undefined;
