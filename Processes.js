@@ -1748,9 +1748,18 @@ Game.notify(room.name + " " + room.controller.level);
                     }
                     else {
                         if (creep.carry.energy >= creep.carryCapacity) {
-                            var sE = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
-                            if (creep.pos.isNearTo(sE)) creep.transfer(sE, RESOURCE_ENERGY);
-                            else creep.moveWithPath(sE, {repath: 0.01, maxRooms: 1});
+                            var sE = creep.pos.findClosestByRange(FIND_MY_SPAWNS, {filter: (s) => s.energy < s.energyCapacity});
+                            if (sE) {
+                                if (creep.pos.isNearTo(sE)) creep.transfer(sE, RESOURCE_ENERGY);
+                                else creep.moveWithPath(sE, {repath: 0.01, maxRooms: 1});
+                            }
+                            else {
+                                var extension = creep.pos.findClosestByRange(creep.room.getStructures(STRUCTURE_EXTENSION), {filter: (s) => s.energy < s.energyCapacity});
+                                if (extension) {
+                                    if (creep.pos.isNearTo(extension)) creep.transfer(extension, RESOURCE_ENERGY);
+                                    else creep.moveWithPath(extension, {repath: 0.01, maxRooms: 1});
+                                }
+                            }
                         }
                         else this.harvest(Memory, room, creep);
                     }
