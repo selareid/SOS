@@ -1708,6 +1708,7 @@ Game.notify(room.name + " " + room.controller.level);
 
             if (powerSpawn && powerSpawn.energy >= 50 && powerSpawn.power >= 1 && room.storage && room.storage.store[RESOURCE_ENERGY] >= 10000) powerSpawn.processPower();
 
+            if ((room.terminal.store[RESOURCE_POWER] || 0) > 100000) return;
             return {response: 'idle', time: Game.time + 7};
         }
     },
