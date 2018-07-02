@@ -606,7 +606,7 @@ return;
                         }
                     }
                     else {
-                        var source = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+                        var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
                         if (source) {
                             if (creep.pos.isNearTo(source)) creep.harvest(source);
                             else creep.moveWithPath(source, {range: 1, repath: 0.01, maxRooms: 1});
