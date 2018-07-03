@@ -1779,7 +1779,7 @@ Game.notify(room.name + " " + room.controller.level);
             var source = Game.getObjectById(creep.memory.src);
 
             if (source) {
-                if (!creep.pos.isNearTo(source)) creep.moveWithPath(source, {repath: 0.01, maxRooms: 1});
+                if (!creep.pos.isNearTo(source)) creep.travelTo(source, {maxRooms: 1});
                 else if (source.energy) creep.harvest(source)
             }
             else {
