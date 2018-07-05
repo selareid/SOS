@@ -128,7 +128,8 @@ module.exports = {
 
             global.stats.cpu = {
                 limit: Game.cpu.limit,
-                bucket: Game.cpu.bucket
+                bucket: Game.cpu.bucket,
+                heapStatistics: Game.cpu.getHeapStatistics()
             };
 
             global.stats.memory = {
