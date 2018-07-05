@@ -1170,7 +1170,7 @@ Game.notify(room.name + " " + room.controller.level);
                 }
             }
 
-            return room.controller.level < 8 ? {response: 'idle', time: Game.time + Math.round((room.controller.progressTotal/room.controller.progress)/2)} : {response: 'idle', time: Game.time + 10001};;
+            return room.controller.level < 8 ? {response: 'idle', time: Game.time + Math.round((1-(room.controller.progressTotal/room.controller.progress))*5003)} : {response: 'idle', time: Game.time + 5003};
         },
 
         placeFlag: function (room) {
