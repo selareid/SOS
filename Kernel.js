@@ -1,5 +1,3 @@
-Game.cpu.limit = 10;
-
 const Processes = require('Processes');
 
 const lowBucketAmount = 5000;
@@ -7,6 +5,8 @@ const saveBucketLessCPU = 2.5;
 
 var Kernel = {
     startup: function () {
+        Game.cpu.limit = 10;
+        
         console.log("<p style=\"display:inline; color: #00ed1b\">" + '[Initializing Kernel]' + "</p>");
 
         // get allies and controllerSigns from segment
