@@ -1,3 +1,5 @@
+Game.cpu.limit = 10;
+
 const Processes = require('Processes');
 
 const lowBucketAmount = 5000;
