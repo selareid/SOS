@@ -5,7 +5,7 @@ const saveBucketLessCPU = 2.5;
 
 var Kernel = {
     startup: function () {
-        Game.cpu.limit = 10;
+        if (Game.cpu.bucket <= 8000) Game.cpu.limit = 10;
         
         console.log("<p style=\"display:inline; color: #00ed1b\">" + '[Initializing Kernel]' + "</p>");
 
