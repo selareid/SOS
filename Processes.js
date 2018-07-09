@@ -641,11 +641,6 @@ return;
             var room = Game.rooms[Memory.rmN];
             if (!room) return {response: 'end'};
 
-if (!Memory.lastUpdate || Game.time-Memory.lastUpdate > 100000) {
-Memory.lastUpdate = Game.time;
-Game.notify(room.name + " " + room.controller.level);
-}
-
             if (!room.memory.spawnQueue) room.memory.spawnQueue = {};
 
             if (!global[room.name]) global[room.name] = {};
