@@ -1700,7 +1700,7 @@ return;
             var room = Game.rooms[Memory.rmN];
             if (!room || room.memory.minimal || !room.storage || !room.terminal || room.getStructures(STRUCTURE_POWER_SPAWN).length < 1) return {response: 'end'};
 
-            if (_.sum(global.shuffle[RESOURCE_ENERGY]) > 100) return {response: 'idle', time: Game.time + 101};
+            if (global.shuffle && _.sum(global.shuffle[RESOURCE_ENERGY]) > 100) return {response: 'idle', time: Game.time + 101};
             
             var powerSpawn = room.getStructures(STRUCTURE_POWER_SPAWN)[0];
 
