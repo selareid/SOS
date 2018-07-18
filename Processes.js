@@ -1565,10 +1565,10 @@ return;
             _.forEach(RESOURCES_ALL, (resourceType) => {
                 var amountInRoom = (room.storage.store[resourceType] || 0)+(room.terminal.store[resourceType] || 0);
 
-                if (!amountInRoom || amountInRoom < 500) {
+                if (!amountInRoom || (amountInRoom < 500 || (resourceType == RESOURCE_ENERGY && amountInRoom < 5000))) {
                     if (!global.shuffle[resourceType]) global.shuffle[resourceType] = {};
 
-                    global.shuffle[resourceType][room.name] = 500-amountInRoom;
+                    global.shuffle[resourceType][room.name] = resourceType == RESOURCE_ENERGY ? 5000-amountInRoom : 500-amountInRoom;
                 }
                 else if (global.shuffle[resourceType] && global.shuffle[resourceType][room.name]) {
                     delete global.shuffle[resourceType][room.name];
@@ -1700,6 +1700,8 @@ return;
             var room = Game.rooms[Memory.rmN];
             if (!room || room.memory.minimal || !room.storage || !room.terminal || room.getStructures(STRUCTURE_POWER_SPAWN).length < 1) return {response: 'end'};
 
+            if (_.sum(global.shuffle[RESOURCE_ENERGY]) > 100) return {response: 'idle', time: Game.time + 101};
+            
             var powerSpawn = room.getStructures(STRUCTURE_POWER_SPAWN)[0];
 
             if (powerSpawn && powerSpawn.energy >= 50 && powerSpawn.power >= 1 && room.storage && room.storage.store[RESOURCE_ENERGY] >= 10000) powerSpawn.processPower();
