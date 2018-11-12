@@ -2349,11 +2349,11 @@ return;
                             break;
                         }
                     }
-//                     else if ((!room.storage.store[resourceType] || room.storage.store[resourceType] < 500) || room.terminal.store[resourceType]-800 > terminalGoals[resourceType]) {
-//                         amountToMove = 500-(room.storage.store[resourceType] || 0) > 0 ? 500-(room.storage.store[resourceType] || 0) : undefined;
-//                         resourceToMove = resourceType;
-//                         break;
-//                     }
+                    else if ((!room.storage.store[resourceType] || room.storage.store[resourceType] < 500) || room.terminal.store[resourceType]-800 > terminalGoals[resourceType]) {
+                        amountToMove = 500-(room.storage.store[resourceType] || 0) > 0 ? 500-(room.storage.store[resourceType] || 0) : undefined;
+                        resourceToMove = resourceType;
+                        break;
+                    }
                 }
 
                 if (resourceToMove) {
@@ -2386,10 +2386,10 @@ return;
                             break;
                         }
                     }
-                    else if (true) {
-//                     else if (room.storage.store[resourceType]-500 > 0 && (!room.terminal.store[resourceType] || room.terminal.store[resourceType]+800 < terminalGoals[resourceType])) {
-//                         amountToMove = room.storage.store[resourceType]-500 < creep.carryCapacity-_.sum(creep.carry) ? room.storage.store[resourceType]-500 : undefined;
-                        resourceToMove = resourceType;
+//                     else if (true) {
+                    else if (room.storage.store[resourceType]-500 > 0 && (!room.terminal.store[resourceType] || room.terminal.store[resourceType]+800 < terminalGoals[resourceType])) {
+                        amountToMove = room.storage.store[resourceType]-500 < creep.carryCapacity-_.sum(creep.carry) ? room.storage.store[resourceType]-500 : undefined;
+                        //resourceToMove = resourceType;
                         break;
                     }
                 }
