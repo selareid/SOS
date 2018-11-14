@@ -2381,7 +2381,7 @@ return;
                     if (room.storage.store[resourceType] < 1) continue
                     
                     if (resourceType == RESOURCE_ENERGY) {
-                        if ((room.terminal.store[RESOURCE_ENERGY]+800 < 15000 || room.controller.level > 8) && room.storage.store[resourceType]-800 > storageEnergy && room.terminal.store[RESOURCE_ENERGY] < 100000) {
+                        if ((room.terminal.store[RESOURCE_ENERGY]+800 < 15000 || room.controller.level >= 8) && room.storage.store[resourceType]-800 > storageEnergy && room.terminal.store[RESOURCE_ENERGY] < 150000) {
                             resourceToMove = resourceType;
                             break;
                         }
