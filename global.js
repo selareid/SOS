@@ -50,9 +50,9 @@ module.exports = () => {
         }
     };
 
-    processExists = function(processType, roomName) {
-        return roomName ? _.filter(global.Mem.p, (p) => p.rmN == roomName && p.pN == processType).length > 0
-            : _.filter(global.Mem.p, (p) => p.pN == processType).length > 0;
+    processExists = function(processType, roomName, amount = 0) {
+        return roomName ? _.filter(global.Mem.p, (p) => p.rmN == roomName && p.pN == processType).length > amount
+            : _.filter(global.Mem.p, (p) => p.pN == processType).length > amount;
     };
 
     spawnNewProcess = function(processType, roomName, oNCreation) {
