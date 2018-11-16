@@ -164,7 +164,7 @@ module.exports = {
             (function () {
                 var flag = _.filter(Game.flags, (f) => f.name.split(' ')[0] == 'buildSpawn')[0];
 
-                if (flag && (!flag.room || flag.room.find(FIND_MY_SPAWNS).length < 1) && !processExists('buildSpawn')) spawnNewProcess('buildSpawn');
+                if (flag && (!flag.room || flag.room.find(FIND_MY_SPAWNS).length < 1) && !processExists('buildSpawn', undefined, 3)) spawnNewProcess('buildSpawn');
             }());
 
             (function () {
