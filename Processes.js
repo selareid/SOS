@@ -1030,7 +1030,7 @@ return;
                     let toController;
 
                     _.forEach(room.find(FIND_SOURCES), (s) => {
-                        toSource.push(room.findPath(goodPos, s.pos, {ignoreCreeps: true, ignoreRoads: true, maxRooms: 1}).length);
+                        toSource.push(goodPos.getRangeTo(s.pos));
                     });
 
                     toController = room.findPath(goodPos, room.controller.pos, {ignoreCreeps: true, ignoreRoads: true, maxRooms: 1}).length;
