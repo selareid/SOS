@@ -1005,7 +1005,7 @@ return;
             if (!global[room.name]) global[room.name] = {};
             if (room.find(FIND_FLAGS, {filter: (f) => f.name.split(':')[0] == 'distrSquare'})[0]) return {response: 'end'};
 
-            const freeRange = 2;
+            const freeRange = 1;
             var bestPos;
 
             for (let x = 3; x < 46; x++) {
