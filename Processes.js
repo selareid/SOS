@@ -1565,10 +1565,10 @@ return;
             _.forEach(RESOURCES_ALL, (resourceType) => {
                 var amountInRoom = (room.storage.store[resourceType] || 0)+(room.terminal.store[resourceType] || 0);
 
-                if (!amountInRoom || (amountInRoom < 500 || (resourceType == RESOURCE_ENERGY && amountInRoom < 25000))) {
+                if (!amountInRoom || (amountInRoom < 500 || (resourceType == RESOURCE_ENERGY && amountInRoom < 250000))) {
                     if (!global.shuffle[resourceType]) global.shuffle[resourceType] = {};
 
-                    global.shuffle[resourceType][room.name] = resourceType == RESOURCE_ENERGY ? 25000-amountInRoom : 500-amountInRoom;
+                    global.shuffle[resourceType][room.name] = resourceType == RESOURCE_ENERGY ? 250000-amountInRoom : 500-amountInRoom;
                 }
                 else if (global.shuffle[resourceType] && global.shuffle[resourceType][room.name]) {
                     delete global.shuffle[resourceType][room.name];
