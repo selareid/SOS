@@ -709,6 +709,32 @@ return;
             
             if (Game.cpu.bucket > 5000) this.doStats(room);
             
+            if (Game.time % 13 == 0 && Game.market.credits > 10000 && room.controller.level >= 8 && room.terminal && room.storage && room.find(FIND_MINERALS)[0]) {
+                var mineralType = room.find(FIND_MINERALS)[0].mineralType;
+                
+                if (room.storage.store[mineralType] > 200000) { //arbitrary amount
+                    var roomsOrder = Game.market.getOrderById(Memory.roomOrderIdForMarketDumping);
+                    
+                    if (!roomsOrder) {
+                        var foundOrder = _.filter(Game.market.orders, (o) => o.type == ORDER_SELL && o.resourceType == mineralType && o.roomName == room.name && o.price == 0.001)[0];
+                        
+                        if (foundOrder) {
+                            Memory.roomOrderIdForMarketDumping = foundOrder.id;
+                        }
+                        else {
+                            Game.market.createOrder(ORDER_SELL, mineralType, 0.001, 100000, room.name);
+                        }
+                    }
+                    else {
+                        var amountToExtend = 100000-roomsOrder.remainingAmount;
+                        
+                        if (amountToExtend > 50000) {
+                            Game.market.extendOrder(roomsOrder.id, amountToExtend);
+                        }
+                    }
+                }
+            }
+            
 //             if (room.controller.level < 8 && room.terminal && room.terminal.store.energy < 50000) {
 //                 if (!global.needsEnergy) global.needsEnergy = {};
 //                 global.needsEnergy[room.name] = 50000-room.terminal.store.energy;
