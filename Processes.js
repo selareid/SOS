@@ -709,7 +709,7 @@ return;
             
             if (Game.cpu.bucket > 5000) this.doStats(room);
             
-            if (Game.time % 13 == 0 && Game.market.credits > 10000 && room.controller.level >= 8 && room.terminal && room.storage && room.find(FIND_MINERALS)[0]) {
+            if (Game.time % 113 == 0 && Game.market.credits > 10000 && room.controller.level >= 8 && room.terminal && room.storage && room.find(FIND_MINERALS)[0]) {
                 var mineralType = room.find(FIND_MINERALS)[0].mineralType;
                 
                 if (room.storage.store[mineralType] > 200000) { //arbitrary amount
