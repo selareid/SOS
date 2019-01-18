@@ -713,7 +713,7 @@ return;
                 var mineralType = room.find(FIND_MINERALS)[0].mineralType;
                 
                 if (room.storage.store[mineralType] > 200000) { //arbitrary amount
-                    var roomsOrder = Game.market.getOrderById(Memory.roomOrderIdForMarketDumping);
+                    var roomsOrder = Game.market.orders[Memory.roomOrderIdForMarketDumping];
                     
                     if (!roomsOrder) {
                         var foundOrder = _.filter(Game.market.orders, (o) => o.type == ORDER_SELL && o.resourceType == mineralType && o.roomName == room.name && o.price == 0.001)[0];
