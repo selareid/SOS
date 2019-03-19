@@ -6,6 +6,38 @@ const saveBucketLessCPU = 2.5;
 var Kernel = {
     startup: function () {
         
+        var PC = Game.powerCreeps['PC1'];
+        if (PC) {
+            if (!PC.ticksToLive) {
+                var PS = Game.getObjectById('5b2797c54ed3e61a207917f0');
+                if (PS) {
+                    PC.spawn(PS);
+                }
+            }
+            else if (PC.ticksToLive < 100) {
+                if (PC.renew(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0]) == ERR_NOT_IN_RANGE) PC.moveTo(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0]);
+            }
+            else {
+                if (!PC.room.controller.isPowerEnabled) {
+                    if (PC.enableRoom(PC.room.controller) == ERR_NOT_IN_RANGE) PC.moveTo(PC.room.controller);
+                }
+                else if (_.sum(PC.carry) >= PC.carryCapacity*0.75) {
+                    if (PC.transfer(PC.room.storage, RESOURCE_OPS, 500) == ERR_NOT_IN_RANGE) PC.moveTo(PC.room.storage);
+                }
+                else if (!PC.pos.isNearTo(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0])) {
+                    PC.moveTo(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0].pos.x+1,
+                     PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0].pos.y);
+                }
+                else {
+                    (() => {
+                        if (PC.usePower(PWR_GENERATE_OPS) == OK) return;
+                        if (PC.usePower(PWR_OPERATE_POWER) == OK) return;
+                    })();
+                }
+                
+            }
+        }
+        
         console.log("<p style=\"display:inline; color: #00ed1b\">" + '[Initializing Kernel]' + "</p>");
 
         // get allies and controllerSigns from segment
