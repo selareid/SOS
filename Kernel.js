@@ -6,36 +6,37 @@ const saveBucketLessCPU = 2.5;
 var Kernel = {
     startup: function () {
         
-        
-        var PC = Game.powerCreeps['PC1'];
-        if (PC) {
-            if (!PC.ticksToLive) {
-                var PS = PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0];
-                if (PS) {
-                    PC.spawn(PS);
+        for (PC_name in Game.powerCreeps) {
+            var PC = Game.powerCreeps[PC_name];
+            if (PC) {
+                if (!PC.ticksToLive) {
+                    var PS = PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0];
+                    if (PS) {
+                        PC.spawn(PS);
+                    }
                 }
-            }
-            else if (PC.ticksToLive < 100) {
-                if (PC.renew(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0]) == ERR_NOT_IN_RANGE) PC.moveTo(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0]);
-            }
-            else {
-                if (!PC.room.controller.isPowerEnabled) {
-                    if (PC.enableRoom(PC.room.controller) == ERR_NOT_IN_RANGE) PC.moveTo(PC.room.controller);
-                }
-                else if (_.sum(PC.carry) >= PC.carryCapacity*0.75) {
-                    if (PC.transfer(PC.room.storage, RESOURCE_OPS, 500) == ERR_NOT_IN_RANGE) PC.moveTo(PC.room.storage);
-                }
-                else if (!PC.pos.isNearTo(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0])) {
-                    PC.moveTo(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0].pos.x+1,
-                     PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0].pos.y);
+                else if (PC.ticksToLive < 100) {
+                    if (PC.renew(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0]) == ERR_NOT_IN_RANGE) PC.moveTo(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0]);
                 }
                 else {
-                    (() => {
-                        if (PC.usePower(PWR_GENERATE_OPS) == OK) return;
-                        if (PC.usePower(PWR_OPERATE_POWER, PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0]) == OK) return;
-                    })();
+                    if (!PC.room.controller.isPowerEnabled) {
+                        if (PC.enableRoom(PC.room.controller) == ERR_NOT_IN_RANGE) PC.moveTo(PC.room.controller);
+                    }
+                    else if (_.sum(PC.carry) >= PC.carryCapacity*0.75) {
+                        if (PC.transfer(PC.room.storage, RESOURCE_OPS, 500) == ERR_NOT_IN_RANGE) PC.moveTo(PC.room.storage);
+                    }
+                    else if (!PC.pos.isNearTo(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0])) {
+                        PC.moveTo(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0].pos.x+1,
+                         PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0].pos.y);
+                    }
+                    else {
+                        (() => {
+                            if (PC.usePower(PWR_GENERATE_OPS) == OK) return;
+                            if (PC.usePower(PWR_OPERATE_POWER, PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0]) == OK) return;
+                        })();
+                    }
+
                 }
-                
             }
         }
         
