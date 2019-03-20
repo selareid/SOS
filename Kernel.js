@@ -9,7 +9,7 @@ var Kernel = {
         for (PC_name in Game.powerCreeps) {
             var PC = Game.powerCreeps[PC_name];
             if (PC) {
-                if (!PC.ticksToLive) {
+                if (!PC.room) {
                     var PS = PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0];
                     if (PS) {
                         PC.spawn(PS);
