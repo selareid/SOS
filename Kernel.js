@@ -6,10 +6,11 @@ const saveBucketLessCPU = 2.5;
 var Kernel = {
     startup: function () {
         
+        
         var PC = Game.powerCreeps['PC1'];
         if (PC) {
             if (!PC.ticksToLive) {
-                var PS = Game.getObjectById('5b2797c54ed3e61a207917f0');
+                var PS = PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0];
                 if (PS) {
                     PC.spawn(PS);
                 }
@@ -31,7 +32,7 @@ var Kernel = {
                 else {
                     (() => {
                         if (PC.usePower(PWR_GENERATE_OPS) == OK) return;
-                        if (PC.usePower(PWR_OPERATE_POWER) == OK) return;
+                        if (PC.usePower(PWR_OPERATE_POWER, PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0]) == OK) return;
                     })();
                 }
                 
