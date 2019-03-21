@@ -2135,8 +2135,8 @@ return;
                     if (!creep.pos.isEqualTo(flag.pos)) {
                         creep.moveWithPath(flag, {range: 0, obstacles: room.find(FIND_MY_SPAWNS), repath: 0.01, maxRooms: 1});
 
-                        if (flag.pos.findInRange(FIND_MY_CREEPS, 1).length > 0 && creep.pos.getRangeTo(flag.pos) <= 3) {
-                            var rootOfAllEvil = flag.pos.findInRange(FIND_MY_CREEPS, 1, {filter: (c) => c.memory.p != 'strgDistr'})[0];
+                        if ((flag.pos.findInRange(FIND_MY_POWER_CREEPS, 1).length > 0 || flag.pos.findInRange(FIND_MY_CREEPS, 1).length > 0) && creep.pos.getRangeTo(flag.pos) <= 3) {
+                            var rootOfAllEvil = flag.pos.findInRange(FIND_MY_POWER_CREEPS, 1)[0] || flag.pos.findInRange(FIND_MY_CREEPS, 1, {filter: (c) => c.memory.p != 'strgDistr'})[0];
                             if (rootOfAllEvil) {
                                 rootOfAllEvil.move(rootOfAllEvil.pos.getDirectionTo(creep.pos));
                             }
