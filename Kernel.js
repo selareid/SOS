@@ -16,7 +16,7 @@ var Kernel = {
                     }
                 }
                 else if (PC.ticksToLive < 100) {
-                    if (PC.renew(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0]) == ERR_NOT_IN_RANGE) PC.moveTo(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0]);
+                    if (PC.renew(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0] == ERR_NOT_IN_RANGE) PC.moveTo(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0]);
                 }
                 else {
                     if (!PC.room.controller.isPowerEnabled) {
