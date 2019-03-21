@@ -23,7 +23,7 @@ var Kernel = {
                         if (PC.enableRoom(PC.room.controller) == ERR_NOT_IN_RANGE) PC.moveTo(PC.room.controller);
                     }
                     else if (_.sum(PC.carry) >= PC.carryCapacity*0.75) {
-                        if (PC.transfer(PC.room.storage, RESOURCE_OPS, 500) == ERR_NOT_IN_RANGE) PC.moveTo(PC.room.storage);
+                        if (PC.transfer(PC.room.storage, RESOURCE_OPS, Math.round(PC.carry[RESOURCE_OPS)*0.75)) == ERR_NOT_IN_RANGE) PC.moveTo(PC.room.storage);
                     }
                     else if (!PC.pos.isNearTo(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0])) {
                         PC.moveTo(PC.room.getStructures(STRUCTURE_POWER_SPAWN)[0].pos.x+1,
