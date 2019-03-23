@@ -85,8 +85,12 @@ RoomPosition.prototype.customFindPathTo = function (dest, opts) {
 Creep.prototype.customMoveByPath = function (path) {
     if (this.fatigue > 0) return ERR_TIRED;
 
-    this.memory.goto = !isUndefinedOrNull(this.memory.goto) && this.pos.isEqualTo(path[this.memory.goto]) ? this.memory.goto + 1 : 0;
-
+    try {
+        this.memory.goto = !isUndefinedOrNull(this.memory.goto) && this.pos.isEqualTo(path[this.memory.goto]) ? this.memory.goto + 1 : 0;
+    } catch (err) {
+        return;
+    }
+    
     if (encodeChar(this.pos.x * 100 + this.pos.y) == this.memory.lastPos) this.memory.SPC = this.memory.SPC ? this.memory.SPC + 1 : 1;
     else this.memory.SPC = 0;
 
