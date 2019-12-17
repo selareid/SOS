@@ -716,13 +716,13 @@ return;
                     var roomsOrder = Game.market.orders[Memory.roomOrderIdForMarketDumping];
                     
                     if (!roomsOrder) {
-                        var foundOrder = _.filter(Game.market.orders, (o) => o.type == ORDER_SELL && o.resourceType == mineralType && o.roomName == room.name && o.price == 0.05)[0];
+                        var foundOrder = _.filter(Game.market.orders, (o) => o.type == ORDER_SELL && o.resourceType == mineralType && o.roomName == room.name && o.price == 0.005)[0];
                         
                         if (foundOrder) {
                             Memory.roomOrderIdForMarketDumping = foundOrder.id;
                         }
                         else {
-                            Game.market.createOrder(ORDER_SELL, mineralType, 0.05, 100000, room.name);
+                            Game.market.createOrder(ORDER_SELL, mineralType, 0.005, 100000, room.name);
                         }
                     }
                     else {
